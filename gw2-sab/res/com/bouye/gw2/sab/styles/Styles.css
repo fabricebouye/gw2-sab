@@ -111,6 +111,9 @@
 .account-info-pane {
     -fx-padding: 6px;
 }
+.account-info-pane > * > CheckBox:disabled {
+    -fx-opacity: 1.0;
+}
 .account-info-pane > * > FlowPane {
     -fx-hgap: 6px;
     -fx-vgap: 3px;

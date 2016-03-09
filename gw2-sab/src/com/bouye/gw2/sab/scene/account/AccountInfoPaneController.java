@@ -27,6 +27,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 
@@ -35,13 +36,19 @@ import javafx.scene.layout.FlowPane;
  * @author Fabrice Bouyé
  */
 public final class AccountInfoPaneController extends SABControllerBase<AccountInfoPane> {
-
+    
     @FXML
     private Label accountNameLabel;
     @FXML
     private Label accessLabel;
     @FXML
     private Label worldLabel;
+    @FXML
+    private CheckBox commanderCheck;
+    @FXML
+    private Label dailyApLabel;
+    @FXML
+    private Label monthlyApLabel;
     @FXML
     private FlowPane permissionsFlowPane;
 
@@ -67,16 +74,16 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         Bindings.select(nodeProperty(), "account").addListener(accountInvalidationListener);
         Bindings.select(nodeProperty(), "tokenInfo").addListener(tokenInfoInvalidationListener);
     }
-
+    
     private final InvalidationListener accountInvalidationListener = observable -> updateAccountContent();
     private final InvalidationListener tokenInfoInvalidationListener = observable -> updateTokenInfoContent();
-
+    
     private void updateAccountContent() {
         final Optional<AccountInfoPane> parent = Optional.ofNullable(getNode());
         parent.ifPresent(this::clearAccountContent);
         parent.ifPresent(this::installAccountContent);
     }
-
+    
     private void clearAccountContent(final AccountInfoPane parent) {
         // Style.
         Arrays.stream(AccountAccessType.values()).forEach(accessType -> {
@@ -87,8 +94,11 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         // Name.
         accountNameLabel.setText(null);
         accessLabel.setText(null);
+        commanderCheck.setSelected(false);
+        dailyApLabel.setText(null);
+        monthlyApLabel.setText(null);
     }
-
+    
     private void installAccountContent(final AccountInfoPane parent) {
         final Optional<Account> account = Optional.ofNullable(parent.getAccount());
         account.ifPresent(a -> {
@@ -107,21 +117,25 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             if (world == null) {
                 queryWorldAsync(a.getWorld());
             }
+            //
+            commanderCheck.setSelected(a.isCommander());
+            dailyApLabel.setText(String.valueOf(a.getDailyAp()));
+            monthlyApLabel.setText(String.valueOf(a.getMonthlyAp()));
         });
     }
-
+    
     private void updateTokenInfoContent() {
         permissionsFlowPane.getChildren().clear();
         final Optional<AccountInfoPane> parent = Optional.ofNullable(getNode());
         parent.ifPresent(this::clearTokenInfoContent);
         parent.ifPresent(this::installTokenInfoContent);
     }
-
+    
     private void clearTokenInfoContent(final AccountInfoPane parent) {
         // Permissions.
         permissionsFlowPane.getChildren().clear();
     }
-
+    
     private void installTokenInfoContent(final AccountInfoPane parent) {
         final Optional<TokenInfo> tokenInfo = Optional.ofNullable(parent.getTokenInfo());
         // App-key permissions.
@@ -143,9 +157,9 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             permissionsFlowPane.getChildren().setAll(permissionLabels);
         });
     }
-
+    
     private World world;
-
+    
     private void queryWorldAsync(final int id) {
         final Service<List<World>> service = new Service<List<World>>() {
             @Override

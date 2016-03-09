@@ -3,6 +3,9 @@
     "name": "ExampleAccount.1234",
     "world": 1001,
     "guilds": ["01", "02", "03"],
-    "access": "HeartOfThorns",
-    "fractalLevel" : 100
+    "access": "GuildWars2",
+    "fractalLevel" : 100,
+    "commander" : false,
+    "daily_ap" : 65535,
+    "monthly_ap" : 1024
 }

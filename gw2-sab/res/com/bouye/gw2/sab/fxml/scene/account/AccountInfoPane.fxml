@@ -8,19 +8,29 @@
  of the BSD license.  See the LICENSE file for details.
 -->
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane id="GridPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="account-info-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountInfoPaneController">
+<GridPane id="GridPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="account-info-pane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountInfoPaneController">
     <children>
-        <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.account" GridPane.columnIndex="0" GridPane.rowSpan="2" />
+        <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.account" GridPane.columnIndex="0" GridPane.rowSpan="3" GridPane.valignment="TOP" />
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="1" />
         <Label fx:id="accessLabel" text="Label" GridPane.columnIndex="2" />
         <Label fx:id="worldLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-        <FlowPane fx:id="permissionsFlowPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+        <FlowPane fx:id="permissionsFlowPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+      <CheckBox fx:id="commanderCheck" disable="true" mnemonicParsing="false" text="%account.commander.label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <HBox fx:id="apVBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <Label fx:id="dailyApLabel" text="Label" />
+            <Label fx:id="monthlyApLabel" text="Label" />
+         </children>
+      </HBox>
     </children>
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" />
@@ -30,6 +40,8 @@
     <rowConstraints>
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
         <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
         <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" />
     </rowConstraints>
 </GridPane>
