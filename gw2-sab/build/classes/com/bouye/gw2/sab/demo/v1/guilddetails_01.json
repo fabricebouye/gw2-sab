@@ -1,0 +1,13 @@
+{
+    "guild_id": "01",
+    "guild_name": "Destiny's Edge",
+    "tag": "DE",
+    "emblem": {
+        "background_id": 2,
+        "foreground_id": 40,
+        "flags": ["FlipBackgroundHorizontal", "FlipBackgroundVertical"],
+        "background_color_id": 473,
+        "foreground_primary_color_id": 673,
+        "foreground_secondary_color_id": 71
+    }
+}

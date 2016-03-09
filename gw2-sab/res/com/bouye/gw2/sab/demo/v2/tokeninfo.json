@@ -1,0 +1,16 @@
+{
+    "id": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+    "name": "Demo Key",
+    "permissions": [
+        "account",
+        "tradingpost",
+        "characters",
+        "inventories",
+        "wallet",
+        "unlocks",
+        "pvp",
+        "builds",
+        "progression",
+        "guilds"
+    ]
+}
