@@ -10,10 +10,14 @@ package com.bouye.gw2.sab;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * App constants.
@@ -27,8 +31,17 @@ public enum SABConstants {
 
     public static final ResourceBundle I18N = ResourceBundle.getBundle(SAB.class.getPackage().getName().replaceAll("\\.", "/") + "/strings"); // NOI18N.
     public static final boolean IS_DEMO = true;
+    /**
+    * The default language to be used when retrieving localized resources with the Web API: {@value}.
+    */
+    public static final String DEFAULT_WEBAPI_LANGUAGE = "en";
 
     private final Properties version = new Properties();
+    private final Properties settings = new Properties();
+    /**
+    * Contains all supported languages by the Web API.
+    */
+    private final Set<String> supportedWebApiLanguages;
 
     /**
      * Creates a new instance.
@@ -41,6 +54,19 @@ public enum SABConstants {
         } catch (IOException ex) {
             Logger.getLogger(SABConstants.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
+        // Load other settings.
+        settings.setProperty("webapi.supported.languages", DEFAULT_WEBAPI_LANGUAGE); // NOI18N.
+        final URL settingsURL = getClass().getResource("SAB.properties"); // NOI18N.
+        try (final InputStream input = settingsURL.openStream()) {
+            settings.load(input);
+        } catch (IOException ex) {
+            Logger.getLogger(SABConstants.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        final String supportedLanguagesStr = settings.getProperty("webapi.supported.languages"); // NOI18N.
+        final Set<String> supportedLanguages = Arrays.stream(supportedLanguagesStr.split(",\\s*")) // NOI18N.
+                .collect(Collectors.toSet());
+        this.supportedWebApiLanguages = Collections.unmodifiableSet(supportedLanguages);
+
     }
 
     public String getVersion() {
@@ -65,5 +91,13 @@ public enum SABConstants {
 
     public String getCodeName() {
         return version.getProperty("version.codename"); // NOI18N.
+    }
+
+    /**
+     * Gets the list of supported languages when querying the Web API for localized resources.
+     * @return A non-modifiable {@code Set<String>}, never {@code null},
+     */
+    public Set<String> getSupportedWebApiLanguages() {
+        return supportedWebApiLanguages;
     }
 }

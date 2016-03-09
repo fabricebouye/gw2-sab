@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,8 +33,15 @@ import java.util.logging.Logger;
 public enum WebQuery {
     INSTANCE;
 
+    /**
+     * Return the language code to be used when doing queries that return localized values.
+     * <br>If the user's current language is not supported, the default locale will be used instead.
+     * @return A {@code String} instance, never {@code null}.
+     */
     private String getLanguageCode() {
-        return Locale.getDefault().getLanguage();
+        final Set<String> supportedLanguages = SABConstants.INSTANCE.getSupportedWebApiLanguages();
+        final String currentLanguage = Locale.getDefault().getLanguage();
+        return supportedLanguages.contains(currentLanguage) ? currentLanguage : SABConstants.DEFAULT_WEBAPI_LANGUAGE;
     }
 
     /**
