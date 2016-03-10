@@ -8,13 +8,18 @@
 package com.bouye.gw2.sab.demo;
 
 import api.web.gw2.mapping.core.JsonpContext;
+import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Provides support for demo mode.
@@ -70,15 +75,55 @@ public enum DemoSupport {
 
     /**
      * Load demo world.
+     * @param id The id of the world to load.
      * @return An {@code World} instance, may be {@code null}.
      */
-    public World loadWorld() {
+    public World loadWorld(final int id) {
         try {
-            final URL url = getClass().getResource("v2/world.json"); // NOI18N.
+            final URL url = getClass().getResource(String.format("v2/world_%d.json", id)); // NOI18N.
             return JsonpContext.SAX.loadObject(World.class, url);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
         return null;
+    }
+
+    /**
+     * Load demo world.
+     * @param ids The ids of the worlds to load.
+     * @return An {@code List<World>} instance, never {@code null}.
+     */
+    public List<World> loadWorlds(final int... ids) {
+        final List<World> result = Arrays.stream(ids)
+                .mapToObj(id -> loadWorld(id))
+                .collect(Collectors.toList());
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Load demo guild.
+     * @param id The id of the guild to load.
+     * @return An {@code GuildDetails} instance, may be {@code null}.
+     */
+    public GuildDetails loadGuild(final String id) {
+        try {
+            final URL url = getClass().getResource(String.format("v1/guilddetails_%s.json", id)); // NOI18N.
+            return JsonpContext.SAX.loadObject(GuildDetails.class, url);
+        } catch (NullPointerException | IOException ex) {
+            Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    /**
+     * Load demo guild.
+     * @param ids The ids of the guilds to load.
+     * @return An {@code List<GuildDetails>} instance, never {@code null}.
+     */
+    public List<GuildDetails> loadGuilds(final String... ids) {
+        final List<GuildDetails> result = Arrays.stream(ids)
+                .map(id -> loadGuild(id))
+                .collect(Collectors.toList());
+        return Collections.unmodifiableList(result);
     }
 }
