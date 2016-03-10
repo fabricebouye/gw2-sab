@@ -8,8 +8,10 @@
 package com.bouye.gw2.sab.db;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.session.Session;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,7 +89,7 @@ public enum DBStorage {
     }
 
     private void updateWorldList() throws IOException, SQLException {
-        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(true);
+        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(SABConstants.INSTANCE.isDemo());
         final LocalDateTime now = LocalDateTime.now();
         for (final World world : worlds) {
             final byte[] data = serialize(world);
@@ -176,14 +178,14 @@ public enum DBStorage {
         }
     }
 
-    public List<AccessToken> getApplicationKeys() {
+    public List<Session> getApplicationKeys() {
         final String sql = String.format("select * from %s", APP_KEYS_TABLE);
-        final List<AccessToken> result = select(sql,
+        final List<Session> result = select(sql,
                 resultSet -> {
-                    final List<AccessToken> list = new LinkedList();
+                    final List<Session> list = new LinkedList();
                     while (resultSet.next()) {
-                        final AccessToken accessToken = new AccessToken(resultSet.getString("app_key"), resultSet.getString("account_name")); // NOI18N.
-                        list.add(accessToken);
+                        final Session session = new Session(resultSet.getString("app_key"), resultSet.getString("account_name")); // NOI18N.
+                        list.add(session);
                     }
                     return Collections.unmodifiableList(list);
                 },

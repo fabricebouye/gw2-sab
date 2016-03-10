@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.account;
 
 import com.bouye.gw2.sab.SABControllerBase;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.text.LabelUtils;
 import com.bouye.gw2.sab.text.tokeninfo.ApplicationKeyTextFormatter;
@@ -52,14 +52,14 @@ public final class NewAccountPaneController extends SABControllerBase {
         // @todo handle camera and some QR scanning API.
     }
 
-    private final ReadOnlyObjectWrapper<AccessToken> accessToken = new ReadOnlyObjectWrapper(this, "accessToken"); // NOI18N.
+    private final ReadOnlyObjectWrapper<Session> session = new ReadOnlyObjectWrapper(this, "session"); // NOI18N.
 
-    public final AccessToken getAccessToken() {
-        return accessToken.get();
+    public final Session getSession() {
+        return session.get();
     }
 
-    public final ReadOnlyObjectProperty<AccessToken> accessTokenProperty() {
-        return accessToken.getReadOnlyProperty();
+    public final ReadOnlyObjectProperty<Session> sessionProperty() {
+        return session.getReadOnlyProperty();
     }
 
     /**
@@ -72,10 +72,10 @@ public final class NewAccountPaneController extends SABControllerBase {
             appKey = appKey.toUpperCase();
         }
         if (!DemoSupport.INSTANCE.isDemoApplicationKey(appKey) && !ApplicationKeyUtils.INSTANCE.validateApplicationKey(appKey)) {
-            accessToken.set(null);
+            session.set(null);
         } else {
-            final AccessToken token = new AccessToken(appKey);
-            accessToken.set(token);
+            final Session newSession = new Session(appKey);
+            session.set(newSession);
         }
     };
 }

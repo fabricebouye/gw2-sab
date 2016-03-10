@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.account;
 
 import com.bouye.gw2.sab.SABControllerBase;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -29,7 +29,7 @@ import javafx.scene.control.ListView;
 public final class AccountListPaneController extends SABControllerBase {
 
     @FXML
-    private ListView<AccessToken> accountsListView;
+    private ListView<Session> accountsListView;
     @FXML
     private Button addAccountButton;
 
@@ -40,7 +40,7 @@ public final class AccountListPaneController extends SABControllerBase {
             result.onDeleteAccountProperty().bind(onDeleteAccountProperty());
             return result;
         });
-        currentAccessToken.bind(accountsListView.getSelectionModel().selectedItemProperty());
+        selectedSession.bind(accountsListView.getSelectionModel().selectedItemProperty());
     }
 
     @FXML
@@ -49,25 +49,25 @@ public final class AccountListPaneController extends SABControllerBase {
         onNewAccount.ifPresent(runnable -> runnable.run());
     }
 
-    public void setAccounts(final ObservableList<AccessToken> value) {
+    public void setAccounts(final ObservableList<Session> value) {
         accountsListView.setItems(value);
     }
 
     /**
-     * The access token that was selected from the account management menu.
+     * The session that was selected from the account management menu.
      */
-    private final ReadOnlyObjectWrapper<AccessToken> currentAccessToken = new ReadOnlyObjectWrapper(this, "currentAccessToken"); // NOI18N.
+    private final ReadOnlyObjectWrapper<Session> selectedSession = new ReadOnlyObjectWrapper(this, "selectedSession"); // NOI18N.
 
-    public final AccessToken getCurrentAccessToken() {
-        return currentAccessToken.get();
+    public final Session getSelectedSession() {
+        return selectedSession.get();
     }
 
-    public final void setCurrentAccessToken(final AccessToken value) {
+    public final void setSelectedSession(final Session value) {
         accountsListView.getSelectionModel().select(value);
     }
 
-    public final ReadOnlyObjectProperty<AccessToken> currentAccesTokenProperty() {
-        return currentAccessToken.getReadOnlyProperty();
+    public final ReadOnlyObjectProperty<Session> selectedSessionProperty() {
+        return selectedSession.getReadOnlyProperty();
     }
 
     /**
@@ -90,17 +90,17 @@ public final class AccountListPaneController extends SABControllerBase {
     /**
      * Called when the user deletes an account.
      */
-    private final ObjectProperty<Consumer<AccessToken>> onDeleteAccount = new SimpleObjectProperty(this, "onDeleteAccount"); // NOI18N.
+    private final ObjectProperty<Consumer<Session>> onDeleteAccount = new SimpleObjectProperty(this, "onDeleteAccount"); // NOI18N.
 
-    public final Consumer<AccessToken> getOnDeleteAccount() {
+    public final Consumer<Session> getOnDeleteAccount() {
         return onDeleteAccount.get();
     }
 
-    public final void setOnDeleteAccount(final Consumer<AccessToken> value) {
+    public final void setOnDeleteAccount(final Consumer<Session> value) {
         onDeleteAccount.set(value);
     }
 
-    public final ObjectProperty<Consumer<AccessToken>> onDeleteAccountProperty() {
+    public final ObjectProperty<Consumer<Session>> onDeleteAccountProperty() {
         return onDeleteAccount;
     }
 }

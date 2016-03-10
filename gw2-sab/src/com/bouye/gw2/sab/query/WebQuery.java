@@ -174,8 +174,8 @@ public enum WebQuery {
                 if (value.isPresent()) {
                     result.add(value.get());
                 }
-                result = Collections.unmodifiableList(result);
             }
+            result = Collections.unmodifiableList(result);
         }
         return result;
     }
