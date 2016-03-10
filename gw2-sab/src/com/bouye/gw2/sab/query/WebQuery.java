@@ -8,6 +8,7 @@
 package com.bouye.gw2.sab.query;
 
 import api.web.gw2.mapping.core.JsonpContext;
+import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
@@ -149,15 +150,32 @@ public enum WebQuery {
         return result;
     }
 
-    public List<World> queryWorldIds(final boolean demo, final int... ids) {
+    public List<World> queryWorlds(final boolean demo, final int... ids) {
         List<World> result = Collections.EMPTY_LIST;
         if (demo) {
-            result = new LinkedList();
-            result.add(DemoSupport.INSTANCE.loadWorld());
-            result = Collections.unmodifiableList(result);
+            result = DemoSupport.INSTANCE.loadWorlds(ids);
         } else {
             final String path = String.format("https://api.guildwars2.com/v2/worlds?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
             result = arrayWebQuery(World.class, path);
+        }
+        return result;
+    }
+
+    public List<GuildDetails> queryGuildDetails(final boolean demo, final String... ids) {
+        // V1 endpoint: can only query one guild at a time.
+        List<GuildDetails> result = Collections.EMPTY_LIST;
+        if (demo) {
+            result = DemoSupport.INSTANCE.loadGuilds(ids);
+        } else {
+            result = new ArrayList(ids.length);
+            for (final String id : ids) {
+                final String path = String.format("https://api.guildwars2.com/v1/guild_details.php?guild_id=%s", id); // NOI18N.
+                final Optional<GuildDetails> value = objectWebQuery(GuildDetails.class, path);
+                if (value.isPresent()) {
+                    result.add(value.get());
+                }
+                result = Collections.unmodifiableList(result);
+            }
         }
         return result;
     }
