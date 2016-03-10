@@ -40,7 +40,7 @@ public final class AccessTokenUpdaterTask extends Task<Void> {
     protected Void call() throws Exception {
         for (final AccessToken accessToken : accessTokens) {
             final String appKey = accessToken.getAppKey();
-            final boolean isDemo = SABConstants.IS_DEMO || DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
+            final boolean isDemo = SABConstants.INSTANCE.isDemo() || DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
             final Optional<TokenInfo> tokenInfo = WebQuery.INSTANCE.queryTokenInfo(isDemo, appKey);
             final Optional<Account> account = WebQuery.INSTANCE.queryAccount(isDemo, appKey);
             // Update results on JavaFX application thread.

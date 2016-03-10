@@ -218,7 +218,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
 
         @Override
         protected Void call() throws Exception {
-            final boolean isDemo = SABConstants.IS_DEMO;
+            final boolean isDemo = SABConstants.INSTANCE.isDemo();
             final int worldId = (Integer) worldLabel.getUserData();
             final List<World> worlds = WebQuery.INSTANCE.queryWorlds(isDemo, worldId);
             final World world = worlds.get(0);

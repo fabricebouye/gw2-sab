@@ -10,6 +10,9 @@ package com.bouye.gw2.sab;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
@@ -30,7 +33,6 @@ public enum SABConstants {
     INSTANCE;
 
     public static final ResourceBundle I18N = ResourceBundle.getBundle(SAB.class.getPackage().getName().replaceAll("\\.", "/") + "/strings"); // NOI18N.
-    public static final boolean IS_DEMO = true;
     /**
      * The default language to be used when retrieving localized resources with the Web API: {@value}.
      */
@@ -62,11 +64,25 @@ public enum SABConstants {
         } catch (IOException ex) {
             Logger.getLogger(SABConstants.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
+        final String[] overrideLocations = {
+            System.getProperty("user.dir"), // NOI18N.
+            System.getProperty("user.home"), // NOI18N.
+        };
+        Arrays.stream(overrideLocations)
+                .forEach(location -> {
+                    final Path path = Paths.get(location, "settings.properties");
+                    if (Files.exists(path) && Files.isReadable(path)) {
+                        try (final InputStream input = Files.newInputStream(path)) {
+                            settings.load(input);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SABConstants.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                        }
+                    }
+                });
         final String supportedLanguagesStr = settings.getProperty("webapi.supported.languages"); // NOI18N.
         final Set<String> supportedLanguages = Arrays.stream(supportedLanguagesStr.split(",\\s*")) // NOI18N.
                 .collect(Collectors.toSet());
         this.supportedWebApiLanguages = Collections.unmodifiableSet(supportedLanguages);
-
     }
 
     public String getVersion() {
@@ -99,5 +115,11 @@ public enum SABConstants {
      */
     public Set<String> getSupportedWebApiLanguages() {
         return supportedWebApiLanguages;
+    }
+
+    public boolean isDemo() {
+        final String valueStr = settings.getProperty("demo.mode", "false"); // NOI18N.
+        final boolean result = Boolean.parseBoolean(valueStr);
+        return result;
     }
 }

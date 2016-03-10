@@ -35,7 +35,7 @@ public final class WorldSolverTask extends Task<List<World>> {
 
     @Override
     protected List<World> call() throws Exception {
-        final boolean isDemo = SABConstants.IS_DEMO;
+        final boolean isDemo = SABConstants.INSTANCE.isDemo();
         return WebQuery.INSTANCE.queryWorlds(isDemo, ids);
     }
 }
