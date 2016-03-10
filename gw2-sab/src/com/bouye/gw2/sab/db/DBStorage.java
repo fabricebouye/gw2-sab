@@ -7,14 +7,23 @@
  */
 package com.bouye.gw2.sab.db;
 
+import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.query.WebQuery;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,20 +38,30 @@ import java.util.logging.Logger;
  */
 public enum DBStorage {
     INSTANCE;
+    private static final String STORAGE_FOLDER = ".GW2SAB"; // NOI18N.
     private static final String DB_PROTOCOL = "jdbc:sqlite:%s"; // NOI18N.
-    private static final String DB_NAME = "FlaxseedGrind"; // NOI18N.
+    private static final String DB_NAME = "SAB"; // NOI18N.
     private static final String APP_KEYS_TABLE = "app_keys"; // NOI18N.
-
+    // Cache tables
+    private static final String WORLDS_TABLE = "worlds"; // NOI18N.
+    private static final String GUILDS_TABLE = "guilds"; // NOI18N.
+    //
     private Connection connection;
 
     /**
      * Creates a new instance.
      */
     private DBStorage() {
+    }
+
+    /**
+     * Initializes the DB storage.
+     */
+    public void init() {
         try {
             Class.forName("org.sqlite.JDBC"); // NOI18N.
             // Create the connection to the DB.
-            final String dpPath = String.format("%s/%s", System.getProperty("user.home"), ".MyGW2App");
+            final String dpPath = String.format("%s/%s", System.getProperty("user.home"), STORAGE_FOLDER); // NOI18N.
             final File dbDir = new File(dpPath);
             if (!dbDir.exists() && !dbDir.mkdirs()) {
                 throw new IOException("Could not create DB storage folder.");
@@ -54,9 +73,45 @@ public enum DBStorage {
             connection = DriverManager.getConnection(dbUrl);
             // Initialize app keys table (if needed).
 //            simpleUpdate(String.format("drop table if exists %s", APP_KEYS_TABLE));
-            simpleUpdate(String.format("create table if not exists %s (id integer primary key, app_key string not null, account_name string)", APP_KEYS_TABLE));
+            simpleUpdate(String.format("create table if not exists %s (id integer primary key, app_key string not null, account_name string)", APP_KEYS_TABLE)); // NOI18N.
+            // Drop cache tables.
+            simpleUpdate(String.format("drop table if exists %s", WORLDS_TABLE)); // NOI18N.
+            simpleUpdate(String.format("drop table if exists %s", GUILDS_TABLE)); // NOI18N.
+            // Re-create cache tables.
+            simpleUpdate(String.format("create table if not exists %s (id integer primary key, value blob not null)", WORLDS_TABLE)); // NOI18N.
+            updateWorldList();
+            // Populate cache tables that can be populated.
         } catch (ClassNotFoundException | IOException | SQLException ex) {
             Logger.getLogger(DBStorage.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }
+
+    private void updateWorldList() throws IOException, SQLException {
+        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(true);
+        final LocalDateTime now = LocalDateTime.now();
+        for (final World world : worlds) {
+            final byte[] data = serialize(world);
+            final String sql = String.format("insert or replace into %s (id, value) values (\"%s\", ?)", WORLDS_TABLE, world.getId()); // NOI18N.
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setObject(1, data);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private <T extends Serializable> byte[] serialize(final T value) throws IOException {
+        Objects.requireNonNull(value);
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                final ObjectOutputStream writer = new ObjectOutputStream(out)) {
+            writer.writeObject(value);
+            return out.toByteArray();
+        }
+    }
+
+    private <T extends Serializable> T deserialize(final byte[] data) throws IOException, ClassNotFoundException {
+        Objects.requireNonNull(data);
+        try (final ByteArrayInputStream in = new ByteArrayInputStream(data);
+                final ObjectInputStream reader = new ObjectInputStream(in)) {
+            return (T) reader.readObject();
         }
     }
 
@@ -68,8 +123,10 @@ public enum DBStorage {
         if (connection != null) {
             try {
                 connection.close();
+
             } catch (SQLException ex) {
-                Logger.getLogger(DBStorage.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DBStorage.class
+                        .getName()).log(Level.SEVERE, null, ex);
             } finally {
                 connection = null;
             }
@@ -95,7 +152,8 @@ public enum DBStorage {
                     final ResultSet resultSet = stmt.executeQuery(sql)) {
                 result = converter.convert(resultSet);
             } catch (SQLException ex) {
-                Logger.getLogger(DBStorage.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                Logger.getLogger(DBStorage.class
+                        .getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
         return result;
@@ -111,9 +169,9 @@ public enum DBStorage {
         if (connection != null) {
             try (final Statement stmt = connection.createStatement()) {
                 stmt.executeUpdate(sql);
-
             } catch (SQLException ex) {
-                Logger.getLogger(DBStorage.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                Logger.getLogger(DBStorage.class
+                        .getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
     }
