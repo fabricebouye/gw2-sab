@@ -32,15 +32,15 @@ public enum SABConstants {
     public static final ResourceBundle I18N = ResourceBundle.getBundle(SAB.class.getPackage().getName().replaceAll("\\.", "/") + "/strings"); // NOI18N.
     public static final boolean IS_DEMO = true;
     /**
-    * The default language to be used when retrieving localized resources with the Web API: {@value}.
-    */
+     * The default language to be used when retrieving localized resources with the Web API: {@value}.
+     */
     public static final String DEFAULT_WEBAPI_LANGUAGE = "en";
 
     private final Properties version = new Properties();
     private final Properties settings = new Properties();
     /**
-    * Contains all supported languages by the Web API.
-    */
+     * Contains all supported languages by the Web API.
+     */
     private final Set<String> supportedWebApiLanguages;
 
     /**
