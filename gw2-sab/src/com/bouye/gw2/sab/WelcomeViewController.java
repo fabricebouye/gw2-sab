@@ -9,10 +9,10 @@ package com.bouye.gw2.sab;
 
 import com.bouye.gw2.sab.scene.account.AccountListPaneController;
 import com.bouye.gw2.sab.scene.account.NewAccountPaneController;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.db.DBStorage;
 import com.bouye.gw2.sab.scene.account.AccountInfoPane;
-import com.bouye.gw2.sab.tasks.account.AccessTokenUpdaterTask;
+import com.bouye.gw2.sab.tasks.account.SessionUpdaterTask;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -48,26 +48,26 @@ import javafx.stage.Modality;
  * @author Fabrice Bouyé
  */
 public final class WelcomeViewController extends SABControllerBase {
-    
+
     @FXML
     private BorderPane rootPane;
     @FXML
     private MenuButton accountMenuButton;
     @FXML
     private AccountListPaneController accountListPaneController;
-    
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        accountListPaneController.setAccounts(accessTokens);
+        accountListPaneController.setAccounts(sessions);
         accountListPaneController.setOnNewAccount(this::addNewAccount);
         accountListPaneController.setOnDeleteAccount(this::deleteAccount);
-        currentAccessToken.bind(accountListPaneController.currentAccesTokenProperty());
-        currentAccessToken.addListener(currentAccessTokenChangeListener);
+        session.bind(accountListPaneController.selectedSessionProperty());
+        session.addListener(sessionChangeListener);
         //
-        final List<AccessToken> accessTokens = DBStorage.INSTANCE.getApplicationKeys();
-        accessTokens.stream().forEach(System.out::println);
-        this.accessTokens.addListener(accessTokensListChangeListener);
-        this.accessTokens.addAll(accessTokens);
+        final List<Session> sessions = DBStorage.INSTANCE.getApplicationKeys();
+        sessions.stream().forEach(System.out::println);
+        this.sessions.addListener(sessionsListChangeListener);
+        this.sessions.addAll(sessions);
     }
 
     /**
@@ -79,25 +79,25 @@ public final class WelcomeViewController extends SABControllerBase {
             final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, SABConstants.I18N);
             final Node content = fxmlLoader.load();
             final NewAccountPaneController controller = fxmlLoader.getController();
-            final Dialog<AccessToken> dialog = new Dialog();
+            final Dialog<Session> dialog = new Dialog();
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.initOwner(accountMenuButton.getScene().getWindow());
             dialog.setTitle(SABConstants.I18N.getString("action.add.account.title")); // NOI18N.
             dialog.getDialogPane().setContent(content);
             dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
             final Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.disableProperty().bind(controller.accessTokenProperty().isNull());
+            okButton.disableProperty().bind(controller.sessionProperty().isNull());
             dialog.setResultConverter(buttonType -> {
-                AccessToken result = null;
+                Session result = null;
                 if (buttonType == ButtonType.OK) {
-                    result = controller.getAccessToken();
+                    result = controller.getSession();
                 }
                 return result;
             });
 //        ScenicView.show(dialog.getDialogPane());
-            final Optional<AccessToken> result = dialog.showAndWait();
-            result.ifPresent(accessToken -> {
-                doAddAccount(accessToken);
+            final Optional<Session> result = dialog.showAndWait();
+            result.ifPresent(session -> {
+                doAddAccount(session);
             });
             okButton.disableProperty().unbind();
         } catch (IOException ex) {
@@ -106,69 +106,69 @@ public final class WelcomeViewController extends SABControllerBase {
     }
 
     /**
-     * Called whenever the selected access token changes.
+     * Called whenever the session changes.
      */
-    private final ChangeListener<AccessToken> currentAccessTokenChangeListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<Session> sessionChangeListener = (observable, oldValue, newValue) -> {
         accountMenuButton.hide();
+        Node content = null;
         if (newValue != null) {
-            if (newValue.accountProperty() != null && newValue.tokenInfoProperty() != null) {
-                final AccountInfoPane accountInfoPane = new AccountInfoPane();
-                accountInfoPane.setAccount(newValue.getAccount());
-                accountInfoPane.setTokenInfo(newValue.getTokenInfo());
-                rootPane.setCenter(accountInfoPane);
-            } else {
-            }
+            final AccountInfoPane accountInfoPane = new AccountInfoPane();
+            accountInfoPane.setSession(newValue);
+            content = accountInfoPane;
         }
+        rootPane.setCenter(content);
     };
 
     /**
-     * Called whenever the content the list of access tokens changes.
+     * Called whenever the content the list of sessions changes.
      */
-    private final ListChangeListener<AccessToken> accessTokensListChangeListener = change -> {
+    private final ListChangeListener<Session> sessionsListChangeListener = change -> {
         while (change.next()) {
-            final List<? extends AccessToken> added = change.getAddedSubList();
+            final List<? extends Session> added = change.getAddedSubList();
             if (!added.isEmpty()) {
-                updateNewAccessTokensAsync(added);
+                updateNewSessionAsync(added);
             }
-            final List<? extends AccessToken> removed = change.getRemoved();
+            final List<? extends Session> removed = change.getRemoved();
         }
     };
 
     /**
-     * Collect account and tokeninfo information of newly added access tokens in a background service.
-     * @param accessTokens The new tokens.
+     * Collect account and tokeninfo information of newly added sessions in a background service.
+     * @param sessions The new sessions.
      */
-    private void updateNewAccessTokensAsync(final List<? extends AccessToken> accessTokens) {
+    private void updateNewSessionAsync(final List<? extends Session> sessions) {
         final Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
-                final AccessToken[] tokens = accessTokens.toArray(new AccessToken[accessTokens.size()]);
-                return new AccessTokenUpdaterTask(tokens);
+                final Session[] tokens = sessions.toArray(new Session[sessions.size()]);
+                return new SessionUpdaterTask(tokens);
             }
         };
         service.setOnSucceeded(workerStateEvent -> {
-            System.out.println("updateNewAccessTokensAsync ok");
+            System.out.println("updateNewSessionAsync ok");
             removeService(service);
         });
         service.setOnFailed(workerStateEvent -> {
-            System.out.println("updateNewAccessTokensAsync bad");
+            System.out.println("updateNewSessionAsync bad");
             removeService(service);
+            final Throwable ex = service.getException();
+            Logger.getLogger(WelcomeViewController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         });
         addService(service);
         service.start();
     }
-    
-    private void doAddAccount(final AccessToken value) {
+
+    private void doAddAccount(final Session value) {
         DBStorage.INSTANCE.addApplicationKey(value.getAppKey());
-        accessTokens.add(value);
-        accountListPaneController.setCurrentAccessToken(value);
+        sessions.add(value);
+        accountListPaneController.setSelectedSession(value);
     }
 
     /**
      * Delete an account.
      * @param value The account to be deleted, never {@code null}.
      */
-    private void deleteAccount(final AccessToken value) {
+    private void deleteAccount(final Session value) {
         System.out.println("Deleting " + value);
         // @todo Ask for confirmation from user.
         final Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -182,51 +182,51 @@ public final class WelcomeViewController extends SABControllerBase {
             }
         });
     }
-    
-    private void doDeleteAccount(final AccessToken value) {
+
+    private void doDeleteAccount(final Session value) {
         // @todo Close current display if active.
-        if (value.equals(getCurrentAccessToken())) {
-            
+        if (value.equals(getSession())) {
+
         }
         // Remove from tokens list.
-        accessTokens.remove(value);
+        sessions.remove(value);
         // Remove from long term storage.
         DBStorage.INSTANCE.deleteApplicationKey(value.getAppKey());
     }
-    
+
     @FXML
     private void handleHelpButton() {
         System.out.println(SABConstants.INSTANCE.getVersion());
     }
 
     /**
-     * The access token that was selected from the account management menu.
+     * The session token.
      */
-    private final ReadOnlyObjectWrapper<AccessToken> currentAccessToken = new ReadOnlyObjectWrapper(this, "currentAccessToken"); // NOI18N.
+    private final ReadOnlyObjectWrapper<Session> session = new ReadOnlyObjectWrapper(this, "session"); // NOI18N.
 
-    public final AccessToken getCurrentAccessToken() {
-        return currentAccessToken.get();
+    public final Session getSession() {
+        return session.get();
     }
-    
-    public final ReadOnlyObjectProperty<AccessToken> currentAccesTokenProperty() {
-        return currentAccessToken.getReadOnlyProperty();
+
+    public final ReadOnlyObjectProperty<Session> sessionProperty() {
+        return session.getReadOnlyProperty();
     }
 
     /**
-     * Access tokens to display in the account menu.
+     * Sessions to display in the account menu.
      */
-    private final ListProperty<AccessToken> accessTokens = new SimpleListProperty(this, "accessTokens", FXCollections.observableList(new LinkedList())); // NOI18N.
+    private final ListProperty<Session> sessions = new SimpleListProperty(this, "sessions", FXCollections.observableList(new LinkedList())); // NOI18N.
 
-    public final ObservableList<AccessToken> getAccessTokens() {
-        return accessTokens.get();
+    public final ObservableList<Session> getSessions() {
+        return sessions.get();
     }
-    
-    public void setAccessTokens(final ObservableList<AccessToken> value) {
-        accessTokens.set(value);
+
+    public void setSessions(final ObservableList<Session> value) {
+        sessions.set(value);
     }
-    
-    public final ListProperty<AccessToken> accessTokensProperty() {
-        return accessTokens;
+
+    public final ListProperty<Session> sessionsProperty() {
+        return sessions;
     }
-    
+
 }

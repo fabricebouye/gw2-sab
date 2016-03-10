@@ -10,7 +10,7 @@ package com.bouye.gw2.sab.tasks.account;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.util.Optional;
@@ -18,37 +18,37 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 /**
- * This task queries the v2/account endpoint to update access token informations.
+ * This task queries the v2/account and v2/tokeninfo endpoints to update session informations.
  * @author Fabrice Bouyé
  */
-public final class AccessTokenUpdaterTask extends Task<Void> {
+public final class SessionUpdaterTask extends Task<Void> {
 
     /**
-     * Access tokens to update.
+     * Sessions to update.
      */
-    private final AccessToken[] accessTokens;
+    private final Session[] sessions;
 
     /**
      * Creates a new instance.
-     * @param accessTokens Access tokens to update.
+     * @param sessions Sessions to update.
      */
-    public AccessTokenUpdaterTask(final AccessToken... accessTokens) {
-        this.accessTokens = accessTokens;
+    public SessionUpdaterTask(final Session... sessions) {
+        this.sessions = sessions;
     }
 
     @Override
     protected Void call() throws Exception {
-        for (final AccessToken accessToken : accessTokens) {
-            final String appKey = accessToken.getAppKey();
+        for (final Session session : sessions) {
+            final String appKey = session.getAppKey();
             final boolean isDemo = SABConstants.INSTANCE.isDemo() || DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
             final Optional<TokenInfo> tokenInfo = WebQuery.INSTANCE.queryTokenInfo(isDemo, appKey);
             final Optional<Account> account = WebQuery.INSTANCE.queryAccount(isDemo, appKey);
             // Update results on JavaFX application thread.
             Platform.runLater(() -> {
-                tokenInfo.ifPresent(t -> accessToken.setTokenInfo(t));
+                tokenInfo.ifPresent(t -> session.setTokenInfo(t));
                 account.ifPresent(a -> {
-                    accessToken.setAccount(a);
-                    accessToken.setAccountName(a.getName());
+                    session.setAccount(a);
+                    session.setAccountName(a.getName());
                 });
             });
         }

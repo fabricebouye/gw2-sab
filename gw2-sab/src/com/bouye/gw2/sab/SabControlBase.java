@@ -7,6 +7,7 @@
  */
 package com.bouye.gw2.sab;
 
+import com.bouye.gw2.sab.session.Session;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -25,7 +28,7 @@ import javafx.scene.layout.Region;
  * @param <T> The type of the controller class to use.
  */
 public abstract class SabControlBase<T extends SABControllerBase> extends Region {
-
+    
     private Optional<Node> node = Optional.empty();
     private Optional<T> controller = Optional.empty();
 
@@ -48,11 +51,11 @@ public abstract class SabControlBase<T extends SABControllerBase> extends Region
             Logger.getLogger(SabControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
-
+    
     private void postInit() {
         controller.ifPresent(c -> c.setNode(SabControlBase.this));
     }
-
+    
     @Override
     protected final void layoutChildren() {
         super.layoutChildren();
@@ -67,4 +70,21 @@ public abstract class SabControlBase<T extends SABControllerBase> extends Region
             n.resizeRelocate(areaX, areaY, areaW, areaH);
         });
     }
+
+    /**
+     * The session token that this control will use when accessing endpoints of the Web API which require authentication.
+     */
+    private final ReadOnlyObjectWrapper<Session> session = new ReadOnlyObjectWrapper(this, "session"); // NOI18N.
+
+    public final Session getSession() {
+        return session.get();
+    }
+    
+    public final void setSession(final Session value) {
+        session.set(value);
+    }
+    
+    public final ReadOnlyObjectProperty<Session> currentAccesTokenProperty() {
+        return session.getReadOnlyProperty();
+    }    
 }

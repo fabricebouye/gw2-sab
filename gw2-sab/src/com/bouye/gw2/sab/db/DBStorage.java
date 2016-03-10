@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.db;
 
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -118,14 +118,14 @@ public enum DBStorage {
         }
     }
 
-    public List<AccessToken> getApplicationKeys() {
+    public List<Session> getApplicationKeys() {
         final String sql = String.format("select * from %s", APP_KEYS_TABLE);
-        final List<AccessToken> result = select(sql,
+        final List<Session> result = select(sql,
                 resultSet -> {
-                    final List<AccessToken> list = new LinkedList();
+                    final List<Session> list = new LinkedList();
                     while (resultSet.next()) {
-                        final AccessToken accessToken = new AccessToken(resultSet.getString("app_key"), resultSet.getString("account_name")); // NOI18N.
-                        list.add(accessToken);
+                        final Session session = new Session(resultSet.getString("app_key"), resultSet.getString("account_name")); // NOI18N.
+                        list.add(session);
                     }
                     return Collections.unmodifiableList(list);
                 },

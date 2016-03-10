@@ -5,22 +5,26 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab.data.account;
+package com.bouye.gw2.sab.session;
 
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.db.DBStorage;
+import com.bouye.gw2.sab.demo.DemoSupport;
 import java.util.Objects;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
 /**
- * The application access token.
+ * The application session.
  * @author Fabrice Bouyé
  */
-public final class AccessToken {
+public final class Session {
 
     /**
      * Creates a new instance.
@@ -28,7 +32,7 @@ public final class AccessToken {
      * @param appKey The application key, never {@code null}
      * @throws NullPointerException If {@code appKey} is {@code null}.
      */
-    public AccessToken(final String appKey) throws NullPointerException {
+    public Session(final String appKey) throws NullPointerException {
         this(appKey, null);
     }
 
@@ -39,15 +43,16 @@ public final class AccessToken {
      * @param accountName The cached name of the account.
      * @throws NullPointerException If {@code appKey} is {@code null}.
      */
-    public AccessToken(final String appKey, final String accountName) throws NullPointerException {
+    public Session(final String appKey, final String accountName) throws NullPointerException {
         Objects.requireNonNull(appKey);
         this.appKey = appKey;
         this.accountName.set(accountName);
+        valid.bind(account.isNotNull().and(tokenInfo.isNotNull()));
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return (obj instanceof AccessToken) && appKey.equals(((AccessToken) obj).appKey);
+        return (obj instanceof Session) && appKey.equals(((Session) obj).appKey);
     }
 
     @Override
@@ -58,6 +63,10 @@ public final class AccessToken {
     @Override
     public String toString() {
         return String.format("%s - %s", getAppKey(), getAccountName()); // NOI18N.
+    }
+
+    public boolean isDemo() {
+        return SABConstants.INSTANCE.isDemo() | DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
     }
 
     /**
@@ -119,5 +128,15 @@ public final class AccessToken {
 
     public final ReadOnlyObjectProperty<TokenInfo> tokenInfoProperty() {
         return tokenInfo.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyBooleanWrapper valid = new ReadOnlyBooleanWrapper(this, "valid", false); // NOI18N.
+
+    public final boolean isValid() {
+        return valid.get();
+    }
+
+    public final ReadOnlyBooleanProperty validProperty() {
+        return valid.getReadOnlyProperty();
     }
 }

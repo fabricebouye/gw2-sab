@@ -11,7 +11,7 @@ import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
 import com.bouye.gw2.sab.SABControllerBase;
-import com.bouye.gw2.sab.data.account.AccessToken;
+import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
@@ -38,48 +38,48 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        accessToken.addListener(accessTokenChangeListener);
+        session.addListener(sessionChangeListener);
     }
 
     /**
-     * The access token that was selected from the account management menu.
+     * The session that was selected from the account management menu.
      */
-    private final ObjectProperty<AccessToken> accessToken = new SimpleObjectProperty(this, "accessToken"); // NOI18N.
+    private final ObjectProperty<Session> session = new SimpleObjectProperty(this, "session"); // NOI18N.
 
-    public final AccessToken getAccessToken() {
-        return accessToken.get();
+    public final Session getSession() {
+        return session.get();
     }
 
-    public final void setAccessToken(final AccessToken value) {
-        accessToken.set(value);
+    public final void setSession(final Session value) {
+        session.set(value);
     }
 
-    public final ObjectProperty<AccessToken> accesTokenProperty() {
-        return accessToken;
+    public final ObjectProperty<Session> sessionProperty() {
+        return session;
     }
 
     /**
-     * Called whenever the account of the access token changes.
+     * Called whenever the account of the session changes.
      */
     private final InvalidationListener accountInvalidationListener = observable -> updateAccountMayBe();
 
     /**
-     * Called whenever the access token on display changes.
+     * Called whenever the session on display changes.
      */
-    private final ChangeListener<AccessToken> accessTokenChangeListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<Session> sessionChangeListener = (observable, oldValue, newValue) -> {
         accountNameLabel.textProperty().unbind();
         appKeyLabel.setText(null);
         // Configure old.
-        final Optional<AccessToken> oldAccessToken = Optional.ofNullable(oldValue);
-        oldAccessToken.ifPresent(at -> {
-            at.accountProperty().removeListener(accountInvalidationListener);
+        final Optional<Session> oldSession = Optional.ofNullable(oldValue);
+        oldSession.ifPresent(s -> {
+            s.accountProperty().removeListener(accountInvalidationListener);
         });
         // Configure new.
-        final Optional<AccessToken> newAccessToken = Optional.ofNullable(newValue);
-        newAccessToken.ifPresent(at -> {
-            accountNameLabel.textProperty().bind(at.accountNameProperty());
-            appKeyLabel.setText(at.getAppKey());
-            at.accountProperty().addListener(accountInvalidationListener);
+        final Optional<Session> newSession = Optional.ofNullable(newValue);
+        newSession.ifPresent(s -> {
+            accountNameLabel.textProperty().bind(s.accountNameProperty());
+            appKeyLabel.setText(s.getAppKey());
+            s.accountProperty().addListener(accountInvalidationListener);
         });
         updateAccountMayBe();
     };
@@ -110,9 +110,9 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
      * @param parent The parent, never {@code null}.
      */
     private void installNewStyle(final AccountListCell parent) {
-        final Optional<AccessToken> accessToken = Optional.ofNullable(getAccessToken());
-        accessToken.ifPresent(at -> {
-            final Optional<Account> account = Optional.ofNullable(at.getAccount());
+        final Optional<Session> session = Optional.ofNullable(getSession());
+        session.ifPresent(s -> {
+            final Optional<Account> account = Optional.ofNullable(s.getAccount());
             account.ifPresent(a -> {
                 final AccountAccessType accessType = a.getAccess();
                 final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
@@ -124,12 +124,12 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
 
     @FXML
     private void handleDeleteButton() {
-        final Optional<AccessToken> accessToken = Optional.ofNullable(getAccessToken());
-        accessToken.ifPresent(at -> {
+        final Optional<Session> session = Optional.ofNullable(getSession());
+        session.ifPresent(s -> {
             final Optional<AccountListCell> parent = Optional.ofNullable(getNode());
             parent.ifPresent(p -> {
-                final Optional<Consumer<AccessToken>> onDeleteAccount = Optional.of(p.getOnDeleteAccount());
-                onDeleteAccount.ifPresent(consumer -> consumer.accept(at));
+                final Optional<Consumer<Session>> onDeleteAccount = Optional.of(p.getOnDeleteAccount());
+                onDeleteAccount.ifPresent(consumer -> consumer.accept(s));
             });
         });
     }
