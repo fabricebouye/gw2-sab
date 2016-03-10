@@ -14,9 +14,9 @@ hs_err_pid*
 /dist/
 /nbproject/private/
 /settings.properties
-/gw2-sab-preloader/build/
-/gw2-sab-preloader/dist/
+/gw2-sab-preloader/build
+/gw2-sab-preloader/dist
 /gw2-sab-preloader/nbproject/private
-/gw2-sab/build/
+/gw2-sab/build
 /gw2-sab/dist
 /gw2-sab/nbproject/private
