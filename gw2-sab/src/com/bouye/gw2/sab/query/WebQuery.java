@@ -8,6 +8,7 @@
 package com.bouye.gw2.sab.query;
 
 import api.web.gw2.mapping.core.JsonpContext;
+import api.web.gw2.mapping.core.PageResult;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
@@ -130,6 +131,18 @@ public enum WebQuery {
         return result;
     }
 
+    private <T> PageResult<T> pageWebQuery(final Class<T> targetClass, final String path) {
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + path); // NOI18N.
+        PageResult<T> result = PageResult.EMPTY;
+        try {
+            final URL url = new URL(path);
+            result = JsonpContext.SAX.loadPage(targetClass, url);;
+        } catch (NullPointerException | IOException ex) {
+            Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return result;
+    }
+
     public Optional<TokenInfo> queryTokenInfo(final boolean demo, final String appKey) {
         Optional<TokenInfo> result = Optional.empty();
         if (demo) {
@@ -203,7 +216,7 @@ public enum WebQuery {
         }
         return result;
     }
-
+    
     public Optional<Match> queryWvwMatch(final boolean demo, final int id) {
         Optional<Match> result = Optional.empty();
         if (demo) {
