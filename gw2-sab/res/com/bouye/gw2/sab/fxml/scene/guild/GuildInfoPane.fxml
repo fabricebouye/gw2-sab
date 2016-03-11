@@ -8,6 +8,7 @@
  of the BSD license.  See the LICENSE file for details.
 -->
 
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
@@ -15,9 +16,12 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
@@ -68,11 +72,20 @@
         </Tab>
         <Tab id="Tab" fx:id="logsTab">
             <content>
-                <StackPane id="StackPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="container-pane">
-                    <children>
+                <BorderPane id="BorderPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="container-pane">
+                    <top>
+                        <HBox id="HBox" style="-fx-padding: 0 0 3 0;">
+                            <children>
+                                <ComboBox fx:id="logsFilterCombo" />
+                        <Region HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="logsSearchField" promptText="%action.search.prompt" />
+                            </children>
+                        </HBox>
+                    </top>
+                    <center>
                         <ListView fx:id="logsListView" prefHeight="200.0" prefWidth="200.0" />
-                    </children>
-                </StackPane>
+                    </center>
+                </BorderPane>
             </content>
         </Tab>
     </tabs>

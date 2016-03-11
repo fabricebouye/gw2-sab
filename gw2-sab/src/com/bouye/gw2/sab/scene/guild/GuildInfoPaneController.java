@@ -9,22 +9,30 @@ package com.bouye.gw2.sab.scene.guild;
 
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
+import api.web.gw2.mapping.v2.guild.id.log.LogEventType;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.guild.log.LogEventListCell;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class
@@ -49,6 +57,10 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
     @FXML
     private TableColumn<Member, Object> lastOnlineTableColumn;
     @FXML
+    private ComboBox<LogEventType> logsFilterCombo;
+    @FXML
+    private TextField logsSearchField;
+    @FXML
     private ListView<LogEvent> logsListView;
 
     @Override
@@ -59,6 +71,14 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
             return new SimpleStringProperty(member.getName());
         });
         //
+        logsFilterCombo.getItems().setAll(LogEventType.values());
+        logsFilterCombo.getItems().remove(LogEventType.UNKNOWN);
+        logsFilterCombo.getItems().add(0, null);
+        logsFilterCombo.valueProperty().addListener(observable -> applyLogsListFilter());
+        //
+        logsSearchField.textProperty().addListener(observable -> applyLogsListFilter());
+        //
+        logsListView.setItems(filteredLogs);
         logsListView.setCellFactory(listView -> new LogEventListCell());
     }
 
@@ -93,10 +113,32 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
         rosterTableView.getItems().setAll(guildRoster);
     }
 
+    private final ObservableList<LogEvent> logs = FXCollections.observableList(new LinkedList());
+    private final FilteredList<LogEvent> filteredLogs = new FilteredList(logs);
+
     private void updateGuildLogsAsync(final Session session, final String guildId, final int startIndex) {
         final boolean isDemo = session.isDemo();
         final String appKey = session.getAppKey();
-        final List<LogEvent> logs = WebQuery.INSTANCE.queryGuildLogs(isDemo, appKey, guildId);
-        logsListView.getItems().setAll(logs);
+        final List<LogEvent> result = WebQuery.INSTANCE.queryGuildLogs(isDemo, appKey, guildId);
+        logs.setAll(result);
+    }
+
+    private void applyLogsListFilter() {
+        final LogEventType type = logsFilterCombo.getValue();
+        Predicate<LogEvent> typeFilter = logEvent -> true;
+        if (type != null) {
+            typeFilter = logEvent -> logEvent.getType() == type;
+        }
+        final String search = logsSearchField.getText();
+        if (search != null && !search.trim().isEmpty()) {
+            final Predicate<LogEvent> searchFilter = logEvent -> {
+                boolean result = false;
+                final String user = logEvent.getUser();
+                result |= user.contains(search);
+                return result;
+            };
+            typeFilter = typeFilter.and(searchFilter);
+        }
+        filteredLogs.setPredicate(typeFilter);
     }
 }
