@@ -14,6 +14,7 @@ import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
+import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import java.io.IOException;
@@ -199,6 +200,17 @@ public enum WebQuery {
         } else {
             final String path = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
             result = arrayWebQuery(LogEvent.class, path);
+        }
+        return result;
+    }
+
+    public Optional<Match> queryWvwMatch(final boolean demo, final int id) {
+        Optional<Match> result = Optional.empty();
+        if (demo) {
+
+        } else {
+            final String path = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
+            result = objectWebQuery(Match.class, path);
         }
         return result;
     }

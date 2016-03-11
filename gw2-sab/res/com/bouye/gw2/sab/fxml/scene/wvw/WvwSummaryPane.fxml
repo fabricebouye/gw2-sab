@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane id="BorderPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController">
+    <center>
+        <PieChart fx:id="mainPieChart" BorderPane.alignment="CENTER" />
+    </center>
+    <right>
+        <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <PieChart fx:id="ebPieChart" />
+                <PieChart fx:id="redPieChart" />
+                <PieChart fx:id="bluePieChart" />
+                <PieChart fx:id="greenPieChart" />
+            </children>
+        </VBox>
+    </right>
+</BorderPane>
