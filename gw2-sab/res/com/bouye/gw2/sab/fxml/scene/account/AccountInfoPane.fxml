@@ -9,6 +9,7 @@
 -->
 
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
@@ -22,7 +23,7 @@
         <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.account" GridPane.columnIndex="0" GridPane.rowSpan="3" GridPane.valignment="TOP" />
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="1" />
         <Label fx:id="accessLabel" text="Label" GridPane.columnIndex="2" />
-        <Label fx:id="worldLabel" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+        <Hyperlink fx:id="worldLink" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
       <TextFlow fx:id="guildsTextFlow" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="commanderCheck" disable="true" mnemonicParsing="false" text="%account.commander.label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <HBox fx:id="apVBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">

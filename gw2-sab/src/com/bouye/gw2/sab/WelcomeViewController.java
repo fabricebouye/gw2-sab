@@ -12,6 +12,7 @@ import com.bouye.gw2.sab.scene.account.NewAccountPaneController;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.db.DBStorage;
 import com.bouye.gw2.sab.scene.account.AccountInfoPane;
+import com.bouye.gw2.sab.scene.guild.GuildInfoPane;
 import com.bouye.gw2.sab.tasks.account.SessionUpdaterTask;
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -52,12 +54,16 @@ public final class WelcomeViewController extends SABControllerBase {
     @FXML
     private BorderPane rootPane;
     @FXML
+    private Button backButton;
+    @FXML
     private MenuButton accountMenuButton;
     @FXML
     private AccountListPaneController accountListPaneController;
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
+        backButton.visibleProperty().bind(Bindings.size(history).greaterThan(1));
+        backButton.managedProperty().bind(backButton.visibleProperty());
         accountListPaneController.setAccounts(sessions);
         accountListPaneController.setOnNewAccount(this::addNewAccount);
         accountListPaneController.setOnDeleteAccount(this::deleteAccount);
@@ -110,13 +116,7 @@ public final class WelcomeViewController extends SABControllerBase {
      */
     private final ChangeListener<Session> sessionChangeListener = (observable, oldValue, newValue) -> {
         accountMenuButton.hide();
-        Node content = null;
-        if (newValue != null) {
-            final AccountInfoPane accountInfoPane = new AccountInfoPane();
-            accountInfoPane.setSession(newValue);
-            content = accountInfoPane;
-        }
-        rootPane.setCenter(content);
+        displayAccountDetails(newValue);
     };
 
     /**
@@ -197,6 +197,69 @@ public final class WelcomeViewController extends SABControllerBase {
     @FXML
     private void handleHelpButton() {
         System.out.println(SABConstants.INSTANCE.getVersion());
+    }
+
+    @FXML
+    private void handleBackButton() {
+        popFromDisplay();
+    }
+
+    private ObservableList<Node> history = FXCollections.observableList(new LinkedList<>());
+
+    private void pushToDisplay(final Node content) {
+        if (content != null) {
+            history.add(0, content);
+            rootPane.setCenter(content);
+        }
+    }
+
+    private void popFromDisplay() {
+        // Remove from history.
+        if (!history.isEmpty()) {
+            history.remove(0);
+        }
+        // Restore previous.
+        final Node newContent = history.isEmpty() ? null : history.get(0);
+        rootPane.setCenter(newContent);
+    }
+
+    /**
+     * Display some account info.
+     * @param session The session.
+     */
+    private void displayAccountDetails(final Session session) {
+        if (session == null) {
+            return;
+        }
+        final AccountInfoPane content = new AccountInfoPane();
+        content.setSession(session);
+        content.setOnWorldDetails(this::displayWorldDetails);
+        content.setOnGuildDetails(this::displayGuildDetails);
+        pushToDisplay(content);
+    }
+
+    /**
+     * Display some guild info.
+     * @param session The session.
+     * @param guildId The id of the guild.
+     */
+    private void displayWorldDetails(final Session session, final int guildId) {
+
+    }
+
+    /**
+     * Display some guild info.
+     * @param session The session.
+     * @param guildId The id of the guild.
+     */
+    private void displayGuildDetails(final Session session, final String guildId) {
+        if (guildId == null) {
+            return;
+        }
+        final GuildInfoPane content = new GuildInfoPane();
+        content.setSession(session);
+        content.setGuildId(guildId);
+        pushToDisplay(content);
     }
 
     /**

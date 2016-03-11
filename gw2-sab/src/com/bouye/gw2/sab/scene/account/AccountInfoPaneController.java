@@ -16,7 +16,6 @@ import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
-import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.net.URL;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +38,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.TextFlow;
 
@@ -52,7 +53,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     @FXML
     private Label accessLabel;
     @FXML
-    private Label worldLabel;
+    private Hyperlink worldLink;
     @FXML
     private CheckBox commanderCheck;
     @FXML
@@ -123,19 +124,20 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         accessLabel.setText(accessText);
         //
         final int worldId = account.getWorld();
-        worldLabel.setUserData(worldId);
-        worldLabel.setText(String.valueOf(worldId));
+        worldLink.setUserData(worldId);
+        worldLink.setOnAction(actionEvent -> displayWorldDetails(worldId));
+        worldLink.setText(String.valueOf(worldId));
         //
         commanderCheck.setSelected(account.isCommander());
         dailyApLabel.setText(String.valueOf(account.getDailyAp()));
         monthlyApLabel.setText(String.valueOf(account.getMonthlyAp()));
         //
-        final List<Hyperlink> guildLinks = account.getGuilds()
+        final List<Labeled> guildLinks = account.getGuilds()
                 .stream()
                 .map(guildId -> {
                     final Hyperlink guildLink = new Hyperlink(String.valueOf(guildId));
                     guildLink.setUserData(guildId);
-                    guildLink.setOnAction(actionEvent -> System.out.println("Give guild details " + guildId));
+                    guildLink.setOnAction(actionEvent -> displayGuildDetails(guildId));
                     return guildLink;
                 })
                 .collect(Collectors.toList());
@@ -155,10 +157,34 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
                 })
                 .collect(Collectors.toList());
         permissionsFlowPane.getChildren().setAll(permissionLabels);
-        updateOtherValuesAsync(session, worldLabel, guildLinks);
+        updateOtherValuesAsync(session, worldLink, guildLinks);
     }
 
-    private void updateOtherValuesAsync(final Session session, final Label worldLabel, final List<Hyperlink> guildLinks) {
+    /**
+     * Invoked when the user clicks on the world hyperlink.     
+     * @param worldId The id of the world to inspect.
+     */
+    private void displayWorldDetails(final int worldId) {
+        final Optional<AccountInfoPane> parent = Optional.ofNullable(getNode());
+        parent.ifPresent(p -> {
+            final Optional<BiConsumer<Session, Integer>> onWorldDetails = Optional.ofNullable(p.getOnWorldDetails());
+            onWorldDetails.ifPresent(c -> c.accept(p.getSession(), worldId));
+        });
+    }
+
+    /**
+     * Invoked when the user clicks on one of the guild hyperlinks.     
+     * @param guildId The id of the guild to inspect.
+     */
+    private void displayGuildDetails(final String guildId) {
+        final Optional<AccountInfoPane> parent = Optional.ofNullable(getNode());
+        parent.ifPresent(p -> {
+            final Optional<BiConsumer<Session, String>> onGuildDetails = Optional.ofNullable(p.getOnGuildDetails());
+            onGuildDetails.ifPresent(c -> c.accept(p.getSession(), guildId));
+        });
+    }
+
+    private void updateOtherValuesAsync(final Session session, final Labeled worldLabel, final List<Labeled> guildLinks) {
         final Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -187,10 +213,10 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     private class AccountInfoUpdateTaks extends Task<Void> {
 
         private final Session session;
-        private final Label worldLabel;
-        private final List<Hyperlink> guildLinks;
+        private final Labeled worldLabel;
+        private final List<Labeled> guildLinks;
 
-        public AccountInfoUpdateTaks(final Session session, final Label worldLabel, final List<Hyperlink> guildLinks) {
+        public AccountInfoUpdateTaks(final Session session, final Labeled worldLabel, final List<Labeled> guildLinks) {
             this.session = session;
             this.worldLabel = worldLabel;
             this.guildLinks = guildLinks;

@@ -24,6 +24,18 @@
 #TextFlow {
     -fx-text-alignment: justify;
 }
+.text-area {
+    -fx-background-color: null;
+    -fx-background-radius: 0px;
+    -fx-border-color: gray;
+}
+.text-area .content {
+    -fx-background-color: null;
+}
+.table-view {
+    -fx-background-color: null;
+    -fx-border-color: gray;
+}
 /* UI. */
 .strong-label {
     -fx-text-fill: -strong-text-color;
@@ -77,6 +89,29 @@
     -fx-font-family: "FontAwesome";
     -fx-font-size: 2.2em;
 }
+/* Token info permissions. */
+.permission-label {
+    -fx-font-size: 0.9em;
+    -fx-text-fill: gray;
+}
+.permission-label .permission-icon {
+    -fx-text-fill: -strong-text-color;    
+}
+.account-icon {
+    -fx-font-size: 5em;
+    -fx-text-fill: -strong-text-color;
+}
+/* Guild emblems. */
+.guild-emblem {
+    -fx-background-color: gray, lightgray;
+    -fx-background-insets: 0, 1;
+    -fx-pref-width: 75;
+    -fx-pref-height: 75;
+}
+/**/
+.container-pane {
+    -fx-padding: 6px;
+}
 /* Account button popup. */
 .account-button .custom-menu-item {
     -fx-background-color: transparent;
@@ -108,6 +143,7 @@
     -fx-opacity: 0.33;
     -fx-wrap-text: true;
 }
+/* Account info pane. */
 .account-info-pane {
     -fx-padding: 6px;
 }
@@ -118,14 +154,8 @@
     -fx-hgap: 6px;
     -fx-vgap: 3px;
 }
-.permission-label {
-    -fx-font-size: 0.9em;
-    -fx-text-fill: gray;
-}
-.permission-label .permission-icon {
-    -fx-text-fill: -strong-text-color;    
-}
-.account-icon {
-    -fx-font-size: 5em;
-    -fx-text-fill: -strong-text-color;
+/* Guild info pane. */
+.guild-info-pane > * > GridPane {
+    -fx-hgap: 3px;
+    -fx-vgap: 3px;
 }

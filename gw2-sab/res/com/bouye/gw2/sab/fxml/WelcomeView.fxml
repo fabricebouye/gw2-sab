@@ -14,23 +14,23 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.*?>
 
 <BorderPane id="BorderPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.WelcomeViewController">
     <top>
         <HBox id="HBox" fx:id="topBar" styleClass="top-bar" BorderPane.alignment="CENTER">
             <children>
+                <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" styleClass="awesome-button" text="%action.back.label" />
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
                 <MenuButton fx:id="accountMenuButton" mnemonicParsing="false" styleClass="account-button, awesome-menu-button" text="%icon.accounts">
                     <items>
-                        <CustomMenuItem fx:id="accountListItem" styleClass="custom-menu-item" mnemonicParsing="false" hideOnClick="false" >
+                        <CustomMenuItem fx:id="accountListItem" hideOnClick="false" mnemonicParsing="false" styleClass="custom-menu-item">
                             <content>
-                                <fx:include fx:id="accountListPane" source="scene/account/AccountListPane.fxml"/>
+                                <fx:include fx:id="accountListPane" source="scene/account/AccountListPane.fxml" />
                             </content>
                         </CustomMenuItem>
                     </items>
                 </MenuButton>
-                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" styleClass="awesome-button" text="%icon.help"/>
+                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" styleClass="awesome-button" text="%icon.help" />
             </children>
         </HBox>
     </top>
