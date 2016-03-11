@@ -12,6 +12,7 @@ import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.scene.guild.log.LogEventListCell;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.List;
@@ -57,6 +58,8 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
             final Member member = feature.getValue();
             return new SimpleStringProperty(member.getName());
         });
+        //
+        logsListView.setCellFactory(listView -> new LogEventListCell());
     }
 
     @Override
@@ -96,5 +99,4 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
         final List<LogEvent> logs = WebQuery.INSTANCE.queryGuildLogs(isDemo, appKey, guildId);
         logsListView.getItems().setAll(logs);
     }
-
 }
