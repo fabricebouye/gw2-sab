@@ -78,13 +78,8 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
 
     private final InvalidationListener sessionValidListener = observable -> updateContent();
 
-    private void updateContent() {
-        final Optional<AccountInfoPane> parent = Optional.ofNullable(getNode());
-        parent.ifPresent(this::clearContent);
-        parent.ifPresent(this::installContent);
-    }
-
-    private void clearContent(final AccountInfoPane parent) {
+    @Override
+    protected void clearContent(final AccountInfoPane parent) {
         // Style.
         Arrays.stream(AccountAccessType.values()).forEach(accessType -> {
             final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
@@ -102,7 +97,8 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         permissionsFlowPane.getChildren().clear();
     }
 
-    private void installContent(final AccountInfoPane parent) {
+    @Override
+    protected void installContent(final AccountInfoPane parent) {
         final Session session = parent.getSession();
         if (session == null || !session.isValid()) {
             System.out.println(session.getAccount());
@@ -191,19 +187,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
                 return new AccountInfoUpdateTaks(session, worldLabel, guildLinks);
             }
         };
-        service.setOnSucceeded(workerStateEvent -> {
-            System.out.println("World update ok");
-            removeService(service);
-        });
-        service.setOnFailed(workerStateEvent -> {
-            System.out.println("World update bad");
-            removeService(service);
-            final Throwable ex = service.getException();
-            Logger.getLogger(AccountInfoPaneController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        });
-        addService(service);
-        service.start();
-
+        addAndStartService(service, "updateOtherValuesAsync");
     }
 
     /**
@@ -225,18 +209,23 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         @Override
         protected Void call() throws Exception {
             boolean isDemo = session.isDemo();
+            // World.
             final int worldId = (Integer) worldLabel.getUserData();
             final List<World> worlds = WebQuery.INSTANCE.queryWorlds(isDemo, worldId);
-            final World world = worlds.get(0);
+            if (!worlds.isEmpty()) {
+                final World world = worlds.get(0);
+                // Update on JavaFX application thread.
+                Platform.runLater(() -> worldLabel.setText(world.getName()));
+            }
+            // Guild.
             final String[] guildIds = guildLinks.stream()
                     .map(hyperlink -> (String) hyperlink.getUserData())
                     .toArray(size -> new String[size]);
             final Map<String, GuildDetails> guilds = WebQuery.INSTANCE.queryGuildDetails(isDemo, guildIds)
                     .stream()
                     .collect(Collectors.toMap(guildDetails -> guildDetails.getGuildId(), Function.identity()));
-            // Update everything on JavaFX application thread.
+            // Update on JavaFX application thread.
             Platform.runLater(() -> {
-                worldLabel.setText(world.getName());
                 guildLinks.stream().forEach(guildLink -> {
                     final String guildId = (String) guildLink.getUserData();
                     final GuildDetails guildDetails = guilds.get(guildId);

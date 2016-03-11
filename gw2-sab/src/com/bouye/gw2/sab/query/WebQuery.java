@@ -10,6 +10,8 @@ package com.bouye.gw2.sab.query;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
+import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
+import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.SABConstants;
@@ -19,7 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -176,6 +177,28 @@ public enum WebQuery {
                 }
             }
             result = Collections.unmodifiableList(result);
+        }
+        return result;
+    }
+
+    public List<Member> queryGuildMembers(final boolean demo, final String appKey, final String id) {
+        List<Member> result = Collections.EMPTY_LIST;
+        if (demo) {
+            result = DemoSupport.INSTANCE.loadGuildRoster(id);
+        } else {
+            final String path = String.format("https://api.guildwars2.com/v2/guild/%s/members?access_token=%s", id, appKey); // NOI18N.
+            result = arrayWebQuery(Member.class, path);
+        }
+        return result;
+    }
+
+    public List<LogEvent> queryGuildLogs(final boolean demo, final String appKey, final String id) {
+        List<LogEvent> result = Collections.EMPTY_LIST;
+        if (demo) {
+            result = DemoSupport.INSTANCE.loadGuildLogs(id);
+        } else {
+            final String path = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
+            result = arrayWebQuery(LogEvent.class, path);
         }
         return result;
     }

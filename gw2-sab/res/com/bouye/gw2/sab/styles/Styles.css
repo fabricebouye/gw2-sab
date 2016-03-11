@@ -11,8 +11,8 @@
     -fx-border-width: 1px;
 }
 #GridPane {
-    -fx-hgap: 6px;
-    -fx-vgap: 6px;
+    -fx-hgap: 3px;
+    -fx-vgap: 3px;
 }
 #VBox {
     -fx-spacing: 6px;
@@ -145,7 +145,6 @@
 }
 /* Account info pane. */
 .account-info-pane {
-    -fx-padding: 6px;
 }
 .account-info-pane > * > CheckBox:disabled {
     -fx-opacity: 1.0;
@@ -155,7 +154,3 @@
     -fx-vgap: 3px;
 }
 /* Guild info pane. */
-.guild-info-pane > * > GridPane {
-    -fx-hgap: 3px;
-    -fx-vgap: 3px;
-}

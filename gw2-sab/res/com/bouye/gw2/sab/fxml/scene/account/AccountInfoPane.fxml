@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.TextFlow?>
 
-<GridPane id="GridPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="account-info-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountInfoPaneController">
+<GridPane id="GridPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="container-pane, account-info-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountInfoPaneController">
     <children>
         <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.account" GridPane.columnIndex="0" GridPane.rowSpan="3" GridPane.valignment="TOP" />
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="1" />

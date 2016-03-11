@@ -10,11 +10,15 @@ package com.bouye.gw2.sab.demo;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
+import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
+import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -80,7 +84,7 @@ public enum DemoSupport {
      */
     public World loadWorld(final int id) {
         try {
-            final URL url = getClass().getResource(String.format("v2/world_%d.json", id)); // NOI18N.
+            final URL url = getClass().getResource(String.format("v2/worlds/world_%d.json", id)); // NOI18N.
             return JsonpContext.SAX.loadObject(World.class, url);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -107,7 +111,7 @@ public enum DemoSupport {
      */
     public GuildDetails loadGuild(final String id) {
         try {
-            final URL url = getClass().getResource(String.format("v1/guilddetails_%s.json", id)); // NOI18N.
+            final URL url = getClass().getResource(String.format("v1/guilddetails/guilddetails_%s.json", id)); // NOI18N.
             return JsonpContext.SAX.loadObject(GuildDetails.class, url);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -125,5 +129,27 @@ public enum DemoSupport {
                 .map(id -> loadGuild(id))
                 .collect(Collectors.toList());
         return Collections.unmodifiableList(result);
+    }
+
+    public List<Member> loadGuildRoster(final String id) {
+        try {
+            final URL url = getClass().getResource(String.format("v2/guild/id/members/guildroster_%s.json", id)); // NOI18N.
+            final Collection<Member> result = JsonpContext.SAX.loadObjectArray(Member.class, url);
+            return Collections.unmodifiableList(new ArrayList(result));
+        } catch (NullPointerException | IOException ex) {
+            Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    public List<LogEvent> loadGuildLogs(final String id) {
+        try {
+            final URL url = getClass().getResource(String.format("v2/guild/id/log/guildlog_%s.json", id)); // NOI18N.
+            final Collection<LogEvent> result = JsonpContext.SAX.loadObjectArray(LogEvent.class, url);
+            return Collections.unmodifiableList(new ArrayList(result));
+        } catch (NullPointerException | IOException ex) {
+            Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return null;
     }
 }

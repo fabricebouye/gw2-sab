@@ -13,6 +13,7 @@ import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.db.DBStorage;
 import com.bouye.gw2.sab.scene.account.AccountInfoPane;
 import com.bouye.gw2.sab.scene.guild.GuildInfoPane;
+import com.bouye.gw2.sab.scene.world.WorldInfoPane;
 import com.bouye.gw2.sab.tasks.account.SessionUpdaterTask;
 import java.io.IOException;
 import java.net.URL;
@@ -144,18 +145,7 @@ public final class WelcomeViewController extends SABControllerBase {
                 return new SessionUpdaterTask(tokens);
             }
         };
-        service.setOnSucceeded(workerStateEvent -> {
-            System.out.println("updateNewSessionAsync ok");
-            removeService(service);
-        });
-        service.setOnFailed(workerStateEvent -> {
-            System.out.println("updateNewSessionAsync bad");
-            removeService(service);
-            final Throwable ex = service.getException();
-            Logger.getLogger(WelcomeViewController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        });
-        addService(service);
-        service.start();
+        addAndStartService(service, "updateNewSessionAsync");
     }
 
     private void doAddAccount(final Session value) {
@@ -206,6 +196,11 @@ public final class WelcomeViewController extends SABControllerBase {
 
     private ObservableList<Node> history = FXCollections.observableList(new LinkedList<>());
 
+    private void clearDisplay() {
+        history.clear();
+        rootPane.setCenter(null);
+    }
+    
     private void pushToDisplay(final Node content) {
         if (content != null) {
             history.add(0, content);
@@ -235,16 +230,20 @@ public final class WelcomeViewController extends SABControllerBase {
         content.setSession(session);
         content.setOnWorldDetails(this::displayWorldDetails);
         content.setOnGuildDetails(this::displayGuildDetails);
+        clearDisplay();
         pushToDisplay(content);
     }
 
     /**
-     * Display some guild info.
+     * Display some world info.
      * @param session The session.
-     * @param guildId The id of the guild.
+     * @param worldId The id of the world.
      */
-    private void displayWorldDetails(final Session session, final int guildId) {
-
+    private void displayWorldDetails(final Session session, final int worldId) {
+        final WorldInfoPane content = new WorldInfoPane();
+        content.setSession(session);
+        content.setWorldId(worldId);
+        pushToDisplay(content);
     }
 
     /**
