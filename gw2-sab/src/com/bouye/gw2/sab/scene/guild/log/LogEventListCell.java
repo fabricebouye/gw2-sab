@@ -16,7 +16,7 @@ import javafx.scene.control.ListCell;
  * Lis cell for guild log events.
  * @author Fabrice Bouyé
  */
-public class LogEventListCell extends ListCell<LogEvent> {
+public final class LogEventListCell extends ListCell<LogEvent> {
 
     /**
      * Creates a new instance.
