@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1111,
+        "time": "2015-12-10T23:52:01.099Z",
+        "type": "motd",
+        "user": "ExampleAccount.1234",
+        "motd": "FSFOSDFJS"
+    }
+]

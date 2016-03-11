@@ -1,0 +1,32 @@
+[
+    {
+        "name": "ExampleAccount.1234",
+        "rank": "Leader",
+        "joined": "2015-07-22T06:18:35.000Z"
+    },
+    {
+        "name": "LoganThackeray.1234",
+        "rank": "Member",
+        "joined": "2015-06-17T02:38:27.000Z"
+    },
+    {
+        "name": "RytlockBrimstone.1234",
+        "rank": "Member",
+        "joined": "2015-06-17T02:38:27.000Z"
+    },
+    {
+        "name": "EirStegalkin.1234",
+        "rank": "Leader",
+        "joined": "2015-06-17T02:38:27.000Z"
+    },
+    {
+        "name": "Caithe.1234",
+        "rank": "Member",
+        "joined": "2015-06-17T02:38:27.000Z"
+    },
+    {
+        "name": "Zojja.1234",
+        "rank": "Member",
+        "joined": "2015-06-17T02:38:27.000Z"
+    }
+]
