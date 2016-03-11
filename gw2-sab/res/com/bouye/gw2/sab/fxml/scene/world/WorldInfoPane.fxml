@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane id="GridPane" styleClass="container-pane" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.world.WorldInfoPaneController">
+    <children>
+        <Label fx:id="nameLabel" text="Label" />
+        <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="2" />
+        <Label fx:id="languageLabel" text="Label" GridPane.columnIndex="3" />
+        <Label fx:id="populationLabel" text="Label" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" />
+        <ColumnConstraints fillWidth="true" hgrow="ALWAYS" minWidth="75.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" />
+        <ColumnConstraints hgrow="NEVER" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+
+</GridPane>
