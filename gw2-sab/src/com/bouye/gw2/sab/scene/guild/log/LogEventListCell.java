@@ -16,7 +16,7 @@ import java.util.OptionalInt;
 import javafx.scene.control.ListCell;
 
 /**
- * Lis cell for guild log events.
+ * List cell for guild log events.
  * @author Fabrice Bouyé
  */
 public final class LogEventListCell extends ListCell<LogEvent> {
