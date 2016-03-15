@@ -5,6 +5,9 @@
 .root {
     -fx-font-family: "Arial" ;
     -strong-text-color: firebrick;
+    -red-team-color: crimson;
+    -green-team-color: green;
+    -blue-team-color: dodgerblue;
 }
 .debug {
     -fx-border-color: red;
@@ -154,3 +157,14 @@
     -fx-vgap: 3px;
 }
 /* Guild info pane. */
+/* WvW charts. */
+.wvw-bar-chart {    
+}
+.wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -blue-team-color; }
+.wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -green-team-color; }
+.wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -red-team-color; }
+.wvw-pie-chart {    
+}
+.wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -blue-team-color; }
+.wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -green-team-color; }
+.wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -red-team-color; }

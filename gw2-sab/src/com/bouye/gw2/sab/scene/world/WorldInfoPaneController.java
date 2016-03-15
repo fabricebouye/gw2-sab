@@ -12,6 +12,7 @@ import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController;
 import com.bouye.gw2.sab.tasks.world.WorldSolverTask;
 import java.net.URL;
 import java.util.List;
@@ -31,15 +32,14 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
 
     @FXML
     private Label nameLabel;
-
     @FXML
     private Label regionLabel;
-
     @FXML
     private Label languageLabel;
-
     @FXML
     private Label populationLabel;
+    @FXML
+    private WvwSummaryPaneController wvwSummaryController;
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
@@ -62,7 +62,7 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
         }
         nameLabel.setText(String.valueOf(worldId));
         updateWorldValuesAsync(worldId);
-        updateWvWValuesAsync(worldId);
+        wvwSummaryController.setWorldId(worldId);
     }
 
     private void updateWorldValuesAsync(final int worldId) {
@@ -83,35 +83,5 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
             }
         });
         addAndStartService(service, "updateWorldValuesAsync");
-    }
-
-    private void updateWvWValuesAsync(final int worldId) {
-        final Service<Void> service = new Service<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        final boolean isDemo = SABConstants.INSTANCE.isDemo();
-                        // Get match result.
-                        final Optional<Match> matchResult = WebQuery.INSTANCE.queryWvwMatch(isDemo, worldId);
-                        if (matchResult.isPresent()) {
-                            final Match match = matchResult.get();
-                            final int[] worldIds = match.getWorlds()
-                                    .entrySet()
-                                    .stream()
-                                    .mapToInt(entry -> entry.getValue())
-                                    .toArray();
-                            // Get world names.
-                            final List<World> worlds = WebQuery.INSTANCE.queryWorlds(isDemo, worldIds);
-                        }
-                        return null;
-                    }
-                };
-            }
-        };
-        service.setOnSucceeded(workerStateEvent -> {
-        });
-        addAndStartService(service, "updateWvWValuesAsync");
     }
 }

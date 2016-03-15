@@ -8,23 +8,37 @@
  of the BSD license.  See the LICENSE file for details.
 -->
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-
-<BorderPane id="BorderPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController">
-    <center>
-        <PieChart fx:id="mainPieChart" BorderPane.alignment="CENTER" />
-    </center>
-    <right>
-        <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
-            <children>
-                <PieChart fx:id="ebPieChart" />
-                <PieChart fx:id="redPieChart" />
-                <PieChart fx:id="bluePieChart" />
-                <PieChart fx:id="greenPieChart" />
-            </children>
-        </VBox>
-    </right>
-</BorderPane>
+<GridPane id="GridPane" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController">
+    <children>
+        <BarChart fx:id="scoreBarChart" styleClass="wvw-bar-chart" title="%wvw.total-scores.label" GridPane.columnSpan="2147483647">
+            <xAxis>
+                <NumberAxis side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+                <CategoryAxis fx:id="scoreCategoryAxis" side="LEFT" />
+            </yAxis>
+        </BarChart>
+        <PieChart fx:id="ebPieChart" styleClass="wvw-pie-chart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" prefWidth="75.0" title="%wvw.map.center.label" GridPane.rowIndex="1" />
+        <PieChart fx:id="redPieChart" styleClass="wvw-pie-chart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" prefWidth="75.0" title="%wvw.map.red-home.label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <PieChart fx:id="bluePieChart" styleClass="wvw-pie-chart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" prefWidth="75.0" title="%wvw.map.green-home.label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <PieChart fx:id="greenPieChart" styleClass="wvw-pie-chart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" prefWidth="75.0" title="%wvw.map.blue-home.label" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
+</GridPane>

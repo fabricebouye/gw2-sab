@@ -13,12 +13,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane id="GridPane" styleClass="container-pane" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.world.WorldInfoPaneController">
+<GridPane id="GridPane" prefHeight="200.0" prefWidth="600.0" styleClass="container-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.world.WorldInfoPaneController">
     <children>
         <Label fx:id="nameLabel" text="Label" />
         <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="2" />
         <Label fx:id="languageLabel" text="Label" GridPane.columnIndex="3" />
         <Label fx:id="populationLabel" text="Label" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+        <fx:include fx:id="wvwSummary" source="../wvw/WvwSummaryPane.fxml" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
     </children>
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" />
@@ -27,11 +28,8 @@
         <ColumnConstraints hgrow="NEVER" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
         <RowConstraints vgrow="NEVER" />
         <RowConstraints vgrow="NEVER" />
-        <RowConstraints vgrow="NEVER" />
-        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
     </rowConstraints>
-
 </GridPane>
