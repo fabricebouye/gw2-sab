@@ -21,3 +21,4 @@ hs_err_pid*
 /gw2-sab/dist
 /gw2-sab/nbproject/private
 /gw2-sab/settings.properties
+gw2-sab/scenicView.properties
