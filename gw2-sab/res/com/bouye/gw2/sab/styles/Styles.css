@@ -168,3 +168,30 @@
 .wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -blue-team-color; }
 .wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -green-team-color; }
 .wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -red-team-color; }
+.specialization-editor:Elementalist {
+    -base-color: derive(deeppink, -10%);
+}
+.specialization-editor:Engineer {
+    -base-color: derive(yellow, -10%);
+}
+.specialization-editor:Guardian {
+    -base-color: derive(dodgerblue, -10%);
+}
+.specialization-editor:Mesmer {
+    -base-color: magenta;
+}
+.specialization-editor:Necromancer {
+    -base-color: derive(darkgreen, -30%);
+}
+.specialization-editor:Ranger {
+    -base-color:  derive(greenyellow, -30%);
+}
+.specialization-editor:Revenant {
+    -base-color: derive(red, -20%);
+}
+.specialization-editor:Thief {
+    -base-color: derive(orangered, -35%);
+}
+.specialization-editor:Warrior {
+    -base-color: derive(orange, -10%);
+}
