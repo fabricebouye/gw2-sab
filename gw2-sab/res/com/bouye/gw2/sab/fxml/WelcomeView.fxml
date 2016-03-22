@@ -34,4 +34,7 @@
             </children>
         </HBox>
     </top>
+    <center>
+        <fx:include fx:id="greetingPane" source="scene/greeting/GreetingPane.fxml"/>
+    </center>
 </BorderPane>
