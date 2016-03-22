@@ -21,7 +21,7 @@
     -fx-spacing: 6px;
 }
 #HBox {
-    -fx-alignment: baseline-center;
+    -fx-alignment: baseline-left;
     -fx-spacing: 6px;
 }
 #TextFlow {
