@@ -63,6 +63,8 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     @FXML
     private Label monthlyApLabel;
     @FXML
+    private Label wvwRankLabel;
+    @FXML
     private FlowPane permissionsFlowPane;
 
     @Override
@@ -92,6 +94,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         commanderCheck.setSelected(false);
         dailyApLabel.setText(null);
         monthlyApLabel.setText(null);
+        wvwRankLabel.setText(null);
         guildsTextFlow.getChildren().clear();
         // Permissions.
         permissionsFlowPane.getChildren().clear();
@@ -127,6 +130,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         commanderCheck.setSelected(account.isCommander());
         dailyApLabel.setText(String.valueOf(account.getDailyAp()));
         monthlyApLabel.setText(String.valueOf(account.getMonthlyAp()));
+        wvwRankLabel.setText(String.valueOf(account.getWvwRank()));
         //
         final List<Labeled> guildLinks = account.getGuilds()
                 .stream()

@@ -21,7 +21,7 @@
     -fx-spacing: 6px;
 }
 #HBox {
-    -fx-alignment: baseline-center;
+    -fx-alignment: baseline-left;
     -fx-spacing: 6px;
 }
 #TextFlow {
@@ -91,6 +91,34 @@
 .awesome-menu-button > .label {
     -fx-font-family: "FontAwesome";
     -fx-font-size: 2.2em;
+}
+/* Greeting screen. */
+.greeting-pane {
+    -fx-padding: 20px;
+    -fx-hgap: 8px;
+    -fx-vgap: 8px;
+}
+.greeting-button {
+    -fill-color: firebrick;
+    -fx-font-size: 1.5em;
+    -fx-background-color: -fill-color;
+    -fx-background-radius: 0px;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 150px;
+    -fx-content-display: bottom;
+    -fx-text-fill: ladder(-fill-color, white 49%, black 50%);
+}
+.greeting-button:armed {
+    -fx-background-color: derive(-fill-color, -30%);
+}
+.greeting-button .awesome-icon {
+    -fx-font-size: 4.5em;
+    -fx-text-fill: ladder(-fill-color, white 49%, black 50%);
+}
+.greeting-button:account {
+    -fill-color: lightcoral;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 150px;
 }
 /* Token info permissions. */
 .permission-label {
