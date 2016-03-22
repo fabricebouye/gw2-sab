@@ -24,14 +24,27 @@
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="1" />
         <Label fx:id="accessLabel" text="Label" GridPane.columnIndex="2" />
         <Hyperlink fx:id="worldLink" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-      <TextFlow fx:id="guildsTextFlow" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <CheckBox fx:id="commanderCheck" disable="true" mnemonicParsing="false" text="%account.commander.label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <HBox fx:id="apVBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-         <children>
-            <Label fx:id="dailyApLabel" text="Label" />
-            <Label fx:id="monthlyApLabel" text="Label" />
-         </children>
-      </HBox>
+        <TextFlow fx:id="guildsTextFlow" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+        <CheckBox fx:id="commanderCheck" disable="true" mnemonicParsing="false" text="%account.commander.label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+        <HBox id="HBox" fx:id="apVBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <children>
+                <Label fx:id="dailyApLabel" text="Label">
+                    <graphic>
+                        <Label fx:id="dailyApIcon" text="%icon.ap.daily" styleClass="awesome-icon"/>
+                    </graphic>
+                </Label>
+                <Label fx:id="monthlyApLabel" text="Label" >
+                    <graphic>
+                        <Label fx:id="monthlyApIcon" text="%icon.ap.monthly" styleClass="awesome-icon"/>
+                    </graphic>
+                </Label>
+                <Label fx:id="wvwRankLabel" text="Label" >
+                    <graphic>
+                        <Label fx:id="wvwRankIcon" text="%icon.wvw.rank" styleClass="awesome-icon"/>
+                    </graphic>
+                </Label>
+            </children>
+        </HBox>
         <FlowPane fx:id="permissionsFlowPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
     </children>
     <columnConstraints>
@@ -40,11 +53,11 @@
         <ColumnConstraints hgrow="NEVER" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-        <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" vgrow="ALWAYS" />
     </rowConstraints>
 </GridPane>
