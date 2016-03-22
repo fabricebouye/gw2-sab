@@ -30,12 +30,12 @@
             <children>
                 <Label fx:id="dailyApLabel" text="Label">
                     <graphic>
-                        <Label fx:id="dailyApIcon" text="%icon.ap.daily" styleClass="awesome-icon"/>
+                        <Label fx:id="dailyApIcon" text="%icon.cup" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
                 <Label fx:id="monthlyApLabel" text="Label" >
                     <graphic>
-                        <Label fx:id="monthlyApIcon" text="%icon.ap.monthly" styleClass="awesome-icon"/>
+                        <Label fx:id="monthlyApIcon" text="%icon.cup" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
                 <Label fx:id="wvwRankLabel" text="Label" >
