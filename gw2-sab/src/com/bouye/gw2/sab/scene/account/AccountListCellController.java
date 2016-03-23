@@ -10,6 +10,7 @@ package com.bouye.gw2.sab.scene.account;
 import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
@@ -18,12 +19,17 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
@@ -32,6 +38,10 @@ import javafx.scene.control.Label;
 public final class AccountListCellController extends SABControllerBase<AccountListCell> {
 
     @FXML
+    private GridPane rootPane;
+    @FXML
+    private Button deleteButton;
+    @FXML
     private Label accountNameLabel;
     @FXML
     private Label appKeyLabel;
@@ -39,6 +49,33 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         session.addListener(sessionChangeListener);
+        final ColumnConstraints columnConstraits = rootPane.getColumnConstraints().get(1);
+        columnConstraits.setMinWidth(0);
+        columnConstraits.setPrefWidth(0);
+        columnConstraits.setMaxWidth(0);
+        deleteButton.setVisible(false);
+        deleteButton.setManaged(false);
+        modifyProperty().addListener((observable, oldValue, newValue) -> {
+            columnConstraits.setMinWidth(newValue ? -1 : 0);
+            columnConstraits.setPrefWidth(newValue ? -1 : 0);
+            columnConstraits.setMaxWidth(newValue ? -1 : 0);
+            deleteButton.setVisible(newValue);
+            deleteButton.setManaged(newValue);
+        });
+    }
+
+    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false); // NOI18N.
+
+    public final boolean isModify() {
+        return modify.get();
+    }
+
+    public void setModify(final boolean value) {
+        modify.set(value);
+    }
+
+    public final BooleanProperty modifyProperty() {
+        return modify;
     }
 
     /**

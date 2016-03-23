@@ -16,7 +16,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -54,9 +56,26 @@ public final class AccountListCell extends ListCell<Session> {
         Node graphic = null;
         if (!empty && item != null && node.isPresent()) {
             graphic = node.isPresent() ? node.get() : null;
-            controller.ifPresent(c -> c.setSession(item));
+            controller.ifPresent(c -> {
+                c.setSession(item);
+                c.modifyProperty().bind(modifyProperty());
+            });
         }
         setGraphic(graphic);
+    }
+
+    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false); // NOI18N.
+
+    public final boolean isModify() {
+        return modify.get();
+    }
+
+    public void setModify(final boolean value) {
+        modify.set(value);
+    }
+
+    public final BooleanProperty modifyProperty() {
+        return modify;
     }
 
     /**

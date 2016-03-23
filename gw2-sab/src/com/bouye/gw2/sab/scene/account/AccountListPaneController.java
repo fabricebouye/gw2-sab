@@ -7,15 +7,18 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,20 +34,33 @@ public final class AccountListPaneController extends SABControllerBase {
     @FXML
     private ListView<Session> accountsListView;
     @FXML
+    private Button modifyButton;
+    @FXML
     private Button addAccountButton;
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         accountsListView.setCellFactory(listView -> {
             final AccountListCell result = new AccountListCell();
+            result.modifyProperty().bind(modify);
             result.onDeleteAccountProperty().bind(onDeleteAccountProperty());
             return result;
         });
         selectedSession.bind(accountsListView.getSelectionModel().selectedItemProperty());
+        modify.addListener((observable, oldValue, newValue) -> {
+            final String deleteButtonKey = newValue ? "action.cancel" : "action.modify"; // NOI18N.
+            modifyButton.setText(SABConstants.I18N.getString(deleteButtonKey));
+        });
+    }
+
+    @FXML
+    private void handleModifyButton() {
+        modify.set(!modify.get());
     }
 
     @FXML
     private void handleAddAccountButton() {
+        modify.set(false);
         final Optional<Runnable> onNewAccount = Optional.ofNullable(getOnNewAccount());
         onNewAccount.ifPresent(runnable -> runnable.run());
     }
@@ -52,6 +68,8 @@ public final class AccountListPaneController extends SABControllerBase {
     public void setAccounts(final ObservableList<Session> value) {
         accountsListView.setItems(value);
     }
+
+    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false);
 
     /**
      * The session that was selected from the account management menu.
