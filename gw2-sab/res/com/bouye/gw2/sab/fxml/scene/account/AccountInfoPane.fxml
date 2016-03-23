@@ -40,7 +40,7 @@
                 </Label>
                 <Label fx:id="wvwRankLabel" text="Label" >
                     <graphic>
-                        <Label fx:id="wvwRankIcon" text="%icon.wvw.rank" styleClass="awesome-icon"/>
+                        <Label fx:id="wvwRankIcon" text="%icon.castle" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
             </children>
