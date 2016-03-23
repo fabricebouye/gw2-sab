@@ -104,11 +104,13 @@
 }
 .greeting-button {
     -fill-color: firebrick;
-    -fx-font-size: 1.5em;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-font-size: 1.4em;
     -fx-background-color: -fill-color;
     -fx-background-radius: 0px;
-    -fx-pref-width: 150px;
-    -fx-pref-height: 150px;
+    -fx-pref-width: 175px;
+    -fx-pref-height: 175px;
     -fx-content-display: bottom;
     -fx-text-fill: ladder(-fill-color, white 49%, black 50%);
 }
@@ -122,7 +124,7 @@
 .greeting-button:account {
     -fill-color: lightcoral;
     -fx-pref-width: 250px;
-    -fx-pref-height: 150px;
+    -fx-pref-height: 175px;
 }
 /* Token info permissions. */
 .permission-label {
