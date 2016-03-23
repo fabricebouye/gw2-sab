@@ -58,24 +58,24 @@ public final class AccountListCell extends ListCell<Session> {
             graphic = node.isPresent() ? node.get() : null;
             controller.ifPresent(c -> {
                 c.setSession(item);
-                c.modifyProperty().bind(modifyProperty());
+                c.deletableProperty().bind(deletableProperty());
             });
         }
         setGraphic(graphic);
     }
 
-    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false); // NOI18N.
+    private final BooleanProperty deletable = new SimpleBooleanProperty(this, "deletable", false); // NOI18N.
 
-    public final boolean isModify() {
-        return modify.get();
+    public final boolean isDeletable() {
+        return deletable.get();
     }
 
-    public void setModify(final boolean value) {
-        modify.set(value);
+    public void setDeletable(final boolean value) {
+        deletable.set(value);
     }
 
-    public final BooleanProperty modifyProperty() {
-        return modify;
+    public final BooleanProperty deletableProperty() {
+        return deletable;
     }
 
     /**

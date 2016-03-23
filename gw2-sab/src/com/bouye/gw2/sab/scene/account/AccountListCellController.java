@@ -55,27 +55,33 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
         columnConstraits.setMaxWidth(0);
         deleteButton.setVisible(false);
         deleteButton.setManaged(false);
-        modifyProperty().addListener((observable, oldValue, newValue) -> {
-            columnConstraits.setMinWidth(newValue ? -1 : 0);
-            columnConstraits.setPrefWidth(newValue ? -1 : 0);
-            columnConstraits.setMaxWidth(newValue ? -1 : 0);
-            deleteButton.setVisible(newValue);
-            deleteButton.setManaged(newValue);
-        });
+        deletableProperty().addListener(deletableChangeListener);
     }
 
-    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false); // NOI18N.
+    /**
+     * Called whenever deletable value changes.
+     */
+    private final ChangeListener<Boolean> deletableChangeListener = (observable, oldValue, newValue) -> {
+        final ColumnConstraints columnConstraits = rootPane.getColumnConstraints().get(1);
+        columnConstraits.setMinWidth(newValue ? -1 : 0);
+        columnConstraits.setPrefWidth(newValue ? -1 : 0);
+        columnConstraits.setMaxWidth(newValue ? -1 : 0);
+        deleteButton.setVisible(newValue);
+        deleteButton.setManaged(newValue);
+    };
 
-    public final boolean isModify() {
-        return modify.get();
+    private final BooleanProperty deletable = new SimpleBooleanProperty(this, "deletable", false); // NOI18N.
+
+    public final boolean isDeletable() {
+        return deletable.get();
     }
 
-    public void setModify(final boolean value) {
-        modify.set(value);
+    public void setDeletable(final boolean value) {
+        deletable.set(value);
     }
 
-    public final BooleanProperty modifyProperty() {
-        return modify;
+    public final BooleanProperty deletableProperty() {
+        return deletable;
     }
 
     /**

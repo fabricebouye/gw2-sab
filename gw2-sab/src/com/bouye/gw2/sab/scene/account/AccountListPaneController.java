@@ -42,12 +42,12 @@ public final class AccountListPaneController extends SABControllerBase {
     public void initialize(final URL url, final ResourceBundle rb) {
         accountsListView.setCellFactory(listView -> {
             final AccountListCell result = new AccountListCell();
-            result.modifyProperty().bind(modify);
+            result.deletableProperty().bind(modificationActivated);
             result.onDeleteAccountProperty().bind(onDeleteAccountProperty());
             return result;
         });
         selectedSession.bind(accountsListView.getSelectionModel().selectedItemProperty());
-        modify.addListener((observable, oldValue, newValue) -> {
+        modificationActivated.addListener((observable, oldValue, newValue) -> {
             final String deleteButtonKey = newValue ? "action.cancel" : "action.modify"; // NOI18N.
             modifyButton.setText(SABConstants.I18N.getString(deleteButtonKey));
         });
@@ -55,21 +55,25 @@ public final class AccountListPaneController extends SABControllerBase {
 
     @FXML
     private void handleModifyButton() {
-        modify.set(!modify.get());
+        modificationActivated.set(!modificationActivated.get());
     }
 
     @FXML
     private void handleAddAccountButton() {
-        modify.set(false);
+        cancelModification();
         final Optional<Runnable> onNewAccount = Optional.ofNullable(getOnNewAccount());
         onNewAccount.ifPresent(runnable -> runnable.run());
+    }
+
+    public void cancelModification() {
+        modificationActivated.set(false);
     }
 
     public void setAccounts(final ObservableList<Session> value) {
         accountsListView.setItems(value);
     }
 
-    private final BooleanProperty modify = new SimpleBooleanProperty(this, "modify", false);
+    private final BooleanProperty modificationActivated = new SimpleBooleanProperty(this, "modificationActivated", false); // NOI18N.
 
     /**
      * The session that was selected from the account management menu.
