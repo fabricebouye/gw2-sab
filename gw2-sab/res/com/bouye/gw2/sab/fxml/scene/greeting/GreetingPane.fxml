@@ -40,7 +40,7 @@
     </Button>
     <Button fx:id="wvwButton" styleClass="greeting-button" text="%greeting.wvw.label" >
         <graphic>
-            <Label fx:id="wvwIcon" styleClass="awesome-icon" text="%icon.wvw.rank" />
+            <Label fx:id="wvwIcon" styleClass="awesome-icon" text="%icon.castle" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="wvwTip" text="%greeting.wvw.label"/>
@@ -54,10 +54,18 @@
             <Tooltip fx:id="guildsTip" text="%greeting.guilds.label"/>
         </tooltip>
     </Button>
-    <Button fx:id="characterButton" styleClass="greeting-button" />
+    <Button fx:id="charactersButton" styleClass="greeting-button" />
+    <Button fx:id="accountButton" styleClass="greeting-button" text="%greeting.account.label" >
+        <graphic>
+            <Label fx:id="accountIcon" styleClass="awesome-icon" text="%icon.account" />
+        </graphic>
+        <tooltip>
+            <Tooltip fx:id="accountTip" text="%greeting.account.label"/>
+        </tooltip>
+    </Button>
     <Button fx:id="addAccountButton" styleClass="greeting-button" text="%greeting.add.account.label" >
         <graphic>
-            <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.add" />
+            <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.user-add" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="addAccountTip" text="%greeting.add.account.label"/>

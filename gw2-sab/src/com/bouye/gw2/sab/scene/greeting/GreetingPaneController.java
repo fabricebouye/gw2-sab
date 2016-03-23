@@ -21,11 +21,19 @@ import javafx.scene.control.Button;
 public final class GreetingPaneController implements Initializable {
 
     @FXML
+    private Button bltButton;
+    @FXML
+    private Button mfButton;
+    @FXML
     private Button pvpButton;
-
     @FXML
     private Button wvwButton;
-
+    @FXML
+    private Button guildButton;
+    @FXML
+    private Button charactersButton;
+    @FXML
+    private Button accountButton;
     @FXML
     private Button addAccountButton;
 

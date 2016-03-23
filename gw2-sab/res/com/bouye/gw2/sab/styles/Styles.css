@@ -4,6 +4,7 @@
 }
 .root {
     -fx-font-family: "Arial" ;
+    -fx-font-size: 1.2em;
     -strong-text-color: firebrick;
     -red-team-color: crimson;
     -green-team-color: green;
@@ -71,7 +72,7 @@
     -fx-border-width: 0px 0px 1px 0xp;
 }
 .primary-button {
-    -fx-font-size: 2em;
+    -fx-font-size: 1.35em;
 }
 .good-button {
     -fx-base: green;
@@ -79,12 +80,15 @@
 .bad-button {
     -fx-base: red;
 }
+.flat-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-focus-color;
+}
 .delete-knob {
     -fx-font-family: "FontAwesome";    
     -fx-font-size: 1.5em;
     -fx-font-weight: bold;
-    -fx-background-radius: 25px;
-    -fx-padding: 3.5 6 5 7;
+    -fx-background-radius: 0px;
 }
 .awesome-button,
 .awesome-icon,
