@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.guild;
 
-import com.bouye.gw2.sab.SabControlBase;
+import com.bouye.gw2.sab.SABControlBase;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
@@ -15,7 +15,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
  * Displays guild info.
  * @author Fabrice Bouyé
  */
-public final class GuildInfoPane extends SabControlBase<GuildInfoPaneController> {
+public final class GuildInfoPane extends SABControlBase<GuildInfoPaneController> {
 
     /**
      * Creates a new empty instance.

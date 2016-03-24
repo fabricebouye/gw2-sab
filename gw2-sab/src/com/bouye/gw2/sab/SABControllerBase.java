@@ -123,15 +123,15 @@ public abstract class SABControllerBase<T extends Node> implements Initializable
                     // Log about this event.
                     switch (newValue) {
                         case SUCCEEDED:
-                            Logger.getLogger(SabControlBase.class.getName()).log(Level.INFO, String.format("%s succeeded.", description));
+                            Logger.getLogger(SABControlBase.class.getName()).log(Level.INFO, String.format("%s succeeded.", description));
                             break;
                         case CANCELLED:
-                            Logger.getLogger(SabControlBase.class.getName()).log(Level.INFO, String.format("%s cancelled.", description));
+                            Logger.getLogger(SABControlBase.class.getName()).log(Level.INFO, String.format("%s cancelled.", description));
                             break;
                         case FAILED:
-                            Logger.getLogger(SabControlBase.class.getName()).log(Level.INFO, String.format("%s failed.", description));
+                            Logger.getLogger(SABControlBase.class.getName()).log(Level.INFO, String.format("%s failed.", description));
                             final Throwable ex = service.getException();
-                            Logger.getLogger(SabControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                            Logger.getLogger(SABControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                             break;
                         default:
                     }

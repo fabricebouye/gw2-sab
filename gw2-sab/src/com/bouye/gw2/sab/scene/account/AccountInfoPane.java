@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import com.bouye.gw2.sab.SabControlBase;
+import com.bouye.gw2.sab.SABControlBase;
 import com.bouye.gw2.sab.session.Session;
 import java.util.function.BiConsumer;
 import javafx.beans.property.ObjectProperty;
@@ -17,7 +17,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * Displays account info.
  * @author Fabrice Bouyé
  */
-public final class AccountInfoPane extends SabControlBase<AccountInfoPaneController> {
+public final class AccountInfoPane extends SABControlBase<AccountInfoPaneController> {
 
     /**
      * Creates a new empty instance.

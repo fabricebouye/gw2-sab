@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.world;
 
-import com.bouye.gw2.sab.SabControlBase;
+import com.bouye.gw2.sab.SABControlBase;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 
@@ -15,7 +15,7 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
  * Displays world info.
  * @author Fabrice Bouyé
  */
-public final class WorldInfoPane extends SabControlBase<WorldInfoPaneController> {
+public final class WorldInfoPane extends SABControlBase<WorldInfoPaneController> {
 
     /**
      * Creates a new empty instance.

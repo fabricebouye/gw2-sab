@@ -27,7 +27,7 @@ import javafx.scene.layout.Region;
  * @author Fabrice Bouyé
  * @param <T> The type of the controller class to use.
  */
-public abstract class SabControlBase<T extends SABControllerBase> extends Region {
+public abstract class SABControlBase<T extends SABControllerBase> extends Region {
     
     private Optional<Node> node = Optional.empty();
     private Optional<T> controller = Optional.empty();
@@ -37,7 +37,7 @@ public abstract class SabControlBase<T extends SABControllerBase> extends Region
      * @param fxml The location of the FXML file.
      * @throws NullPointerException If {@code fxml} is null.
      */
-    public SabControlBase(final String fxml) throws NullPointerException {
+    public SABControlBase(final String fxml) throws NullPointerException {
         super();
         Objects.requireNonNull(fxml);
         try {
@@ -48,12 +48,12 @@ public abstract class SabControlBase<T extends SABControllerBase> extends Region
             controller = Optional.of(fxmlLoader.getController());
             Platform.runLater(this::postInit);
         } catch (IOException ex) {
-            Logger.getLogger(SabControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            Logger.getLogger(SABControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
     
     private void postInit() {
-        controller.ifPresent(c -> c.setNode(SabControlBase.this));
+        controller.ifPresent(c -> c.setNode(SABControlBase.this));
     }
     
     @Override
