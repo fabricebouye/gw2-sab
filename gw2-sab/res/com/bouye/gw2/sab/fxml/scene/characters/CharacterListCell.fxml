@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane id="GridPane" fx:id="rootPane" prefWidth="150.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.characters.CharacterListCellController">
+    <children>
+        <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="0" />        
+        <Button fx:id="actionButton" maxHeight="1.7976931348623157E308" styleClass="flat-button, awesome-button" mnemonicParsing="false" onAction="#handleActionButton" text="%icon.chevron-right" GridPane.columnIndex="1" GridPane.rowSpan="2147483647" />
+        <Label fx:id="professionLabel" text="label" GridPane.columnIndex="0" GridPane.rowIndex="1" />        
+    </children>
+    <columnConstraints>
+        <ColumnConstraints fillWidth="true" hgrow="ALWAYS" minWidth="75.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+    </rowConstraints>
+</GridPane>
