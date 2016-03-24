@@ -25,8 +25,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -48,6 +46,8 @@ import javafx.scene.text.TextFlow;
  */
 public final class AccountInfoPaneController extends SABControllerBase<AccountInfoPane> {
 
+    @FXML
+    private Label accountIconLabel;
     @FXML
     private Label accountNameLabel;
     @FXML
@@ -161,7 +161,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     }
 
     /**
-     * Invoked when the user clicks on the world hyperlink.     
+     * Invoked when the user clicks on the world hyperlink.
      * @param worldId The id of the world to inspect.
      */
     private void displayWorldDetails(final int worldId) {
@@ -173,7 +173,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     }
 
     /**
-     * Invoked when the user clicks on one of the guild hyperlinks.     
+     * Invoked when the user clicks on one of the guild hyperlinks.
      * @param guildId The id of the guild to inspect.
      */
     private void displayGuildDetails(final String guildId) {

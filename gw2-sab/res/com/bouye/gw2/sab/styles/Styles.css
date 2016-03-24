@@ -159,14 +159,26 @@
     -fx-padding: 1;
 }
 .account-list-cell {
-    -fx-font-size: 0.9em;
+    -strong-text-color: black;
+    -fx-font-size: 1.0em;
 }
+.account-list-cell,
 .account-list-cell:odd {
     -fx-background-color: -fx-control-inner-background;
+}
+.account-list-cell:GuildWars2 {
+    -fx-background-image: url("../images/cell/cell-background-gw2.jpg");
+    -fx-background-position: bottom left;
+    -fx-background-repeat: no-repeat;
 }
 .account-list-cell:GuildWars2,
 .account-info-pane:GuildWars2 {
     -strong-text-color: firebrick;
+}
+.account-list-cell:HeartOfThorns {
+    -fx-background-image: url("../images/cell/cell-background-hot.jpg");
+    -fx-background-position: bottom left;
+    -fx-background-repeat: no-repeat;
 }
 .account-list-cell:HeartOfThorns,
 .account-info-pane:HeartOfThorns {
@@ -174,10 +186,11 @@
 }
 .account-list-cell > * > .strong-label {
     -fx-font-size: 1.2em;
+    -fx-wrap-text: true;
 }
 .account-list-cell > * > .app-key-label {
+    -fx-text-fill: gray;
     -fx-font-size: 0.75em;
-    -fx-opacity: 0.33;
     -fx-wrap-text: true;
 }
 /* Account info pane. */
