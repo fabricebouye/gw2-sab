@@ -25,15 +25,15 @@ import javafx.scene.layout.Region;
 /**
  * Base class for all FXML-based controls.
  * @author Fabrice Bouyé
- * @param <T> The type of the controller class to use.
+ * @param <C> The type of the controller.
  */
-public abstract class SABControlBase<T extends SABControllerBase> extends Region {
+public abstract class SABControlBase<C extends SABControllerBase> extends Region {
     
     private Optional<Node> node = Optional.empty();
-    private Optional<T> controller = Optional.empty();
+    private Optional<C> controller = Optional.empty();
 
     /**
-     * Creates a new empty instance.
+     * Creates a new instance.
      * @param fxml The location of the FXML file.
      * @throws NullPointerException If {@code fxml} is null.
      */

@@ -7,63 +7,43 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import com.bouye.gw2.sab.SAB;
-import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.SABListCellBase;
 import com.bouye.gw2.sab.session.Session;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
 
 /**
  * List cell for the session management list.
  * @author Fabrice Bouyé
  */
-public final class AccountListCell extends ListCell<Session> {
-
-    private Optional<Node> node = Optional.empty();
-    private Optional<AccountListCellController> controller = Optional.empty();
+public final class AccountListCell extends SABListCellBase<Session, AccountListCellController> {
 
     /**
      * Creates a new empty instance.
      */
     public AccountListCell() {
-        super();
+        super("fxml/scene/account/AccountListCell.fxml"); // NOI18N.
         getStyleClass().add("account-list-cell"); // NOI18N.
-        try {
-            final URL fxmlURL = SAB.class.getResource("fxml/scene/account/AccountListCell.fxml"); // NOI18N.
-            final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, SABConstants.I18N);
-            node = Optional.of(fxmlLoader.load());
-            controller = Optional.of(fxmlLoader.getController());
-            controller.ifPresent(c -> c.setNode(AccountListCell.this));
-        } catch (IOException ex) {
-            Logger.getLogger(AccountListCell.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        }
     }
 
     @Override
-    protected void updateItem(final Session item, final boolean empty) {
-        super.updateItem(item, empty);
-        Node graphic = null;
-        if (!empty && item != null && node.isPresent()) {
-            graphic = node.isPresent() ? node.get() : null;
-            controller.ifPresent(c -> {
-                c.setSession(item);
-                c.deletableProperty().bind(deletableProperty());
-            });
+    protected void updateController(final AccountListCellController controller, final Session item) {
+        controller.setSession(item);
+        if (item == null) {
+            controller.deletableProperty().unbind();
+        } else {
+            controller.deletableProperty().bind(deletableProperty());
         }
-        setGraphic(graphic);
     }
 
+    /**
+     * Item deletion has been activated.
+     */
     private final BooleanProperty deletable = new SimpleBooleanProperty(this, "deletable", false); // NOI18N.
 
     public final boolean isDeletable() {

@@ -23,9 +23,9 @@ import javafx.scene.Node;
 /**
  * Base class for all FXML controllers.
  * @author Fabrice Bouyé
- * @param <T> The type of the parent node to use.
+ * @param <N> The type of the parent node or control.
  */
-public abstract class SABControllerBase<T extends Node> implements Initializable {
+public abstract class SABControllerBase<N extends Node> implements Initializable {
 
     /**
      * Creates a new instance.
@@ -33,17 +33,20 @@ public abstract class SABControllerBase<T extends Node> implements Initializable
     public SABControllerBase() {
     }
 
-    private final ObjectProperty<T> node = new SimpleObjectProperty<>(this, "node", null); // NOI18N.
+    /**
+    * Holds a reference to the parent node.
+    */
+    private final ObjectProperty<N> node = new SimpleObjectProperty<>(this, "node", null); // NOI18N.
 
-    public final T getNode() {
+    public final N getNode() {
         return node.get();
     }
 
-    public final void setNode(final T value) {
+    public final void setNode(final N value) {
         node.set(value);
     }
 
-    public final ObjectProperty<T> nodeProperty() {
+    public final ObjectProperty<N> nodeProperty() {
         return node;
     }
 
@@ -142,14 +145,15 @@ public abstract class SABControllerBase<T extends Node> implements Initializable
     };
 
     protected final void updateContent() {
-        final Optional<T> parent = Optional.ofNullable(getNode());
+        // @todo check if we REALLY nned a source node for that in most cases.
+        final Optional<N> parent = Optional.ofNullable(getNode());
         parent.ifPresent(this::clearContent);
         parent.ifPresent(this::installContent);
     }
 
-    protected void clearContent(final T parent) {
+    protected void clearContent(final N parent) {
     }
 
-    protected void installContent(final T parent) {
+    protected void installContent(final N parent) {
     }
 }
