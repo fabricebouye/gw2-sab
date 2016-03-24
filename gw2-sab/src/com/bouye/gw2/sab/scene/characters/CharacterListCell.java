@@ -8,13 +8,12 @@
 package com.bouye.gw2.sab.scene.characters;
 
 import com.bouye.gw2.sab.SABListCellBase;
-import com.bouye.gw2.sab.session.Session;
 
 /**
  * List cell for the characters list.
  * @author Fabrice Bouyé
  */
-public final class CharacterListCell extends SABListCellBase<Session, CharacterListCellController> {
+public final class CharacterListCell extends SABListCellBase<String, CharacterListCellController> {
 
     /**
      * Creates a new empty instance.
@@ -25,6 +24,6 @@ public final class CharacterListCell extends SABListCellBase<Session, CharacterL
     }
 
     @Override
-    protected void updateController(final CharacterListCellController controller, final Session item) {
+    protected void updateController(final CharacterListCellController controller, final String item) {
     }       
 }
