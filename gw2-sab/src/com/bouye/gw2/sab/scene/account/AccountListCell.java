@@ -9,13 +9,11 @@ package com.bouye.gw2.sab.scene.account;
 
 import com.bouye.gw2.sab.SABListCellBase;
 import com.bouye.gw2.sab.session.Session;
-import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
 
 /**
  * List cell for the session management list.
