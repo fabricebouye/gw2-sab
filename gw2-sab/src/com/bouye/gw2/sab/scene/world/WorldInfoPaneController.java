@@ -8,21 +8,20 @@
 package com.bouye.gw2.sab.scene.world;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.SABControllerBase;
-import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController;
 import com.bouye.gw2.sab.tasks.world.WorldSolverTask;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
-import javafx.concurrent.Service;
+import javafx.beans.binding.IntegerBinding;
+import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -43,8 +42,26 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        Bindings.select(nodeProperty(), "worldId").addListener((observable, oldValue, newValue) -> updateContent());
+        worlId = Bindings.selectInteger(nodeProperty(), "worldId");
+        worlId.addListener(worldIdInvalidationListener);
     }
+
+    @Override
+    public void dispose() {
+        try {
+        worlId.removeListener(worldIdInvalidationListener);
+        worlId.dispose();
+        if (worldQueryService != null) {
+            worldQueryService.cancel();
+        }
+        } finally {
+            super.dispose();
+        }
+    }
+
+    private final InvalidationListener worldIdInvalidationListener = observable -> updateContent();
+
+    private IntegerBinding worlId;
 
     @Override
     protected void clearContent(final WorldInfoPane parent) {
@@ -65,23 +82,31 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
         wvwSummaryController.setWorldId(worldId);
     }
 
+    private ScheduledService<List<World>> worldQueryService;
+
     private void updateWorldValuesAsync(final int worldId) {
-        final Service<List<World>> service = new Service<List<World>>() {
-            @Override
-            protected Task<List<World>> createTask() {
-                return new WorldSolverTask(worldId);
-            }
-        };
-        service.setOnSucceeded(workerStateEvent -> {
-            final List<World> result = service.getValue();
-            if (!result.isEmpty()) {
-                final World world = result.get(0);
-                nameLabel.setText(world.getName());
-                regionLabel.setText(world.getRegion().name());
-                languageLabel.setText(world.getLanguage().name());
-                populationLabel.setText(world.getPopulation().name());
-            }
-        });
-        addAndStartService(service, "updateWorldValuesAsync");
+        // Service lazy initialization.
+        if (worldQueryService == null) {
+            final ScheduledService<List<World>> service = new ScheduledService<List<World>>() {
+                @Override
+                protected Task<List<World>> createTask() {
+                    return new WorldSolverTask(worldId);
+                }
+            };
+            service.setPeriod(Duration.minutes(5));
+            service.setRestartOnFailure(true);
+            service.setOnSucceeded(workerStateEvent -> {
+                final List<World> result = (List<World>) workerStateEvent.getSource().getValue();
+                if (!result.isEmpty()) {
+                    final World world = result.get(0);
+                    nameLabel.setText(world.getName());
+                    regionLabel.setText(world.getRegion().name());
+                    languageLabel.setText(world.getLanguage().name());
+                    populationLabel.setText(world.getPopulation().name());
+                }
+            });
+            worldQueryService = service;
+        }
+        addAndStartService(worldQueryService, "WorldInfoPaneController::updateWorldValuesAsync");
     }
 }

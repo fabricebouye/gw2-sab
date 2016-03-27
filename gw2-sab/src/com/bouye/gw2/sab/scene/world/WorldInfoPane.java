@@ -24,18 +24,18 @@ public final class WorldInfoPane extends SABControlBase<WorldInfoPaneController>
         super("fxml/scene/world/WorldInfoPane.fxml"); // NOI18N.
         getStyleClass().add("world-info-pane"); // NOI18N.
     }
-
+    
     private final ReadOnlyIntegerWrapper worldId = new ReadOnlyIntegerWrapper(this, "worldId", -1); // NOI18N.
 
     public final int getWorldId() {
         return worldId.get();
     }
-
+    
     public final void setWorldId(final int value) {
         final int v = (value < -1) ? -1 : value;
         worldId.set(v);
     }
-
+    
     public final ReadOnlyIntegerProperty worldIdProperty() {
         return worldId.getReadOnlyProperty();
     }
