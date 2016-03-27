@@ -84,7 +84,7 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
         session.set(value);
     }
     
-    public final ReadOnlyObjectProperty<Session> currentAccesTokenProperty() {
+    public final ReadOnlyObjectProperty<Session> sessionProperty() {
         return session.getReadOnlyProperty();
     }    
 }
