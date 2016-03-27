@@ -19,7 +19,9 @@ import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +39,12 @@ import java.util.logging.Logger;
 public enum WebQuery {
     INSTANCE;
 
+    public String encodeURLParameter(final String value) throws UnsupportedEncodingException {
+        String result = URLEncoder.encode(value, "utf-8"); // NOI18N.
+        result = result.replaceAll("\\+", "%20"); // NOI18N.
+        return result;
+    }
+    
     /**
      * Return the language code to be used when doing queries that return localized values.
      * <br>If the user's current language is not supported, the default locale will be used instead.
@@ -54,7 +62,7 @@ public enum WebQuery {
      * @return A {@code String}, never {@code null}.
      * <br>Contains {@code "all"} no id provided.
      */
-    private String idsToString(final int... ids) {
+    public String idsToString(final int... ids) {
         String result = "all"; // NOI18N.
         if (ids.length > 0) {
             final StringBuilder builder = new StringBuilder();
