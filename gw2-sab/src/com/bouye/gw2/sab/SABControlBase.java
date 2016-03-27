@@ -15,8 +15,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -74,7 +74,7 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
     /**
      * The session token that this control will use when accessing endpoints of the Web API which require authentication.
      */
-    private final ReadOnlyObjectWrapper<Session> session = new ReadOnlyObjectWrapper(this, "session"); // NOI18N.
+    private final ObjectProperty<Session> session = new SimpleObjectProperty(this, "session"); // NOI18N.
 
     public final Session getSession() {
         return session.get();
@@ -84,7 +84,7 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
         session.set(value);
     }
     
-    public final ReadOnlyObjectProperty<Session> sessionProperty() {
-        return session.getReadOnlyProperty();
+    public final ObjectProperty<Session> sessionProperty() {
+        return session;
     }    
 }
