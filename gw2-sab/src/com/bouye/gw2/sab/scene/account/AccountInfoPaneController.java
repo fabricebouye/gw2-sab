@@ -191,7 +191,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
                 return new AccountInfoUpdateTaks(session, worldLabel, guildLinks);
             }
         };
-        addAndStartService(service, "updateOtherValuesAsync");
+        addAndStartService(service, "AccountInfoPaneController::updateOtherValuesAsync");
     }
 
     /**
