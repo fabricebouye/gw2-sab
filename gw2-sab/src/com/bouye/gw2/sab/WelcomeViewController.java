@@ -145,7 +145,7 @@ public final class WelcomeViewController extends SABControllerBase {
                 return new SessionUpdaterTask(tokens);
             }
         };
-        addAndStartService(service, "updateNewSessionAsync");
+        addAndStartService(service, "WelcomeViewController::updateNewSessionAsync");
     }
 
     private void doAddAccount(final Session value) {
@@ -211,7 +211,11 @@ public final class WelcomeViewController extends SABControllerBase {
     private void popFromDisplay() {
         // Remove from history.
         if (!history.isEmpty()) {
+            final Node previous = history.get(0);
             history.remove(0);
+            if (previous instanceof SABControlBase) {
+                ((SABControlBase)previous).dispose();
+            }
         }
         // Restore previous.
         final Node newContent = history.isEmpty() ? null : history.get(0);
