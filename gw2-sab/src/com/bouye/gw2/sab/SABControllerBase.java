@@ -7,16 +7,20 @@
  */
 package com.bouye.gw2.sab;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
+import javafx.concurrent.Worker;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 
@@ -33,9 +37,22 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
     public SABControllerBase() {
     }
 
+    @Override
+    public void initialize(final URL url, final ResourceBundle rb) {
+    }
+
     /**
-    * Holds a reference to the parent node.
-    */
+     * Dispose this controller.
+     * <br>Once this method has been called, the controller is not in a usable state anymore.
+     * <br>Default implementation stops all pending services.
+     */    
+    public void dispose() {
+        stopServices();
+    }
+
+    /**
+     * Holds a reference to the parent node.
+     */
     private final ObjectProperty<N> node = new SimpleObjectProperty<>(this, "node", null); // NOI18N.
 
     public final N getNode() {
@@ -104,7 +121,6 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
 
     /**
      * Called whenever the state of of the service changes.
-     * @todo support ScheduledService instances.
      */
     private final ChangeListener<Service.State> serviceStateChangeListener = (observable, oldValue, newValue) -> {
         switch (newValue) {
@@ -122,7 +138,14 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
                         description = service.toString();
                     }
                     // Remove from service list.
-                    removeService(service);
+                    if (service instanceof ScheduledService) {
+                        final ScheduledService scheduledService = (ScheduledService) service;
+                        if (newValue == Worker.State.CANCELLED) {
+                            removeService(service);
+                        }
+                    } else {
+                        removeService(service);
+                    }
                     // Log about this event.
                     switch (newValue) {
                         case SUCCEEDED:

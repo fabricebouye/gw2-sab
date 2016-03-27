@@ -28,7 +28,7 @@ import javafx.scene.layout.Region;
  * @param <C> The type of the controller.
  */
 public abstract class SABControlBase<C extends SABControllerBase> extends Region {
-    
+
     private Optional<Node> node = Optional.empty();
     private Optional<C> controller = Optional.empty();
 
@@ -51,11 +51,27 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
             Logger.getLogger(SABControlBase.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
-    
+
+    /**
+     * Dispose this control.
+     * <br>Once this method has been called, the control is not in a usable state anymore.
+     */
+    public void dispose() {
+        getController().ifPresent(c -> c.dispose());
+    }
+
     private void postInit() {
         controller.ifPresent(c -> c.setNode(SABControlBase.this));
     }
-    
+
+    /**
+     * Gets the controller of this control (if any).
+     * @return An {@code Optional<C>} instance, never {@code null}.
+     */
+    protected final Optional<C> getController() {
+        return controller;
+    }
+
     @Override
     protected final void layoutChildren() {
         super.layoutChildren();
@@ -79,12 +95,12 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
     public final Session getSession() {
         return session.get();
     }
-    
+
     public final void setSession(final Session value) {
         session.set(value);
     }
-    
+
     public final ObjectProperty<Session> sessionProperty() {
         return session;
-    }    
+    }
 }
