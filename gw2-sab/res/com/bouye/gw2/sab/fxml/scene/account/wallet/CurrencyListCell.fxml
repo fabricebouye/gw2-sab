@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox id="HBox" fx:id="rootPane" alignment="BASELINE_LEFT" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.wallet.CurrencyListCellController">
+    <children>
+        <Label fx:id="nameLabel" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+        <Label fx:id="amountLabel" text="Label" />
+        <Label fx:id="iconLabel">
+            <graphic>
+                <ImageView fx:id="icon" fitWidth="32.0" preserveRatio="true" />
+            </graphic>
+            <tooltip>
+                <Tooltip fx:id="infoTip" maxWidth="350.0" text="Label" wrapText="true" />
+            </tooltip>
+        </Label>
+    </children>
+</HBox>

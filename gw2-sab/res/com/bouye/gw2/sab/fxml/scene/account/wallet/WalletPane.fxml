@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox id="VBox" fx:id="rootPane" prefHeight="600" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.account.wallet.WalletPaneController">
+    <children>
+        <TextField fx:id="searchField" promptText="%action.search" />
+        <ListView id="walletListView" fx:id="walletListView" VBox.vgrow="ALWAYS" />    
+    </children>
+</VBox>

@@ -1,0 +1,53 @@
+.specialization-editor {
+    -base-color: gray;
+    -trait-color: derive(-base-color, 25%);
+    -trait-hover-color: derive(-base-color, 75%);
+    -trait-selected-color: derive(-base-color, 75%);
+    -connector-color: white;
+    -fx-background-color: black, -base-color;
+    -fx-background-insets: 0px, 1px;
+    -fx-min-width: 515px;
+    -fx-min-height: 110px;
+    -fx-pref-width: 515px;
+    -fx-pref-height: 110px;
+    -fx-max-width: 515px;
+    -fx-max-height: 110px;
+}
+.specialization-editor .elite-marker {
+    -fx-opacity: 0.33;
+    -fx-border-color: gold;
+    -fx-border-width: 4px;
+    -fx-border-insets: 5px;
+}
+.specialization-editor .trait {
+    -fx-background-color: black, -trait-color;
+    -fx-background-insets: 0px, 1px;
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-width: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-width: 24px;
+    -fx-max-height: 24px;
+}
+.specialization-editor .minor {
+    -fx-shape: "m -227.13341,229.55813 -4,2.30941 -4,-2.30941 0,-4.6188 4,-2.3094 4,2.3094 z";
+    -fx-min-height: 27px;
+    -fx-pref-height: 27px;
+    -fx-max-height: 27px;
+}
+.specialization-editor .adept:selected, 
+.specialization-editor .master:selected,
+.specialization-editor .grand-master:selected {
+    -trait-color: -trait-selected-color;
+}
+.specialization-editor .minor:hover,
+.specialization-editor .adept:hover, 
+.specialization-editor .master:hover,
+.specialization-editor .grand-master:hover {
+    -trait-color: -trait-hover-color;
+}
+.specialization-editor .connector {
+    -fx-stroke: -connector-color;
+    -fx-stroke-width: 2px;
+}
+
