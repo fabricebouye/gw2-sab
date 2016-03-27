@@ -131,7 +131,7 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
                 guildNameLabel.setText(guild.getGuildName());
             });
         });
-        addAndStartService(service, "updateGuildDetailstAsync");
+        addAndStartService(service, "GuildInfoPaneController::updateGuildDetailstAsync");
     }
 
     /**
@@ -158,7 +158,7 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
             final List<Member> result = service.getValue();
             rosterTableView.getItems().setAll(result);
         });
-        addAndStartService(service, "updateGuildRosterAsync");
+        addAndStartService(service, "GuildInfoPaneController::updateGuildRosterAsync");
     }
 
     /**
@@ -194,7 +194,7 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
             final List<LogEvent> result = service.getValue();
             logs.setAll(result);
         });
-        addAndStartService(service, "updateGuildLogsAsync");
+        addAndStartService(service, "GuildInfoPaneController::updateGuildLogsAsync");
     }
 
     /**
