@@ -242,3 +242,24 @@
 .specialization-editor:Warrior {
     -base-color: derive(orange, -10%);
 }
+/* PvP League division pane. */ 
+.season-pane {
+    -fx-alignment: center;
+}
+.season-pane #bottomGridPane {
+    -fx-hgap: 35px;
+}
+.season-pane .h1 {
+    -fx-alignment: center;
+    -fx-text-fill: khaki;
+    -fx-font-size: 2.0em;
+}
+.season-pane .h2 {
+    -fx-alignment: center;
+    -fx-text-fill: khaki;
+    -fx-font-size: 1.3em;
+}
+.season-pane .message {
+    -fx-alignment: center;
+    -fx-text-fill: gray;
+}
