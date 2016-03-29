@@ -49,11 +49,11 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
     @Override
     public void dispose() {
         try {
-        worlId.removeListener(worldIdInvalidationListener);
-        worlId.dispose();
-        if (worldQueryService != null) {
-            worldQueryService.cancel();
-        }
+            worlId.removeListener(worldIdInvalidationListener);
+            worlId.dispose();
+            if (worldQueryService != null) {
+                worldQueryService.cancel();
+            }
         } finally {
             super.dispose();
         }
