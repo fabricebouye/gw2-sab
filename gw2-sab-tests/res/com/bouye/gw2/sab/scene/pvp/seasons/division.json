@@ -1,0 +1,18 @@
+{
+    "name": "Division 1: Amber",
+    "flags": [],
+    "large_icon": "https://render.guildwars2.com/file/02ED75461164551455297DA4955862552C2452BE/1313334.png",
+    "small_icon": "https://render.guildwars2.com/file/6357FE56301B2F4AD1F309E62739B0110DA2452A/1313340.png",
+    "pip_icon": "https://render.guildwars2.com/file/47BDF237FF800552EDD69D28BC926031FC4B64A9/1313346.png",
+    "tiers": [
+        {
+            "points": 5
+        },
+        {
+            "points": 5
+        },
+        {
+            "points": 5
+        }
+    ]
+}
