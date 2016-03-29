@@ -1,0 +1,6 @@
+.division-pane {    
+    -fx-background-color: null;
+}
+.division-pane .pip-hbox {
+    -fx-spacing: -50;
+}

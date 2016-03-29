@@ -5,7 +5,7 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab.scene.pvp.season;
+package com.bouye.gw2.sab.scene.pvp.seasons;
 
 import api.web.gw2.mapping.core.URLReference;
 import api.web.gw2.mapping.v2.pvp.seasons.Season;

@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox id="VBox" prefHeight="600.0" prefWidth="600.0" styleClass="season-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.pvp.season.SeasonPaneController">
+<VBox id="VBox" prefHeight="600.0" prefWidth="600.0" styleClass="season-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.pvp.seasons.SeasonPaneController">
    <children>
       <Label fx:id="seasonNameLabel" styleClass="h1" text="Label" />
       <Label fx:id="seasonDescriptionLabel" styleClass="message" text="Label" />
