@@ -37,7 +37,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * FXML Controller class
+ * FXML Controller class.
  * @author Fabrice Bouyé
  */
 public final class SeasonPaneController extends SABControllerBase {
@@ -88,14 +88,20 @@ public final class SeasonPaneController extends SABControllerBase {
     public void initialize(final URL url, final ResourceBundle rb) {
         seasonProperty().addListener(seasonChangeListener);
         division.addListener(divisionChangeListener);
+        //
+        divisionPane = new DivisionPane();
+        divisionProgressionContainer.getChildren().setAll(divisionPane);
     }
 
-    private InvalidationListener seasonChangeListener = observable -> updateContent();
-    private InvalidationListener divisionChangeListener = observable -> updateContent();
+    private DivisionPane divisionPane;
+
+    private final InvalidationListener seasonChangeListener = observable -> updateContent();
+    private final InvalidationListener divisionChangeListener = observable -> updateContent();
 
     @Override
     protected void clearContent(final Node parent) {
         seasonIcon.setImage(null);
+        divisionPane.setDivision(null);
         divisionOverviewContainer.getChildren().clear();
         divisionRulesContainer.getChildren().clear();
         upcomingRewardsContainer.getChildren().clear();
@@ -118,6 +124,8 @@ public final class SeasonPaneController extends SABControllerBase {
             final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
             seasonIcon.setImage(image);
         });
+        // Division details.
+        divisionPane.setDivision(currentDivision);
         // Division overview.
         final ToggleGroup overviewToggleGroup = new ToggleGroup();
         final List<ToggleButton> overviewButtons = IntStream.range(0, divisions.size())
