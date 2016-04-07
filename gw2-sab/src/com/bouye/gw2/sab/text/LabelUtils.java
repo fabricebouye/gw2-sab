@@ -70,7 +70,8 @@ public enum LabelUtils {
                 final SAXParserFactory spf = SAXParserFactory.newInstance();
                 spf.setValidating(false);
                 final SAXParser saxParser = spf.newSAXParser();
-                final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT, string, CONTENT); // NOI18N.
+                String escapedContent = string.replaceAll("&", "&amp;"); // NOI18N.
+                final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT, escapedContent, CONTENT); // NOI18N.
                 final Map<String, Boolean> styleAttributes = initializeAttributeMap();
                 try (final InputStream source = new ByteArrayInputStream(xmlString.getBytes("UTF-8"))) { // NOI18N.
                     saxParser.parse(source, new DefaultHandler() {
@@ -87,7 +88,7 @@ public enum LabelUtils {
                                     paragraphBreak.setId("Text"); // NOI18N.
                                     nodeList.add(paragraphBreak);
                                     break;
-                                case CONTENT: // NOI18N.
+                                case CONTENT:
                                 default:
                             }
                         }
@@ -128,7 +129,7 @@ public enum LabelUtils {
                                     lineBreak.setId("Text"); // NOI18N.
                                     nodeList.add(lineBreak);
                                     break;
-                                case CONTENT: // NOI18N.
+                                case CONTENT:
                                 default:
                             }
                         }
@@ -149,5 +150,17 @@ public enum LabelUtils {
         result.put(FONT_AWESOME, Boolean.FALSE);
         result.put(LINK, Boolean.FALSE);
         return result;
+    }
+
+    public String toStrong(final String value) {
+        return String.format("<%s>%s</%s>", BOLD, value, BOLD); // NOI18N.        
+    }
+
+    public String toFontAwesome(final String value) {
+        return String.format("<%s>%s</%s>", FONT_AWESOME, value, FONT_AWESOME); // NOI18N.        
+    }
+
+    public String lineBreak() {
+        return String.format("<%s/>", LINE_BREAK); // NOI18N.      
     }
 }
