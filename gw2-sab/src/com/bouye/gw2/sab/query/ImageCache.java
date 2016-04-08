@@ -36,13 +36,23 @@ public enum ImageCache {
      * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null} or empty or invalid.
      */
     public Image getImage(final String url) {
+        return getImage(url, true);
+    }
+
+    /**
+     * Retrieves an image from the cache.
+     * @param url The URL of the image.
+     * @param backgroundLoading If {@code true}, the image is loaded in background.
+     * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null} or empty or invalid.
+     */
+    public Image getImage(final String url, final boolean backgroundLoading) {
         if (url == null || url.trim().isEmpty()) {
             return null;
         }
         Image result = cache.get(url);
         if (result == null && !cache.containsKey(url)) {
             try {
-                result = new Image(url, true);
+                result = new Image(url, backgroundLoading);
                 cache.put(url, result);
             } // Happens when URL is invalid.
             catch (IllegalArgumentException ex) {
