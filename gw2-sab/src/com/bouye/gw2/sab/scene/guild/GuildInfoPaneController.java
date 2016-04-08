@@ -24,8 +24,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -72,7 +71,6 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        Bindings.select(nodeProperty(), "guildId").addListener((observable, oldValue, newValue) -> updateContent());
         nameTableColumn.setCellValueFactory(feature -> {
             final Member member = feature.getValue();
             return new SimpleStringProperty(member.getName());
@@ -90,19 +88,36 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
         logsListView.setCellFactory(listView -> new LogEventListCell());
     }
 
+    /**
+     * Called whenever the guild id is invalidated.
+     */
+    private final InvalidationListener valueInvalidationListener = observable -> updateUI();
+
     @Override
-    protected void clearContent(final GuildInfoPane parent) {
-        guildNameLabel.setText(null);
+    protected void uninstallNode(final GuildInfoPane parent) {
+        parent.sessionProperty().removeListener(valueInvalidationListener);
+        parent.guildIdProperty().removeListener(valueInvalidationListener);
     }
 
     @Override
-    protected void installContent(final GuildInfoPane parent) {
-        final Session session = parent.getSession();
-        final String guildId = parent.getGuildId();
-        guildNameLabel.setText(guildId);
-        updateGuildDetailstAsync(session, guildId);
-        updateGuildRosterAsync(session, guildId);
-        updateGuildLogsAsync(session, guildId);
+    protected void installNode(final GuildInfoPane parent) {
+        parent.sessionProperty().addListener(valueInvalidationListener);
+        parent.guildIdProperty().addListener(valueInvalidationListener);
+    }
+
+    @Override
+    protected void updateUI() {
+        final Optional<GuildInfoPane> parent = parentNode();
+        final String guildId = parent.isPresent() ? parent.get().getGuildId() : null;
+        if (!parent.isPresent() || guildId == null) {
+            guildNameLabel.setText(null);
+        } else {
+            final Session session = parent.get().getSession();
+            guildNameLabel.setText(guildId);
+            updateGuildDetailstAsync(session, guildId);
+            updateGuildRosterAsync(session, guildId);
+            updateGuildLogsAsync(session, guildId);
+        }
     }
 
     /**

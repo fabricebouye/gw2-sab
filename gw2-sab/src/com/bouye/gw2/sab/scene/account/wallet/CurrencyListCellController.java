@@ -9,10 +9,12 @@ package com.bouye.gw2.sab.scene.account.wallet;
 
 import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
+import com.bouye.gw2.sab.scene.world.WorldInfoPane;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -44,45 +46,40 @@ public final class CurrencyListCellController extends SABControllerBase<Currency
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        currencyProperty().addListener((observable, oldValue, newValue) -> updateContent());
-    }
-
-    @Override
-    protected void clearContent(final CurrencyListCell parent) {
-        nameLabel.setText(null);
-        amountLabel.setText(null);
-        icon.setImage(null);
-        infoTip.setText(null);
-    }
-
-    @Override
-    protected void installContent(final CurrencyListCell parent) {
-        final Optional<CurrencyWrapper> currency = Optional.ofNullable(getCurrency());
-        currency.ifPresent(c -> {
-            nameLabel.setText(c.getCurrency().getName());
-            amountLabel.setText(String.valueOf(c.getCurrencyAmount().getValue()));
-            c.getCurrency().getIcon().ifPresent(url -> {
-                final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
-                icon.setImage(image);
-            });
-            infoTip.setText(c.getCurrency().getDescription());
-        });
     }
 
     /**
-     * The currency value on display.
+     * Called whenever observed values are invalidated.
      */
-    private final ObjectProperty<CurrencyWrapper> currency = new SimpleObjectProperty<>(this, "currency", null); // NOI18N.
+    private final InvalidationListener valueInvalidationListener = observable -> updateUI();
 
-    public final CurrencyWrapper getCurrency() {
-        return currency.get();
+    @Override
+    protected void uninstallNode(final CurrencyListCell parent) {
+        parent.itemProperty().removeListener(valueInvalidationListener);
     }
 
-    public final void setCurrency(final CurrencyWrapper value) {
-        currency.set(value);
+    @Override
+    protected void installNode(final CurrencyListCell parent) {
+        parent.itemProperty().addListener(valueInvalidationListener);
     }
 
-    public final ObjectProperty<CurrencyWrapper> currencyProperty() {
-        return currency;
+    @Override
+    protected void updateUI() {
+        final Optional<CurrencyListCell> parent = parentNode();
+        final CurrencyWrapper currency = parent.isPresent() ? parent.get().getItem() : null;
+        if (currency == null) {
+            nameLabel.setText(null);
+            amountLabel.setText(null);
+            icon.setImage(null);
+            infoTip.setText(null);
+        } else {
+            nameLabel.setText(currency.getCurrency().getName());
+            amountLabel.setText(String.valueOf(currency.getCurrencyAmount().getValue()));
+            currency.getCurrency().getIcon().ifPresent(url -> {
+                final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
+                icon.setImage(image);
+            });
+            infoTip.setText(currency.getCurrency().getDescription());
+        }
     }
 }

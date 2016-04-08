@@ -14,17 +14,13 @@ import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
  *
  * @author Fabrice
  */
-public final class CurrencyListCell extends SABListCellBase<CurrencyWrapper, CurrencyListCellController>{
-   /**
+public final class CurrencyListCell extends SABListCellBase<CurrencyWrapper, CurrencyListCellController> {
+
+    /**
      * Creates a new instance.
      */
     public CurrencyListCell() throws NullPointerException {
         super("fxml/scene/account/wallet/CurrencyListCell.fxml"); // NOI18N.
         getStyleClass().add("currency-list-cell"); // NOI18N.
     }
-
-    @Override
-    protected void updateController(final CurrencyListCellController controller, final CurrencyWrapper item) {
-        controller.setCurrency(item);
-    }        
 }

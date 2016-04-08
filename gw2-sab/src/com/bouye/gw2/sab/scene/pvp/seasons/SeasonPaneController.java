@@ -16,14 +16,13 @@ import com.bouye.gw2.sab.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -40,7 +39,7 @@ import javafx.scene.layout.VBox;
  * FXML Controller class.
  * @author Fabrice Bouyé
  */
-public final class SeasonPaneController extends SABControllerBase {
+public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
 
     @FXML
     private Label seasonNameLabel;
@@ -85,63 +84,76 @@ public final class SeasonPaneController extends SABControllerBase {
     }
 
     @Override
+    public void dispose() {
+        try {
+        } finally {
+            super.dispose();
+        }
+    }
+
+    @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        seasonProperty().addListener(seasonChangeListener);
-        division.addListener(divisionChangeListener);
-        //
         divisionPane = new DivisionPane();
         divisionProgressionContainer.getChildren().setAll(divisionPane);
     }
 
     private DivisionPane divisionPane;
 
-    private final InvalidationListener seasonChangeListener = observable -> updateContent();
-    private final InvalidationListener divisionChangeListener = observable -> updateContent();
+    private final InvalidationListener valueInvalidationListener = observable -> updateUI();
 
     @Override
-    protected void clearContent(final Node parent) {
-        seasonIcon.setImage(null);
-        divisionPane.setDivision(null);
-        divisionOverviewContainer.getChildren().clear();
-        divisionRulesContainer.getChildren().clear();
-        upcomingRewardsContainer.getChildren().clear();
+    protected void uninstallNode(final SeasonPane node) {
+        node.seasonProperty().removeListener(valueInvalidationListener);
+        division.removeListener(valueInvalidationListener);
     }
 
     @Override
-    protected void installContent(final Node parent) {
-        final Season season = getSeason();
+    protected void installNode(final SeasonPane node) {
+        node.seasonProperty().addListener(valueInvalidationListener);
+        division.addListener(valueInvalidationListener);
+    }
+
+    @Override
+    protected void updateUI() {
+        final Optional<SeasonPane> parent = parentNode();
+        final Season season = parent.isPresent() ? parent.get().getSeason() : null;
         final int divisionIndex = division.get();
         if ((season == null) || (divisionIndex < 0) || (divisionIndex >= season.getDivisions().size())) {
-            return;
+            seasonIcon.setImage(null);
+            divisionPane.setDivision(null);
+            divisionOverviewContainer.getChildren().clear();
+            divisionRulesContainer.getChildren().clear();
+            upcomingRewardsContainer.getChildren().clear();
+        } else {
+            final List<SeasonDivision> divisions = season.getDivisions()
+                    .stream()
+                    .collect(Collectors.toList());
+            final SeasonDivision currentDivision = divisions.get(divisionIndex);
+            // Season icon.
+            final URLReference largeIcon = currentDivision.getLargeIcon();
+            largeIcon.ifPresent(url -> {
+                final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
+                seasonIcon.setImage(image);
+            });
+            // Division details.
+            divisionPane.setDivision(currentDivision);
+            // Division overview.
+            final ToggleGroup overviewToggleGroup = new ToggleGroup();
+            final List<ToggleButton> overviewButtons = IntStream.range(0, divisions.size())
+                    .mapToObj(index -> {
+                        final SeasonDivision division = divisions.get(index);
+                        return createToggleForDivision(index, division, currentDivision, overviewToggleGroup);
+                    })
+                    .collect(Collectors.toList());
+            divisionOverviewContainer.getChildren().setAll(overviewButtons);
+            // Division rules.
+            final List<Node> rulesLabels = currentDivision.getFlags()
+                    .stream()
+                    .map(flag -> createNodeForDivisionFlag(flag, currentDivision))
+                    .collect(Collectors.toList());
+            divisionRulesContainer.getChildren().setAll(rulesLabels);
+            // Upcoming rewards.
         }
-        final List<SeasonDivision> divisions = season.getDivisions()
-                .stream()
-                .collect(Collectors.toList());
-        final SeasonDivision currentDivision = divisions.get(divisionIndex);
-        // Season icon.
-        final URLReference largeIcon = currentDivision.getLargeIcon();
-        largeIcon.ifPresent(url -> {
-            final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
-            seasonIcon.setImage(image);
-        });
-        // Division details.
-        divisionPane.setDivision(currentDivision);
-        // Division overview.
-        final ToggleGroup overviewToggleGroup = new ToggleGroup();
-        final List<ToggleButton> overviewButtons = IntStream.range(0, divisions.size())
-                .mapToObj(index -> {
-                    final SeasonDivision division = divisions.get(index);
-                    return createToggleForDivision(index, division, currentDivision, overviewToggleGroup);
-                })
-                .collect(Collectors.toList());
-        divisionOverviewContainer.getChildren().setAll(overviewButtons);
-        // Division rules.
-        final List<Node> rulesLabels = currentDivision.getFlags()
-                .stream()
-                .map(flag -> createNodeForDivisionFlag(flag, currentDivision))
-                .collect(Collectors.toList());
-        divisionRulesContainer.getChildren().setAll(rulesLabels);
-        // Upcoming rewards.
     }
 
     private final ToggleButton createToggleForDivision(final int index, final SeasonDivision division, final SeasonDivision currentDivision, final ToggleGroup overviewToggleGroup) {
@@ -187,22 +199,14 @@ public final class SeasonPaneController extends SABControllerBase {
         return result;
     }
 
-    private final ObjectProperty<Season> season = new SimpleObjectProperty<>(this, "season", null); // NOI18N.
+    /**
+     * Division currently on display.
+     */
+    private final IntegerProperty division = new SimpleIntegerProperty(this, "division", -1); // NOI18N.
 
-    public final Season getSeason() {
-        return season.get();
-    }
-
-    public final void setSeason(final Season value) {
-        season.set(value);
-    }
-
-    public final ObjectProperty<Season> seasonProperty() {
-        return season;
-    }
-
-    public final void selectDivision(final int index) {
-        final Season season = getSeason();
+    public final void selectDivision(final int index) throws IndexOutOfBoundsException {
+        final Optional<SeasonPane> parent = parentNode();
+        final Season season = parent.isPresent() ? parent.get().getSeason() : null;
         int newValue = -1;
         if (season != null) {
             if (index < 0 || index >= season.getDivisions().size()) {
@@ -212,6 +216,4 @@ public final class SeasonPaneController extends SABControllerBase {
         }
         division.set(newValue);
     }
-
-    private final IntegerProperty division = new SimpleIntegerProperty(this, "division", -1); // NOI18N.
 }

@@ -29,16 +29,6 @@ public final class AccountListCell extends SABListCellBase<Session, AccountListC
         getStyleClass().add("account-list-cell"); // NOI18N.
     }
 
-    @Override
-    protected void updateController(final AccountListCellController controller, final Session item) {
-        controller.setSession(item);
-        if (item == null) {
-            controller.deletableProperty().unbind();
-        } else {
-            controller.deletableProperty().bind(deletableProperty());
-        }
-    }
-
     /**
      * Item deletion has been activated.
      */

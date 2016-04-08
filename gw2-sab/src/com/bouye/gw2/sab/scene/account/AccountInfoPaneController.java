@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
@@ -67,97 +68,145 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
     @FXML
     private FlowPane permissionsFlowPane;
 
-    @Override
-    public void initialize(final URL url, final ResourceBundle rb) {
-        Bindings.select(nodeProperty(), "session", "valid").addListener((observable, oldValue, newValue) -> {
-            System.out.printf("node.session.valid %b -> %b%n", oldValue, newValue);
-            updateContent();
-        });
-        Platform.runLater(() -> {
-            updateContent();
-        });
+    /**
+     * Creates a new instance.
+     */
+    public AccountInfoPaneController() {
     }
 
-    private final InvalidationListener sessionValidListener = observable -> updateContent();
+    @Override
+    public void initialize(final URL url, final ResourceBundle rb) {
+    }
 
     @Override
-    protected void clearContent(final AccountInfoPane parent) {
-        // Style.
+    public void dispose() {
+        try {
+            if (infoService != null) {
+                infoService.cancel();
+            }
+        } finally {
+            super.dispose();
+        }
+    }
+
+    /**
+     * Called whenever observed values are invalidated.
+     */
+    private final InvalidationListener valueInvalidationListener = observable -> updateUI();
+
+    /**
+     * Monitors the session validity.
+     */
+    private BooleanBinding validBinding;
+
+    @Override
+    protected void uninstallNode(final AccountInfoPane parent) {
+        parent.sessionProperty().removeListener(valueInvalidationListener);
+        validBinding.removeListener(valueInvalidationListener);
+        validBinding.dispose();
+        validBinding = null;
+        clearOldStyle(parent);
+    }
+
+    @Override
+    protected void installNode(final AccountInfoPane parent) {
+        parent.sessionProperty().addListener(valueInvalidationListener);
+        validBinding = Bindings.selectBoolean(parent.sessionProperty(), "valid"); // NOI18N.
+        validBinding.addListener(valueInvalidationListener);
+    }
+
+    @Override
+    protected void updateUI() {
+        if (infoService != null) {
+            infoService.cancel();
+        }
+        final Optional<AccountInfoPane> parent = parentNode();
+        final Session session = parent.isPresent() ? parent.get().getSession() : null;
+        parent.ifPresent(this::clearOldStyle);
+        if (session == null || !session.isValid()) {
+            // Other.
+            accountNameLabel.setText(null);
+            accessLabel.setText(null);
+            commanderCheck.setSelected(false);
+            dailyApLabel.setText(null);
+            monthlyApLabel.setText(null);
+            wvwRankLabel.setText(null);
+            guildsTextFlow.getChildren().clear();
+            // Permissions.
+            permissionsFlowPane.getChildren().clear();
+        } else {
+            final Account account = session.getAccount();
+            final TokenInfo tokenInfo = session.getTokenInfo();
+            // Name.
+            accountNameLabel.setText(account.getName());
+            final String accessText = String.format("[ %s ]", JsonpUtils.INSTANCE.javaEnumToJavaClassName(account.getAccess()));
+            accessLabel.setText(accessText);
+            //
+            final int worldId = account.getWorld();
+            worldLink.setUserData(worldId);
+            worldLink.setOnAction(actionEvent -> displayWorldDetails(worldId));
+            worldLink.setText(String.valueOf(worldId));
+            //
+            commanderCheck.setSelected(account.isCommander());
+            dailyApLabel.setText(String.valueOf(account.getDailyAp()));
+            monthlyApLabel.setText(String.valueOf(account.getMonthlyAp()));
+            wvwRankLabel.setText(String.valueOf(account.getWvwRank()));
+            //
+            final List<Labeled> guildLinks = account.getGuilds()
+                    .stream()
+                    .map(guildId -> {
+                        final Hyperlink guildLink = new Hyperlink(String.valueOf(guildId));
+                        guildLink.setUserData(guildId);
+                        guildLink.setOnAction(actionEvent -> displayGuildDetails(guildId));
+                        return guildLink;
+                    })
+                    .collect(Collectors.toList());
+            guildsTextFlow.getChildren().setAll(guildLinks);
+            // Permissions.
+            final List<Label> permissionLabels = tokenInfo.getPermissions()
+                    .stream()
+                    .map(permission -> {
+                        final Label icon = new Label(SABConstants.I18N.getString("icon.gear")); // NOI18N.
+                        icon.getStyleClass().addAll("awesome-icon", "permission-icon"); // NOI18N.
+                        final Label label = new Label();
+                        label.getStyleClass().add("permission-label"); // NOI18N.
+                        final String text = JsonpUtils.INSTANCE.javaEnumToJavaClassName(permission);
+                        label.setText(text);
+                        label.setGraphic(icon);
+                        return label;
+                    })
+                    .collect(Collectors.toList());
+            permissionsFlowPane.getChildren().setAll(permissionLabels);
+            updateOtherValuesAsync(session, worldLink, guildLinks);
+            parent.ifPresent(this::installNewStyle);
+        }
+    }
+
+    /**
+     * Clear old style from given parent.
+     * @param parent The parent, never {@code null}.
+     */
+    private void clearOldStyle(final AccountInfoPane parent) {
         Arrays.stream(AccountAccessType.values()).forEach(accessType -> {
             final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
             final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
             parent.pseudoClassStateChanged(pseudoClass, false);
         });
-        // Name.
-        accountNameLabel.setText(null);
-        accessLabel.setText(null);
-        commanderCheck.setSelected(false);
-        dailyApLabel.setText(null);
-        monthlyApLabel.setText(null);
-        wvwRankLabel.setText(null);
-        guildsTextFlow.getChildren().clear();
-        // Permissions.
-        permissionsFlowPane.getChildren().clear();
     }
 
-    @Override
-    protected void installContent(final AccountInfoPane parent) {
+    /**
+     * Apply new style to given parent.
+     * @param parent The parent, never {@code null}.
+     */
+    private void installNewStyle(final AccountInfoPane parent) {
         final Session session = parent.getSession();
-        if (session == null || !session.isValid()) {
-            System.out.println(session.getAccount());
-            System.out.println(session.getTokenInfo());
-            System.out.println(session.isValid());
-            System.out.println(session.isDemo());
-            return;
+        if (session != null && session.isValid()) {
+            final Account account = session.getAccount();
+            final AccountAccessType accessType = account.getAccess();
+            final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
+            final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
+            parent.pseudoClassStateChanged(pseudoClass, true);
         }
-        final Account account = session.getAccount();
-        final TokenInfo tokenInfo = session.getTokenInfo();
-        // Style.
-        final AccountAccessType accessType = account.getAccess();
-        final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
-        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
-        parent.pseudoClassStateChanged(pseudoClass, true);
-        // Name.
-        accountNameLabel.setText(account.getName());
-        final String accessText = String.format("[ %s ]", JsonpUtils.INSTANCE.javaEnumToJavaClassName(account.getAccess()));
-        accessLabel.setText(accessText);
-        //
-        final int worldId = account.getWorld();
-        worldLink.setUserData(worldId);
-        worldLink.setOnAction(actionEvent -> displayWorldDetails(worldId));
-        worldLink.setText(String.valueOf(worldId));
-        //
-        commanderCheck.setSelected(account.isCommander());
-        dailyApLabel.setText(String.valueOf(account.getDailyAp()));
-        monthlyApLabel.setText(String.valueOf(account.getMonthlyAp()));
-        wvwRankLabel.setText(String.valueOf(account.getWvwRank()));
-        //
-        final List<Labeled> guildLinks = account.getGuilds()
-                .stream()
-                .map(guildId -> {
-                    final Hyperlink guildLink = new Hyperlink(String.valueOf(guildId));
-                    guildLink.setUserData(guildId);
-                    guildLink.setOnAction(actionEvent -> displayGuildDetails(guildId));
-                    return guildLink;
-                })
-                .collect(Collectors.toList());
-        guildsTextFlow.getChildren().setAll(guildLinks);
-        // Permissions.
-        final List<Label> permissionLabels = tokenInfo.getPermissions()
-                .stream()
-                .map(permission -> {
-                    final Label icon = new Label(SABConstants.I18N.getString("icon.gear")); // NOI18N.
-                    icon.getStyleClass().addAll("awesome-icon", "permission-icon"); // NOI18N.
-                    final Label label = new Label();
-                    label.getStyleClass().add("permission-label"); // NOI18N.
-                    final String text = JsonpUtils.INSTANCE.javaEnumToJavaClassName(permission);
-                    label.setText(text);
-                    label.setGraphic(icon);
-                    return label;
-                })
-                .collect(Collectors.toList());
-        permissionsFlowPane.getChildren().setAll(permissionLabels);
-        updateOtherValuesAsync(session, worldLink, guildLinks);
     }
 
     /**
@@ -184,14 +233,18 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         });
     }
 
+    private Service<Void> infoService;
+
     private void updateOtherValuesAsync(final Session session, final Labeled worldLabel, final List<Labeled> guildLinks) {
-        final Service<Void> service = new Service<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new AccountInfoUpdateTaks(session, worldLabel, guildLinks);
-            }
-        };
-        addAndStartService(service, "AccountInfoPaneController::updateOtherValuesAsync");
+        if (infoService == null) {
+            infoService = new Service<Void>() {
+                @Override
+                protected Task<Void> createTask() {
+                    return new AccountInfoUpdateTaks(session, worldLabel, guildLinks);
+                }
+            };
+        }
+        addAndStartService(infoService, "AccountInfoPaneController::updateOtherValuesAsync");
     }
 
     /**

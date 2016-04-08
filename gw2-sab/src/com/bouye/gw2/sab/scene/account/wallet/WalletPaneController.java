@@ -12,21 +12,21 @@ import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import com.bouye.gw2.sab.SABControllerBase;
-import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.ScheduledService;
@@ -58,21 +58,46 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
         walletListView.setCellFactory(listView -> new CurrencyListCell());
         walletListView.setItems(filteredCurrencies);
         searchField.textProperty().addListener(searchTextInvalidationListener);
-        session = Bindings.select(nodeProperty(), "session"); // NOI18N.
-        session.addListener(sessionInvalidationListener);
     }
 
     @Override
     public void dispose() {
         try {
-            searchField.textProperty().removeListener(searchTextInvalidationListener);
-            session.removeListener(sessionInvalidationListener);
-            session.dispose();
             if (walletQueryService != null) {
                 walletQueryService.cancel();
             }
+            searchField.textProperty().removeListener(searchTextInvalidationListener);
         } finally {
             super.dispose();
+        }
+    }
+
+    /**
+     * Called whenever observed values are invalidated.
+     */
+    private final ListChangeListener<CurrencyAmount> currencyListChangeListener = change -> updateUI();
+
+    @Override
+    protected void uninstallNode(final WalletPane parent) {
+        parent.getCurrencies().removeListener(currencyListChangeListener);
+    }
+
+    @Override
+    protected void installNode(final WalletPane parent) {
+        parent.getCurrencies().addListener(currencyListChangeListener);
+    }
+
+    @Override
+    protected void updateUI() {
+        if (walletQueryService != null) {
+            walletQueryService.cancel();
+        }
+        final Optional<WalletPane> parent = parentNode();
+        final List<CurrencyAmount> amounts = parent.isPresent() ? parent.get().getCurrencies() : null;
+        if (amounts == null || amounts.isEmpty()) {
+            currencies.clear();
+        } else {
+            updateWalletAsync();
         }
     }
 
@@ -80,13 +105,6 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
      * Called whenever the search text is invalidated.
      */
     private final InvalidationListener searchTextInvalidationListener = observable -> applySearchFilter();
-
-    /**
-     * Called whenever the session is invalidated.
-     */
-    private final InvalidationListener sessionInvalidationListener = observable -> updateContent();
-
-    private Binding<Session> session;
 
     private final ObservableList<CurrencyWrapper> currencies = FXCollections.observableList(new LinkedList());
     private final FilteredList<CurrencyWrapper> filteredCurrencies = new FilteredList<>(currencies);
@@ -99,7 +117,12 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
         Predicate<CurrencyWrapper> predicate = null;
         if (searchValue != null && !searchValue.trim().isEmpty()) {
             final String criteria = searchValue.trim().toLowerCase();
-            predicate = currency -> currency.getCurrency().getName().toLowerCase().contains(criteria);
+            predicate = currency -> {
+                boolean result = false;
+                result |= currency.getCurrency().getName().toLowerCase().contains(criteria);
+                result |= String.valueOf(currency.getCurrencyAmount().getValue()).startsWith(criteria);
+                return result;
+            };
         }
         filteredCurrencies.setPredicate(predicate);
     }
@@ -108,23 +131,6 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
      * Service to query wallet for current account.
      */
     private ScheduledService<List<CurrencyWrapper>> walletQueryService;
-
-    @Override
-    protected void clearContent(final WalletPane parent) {
-        if (walletQueryService != null) {
-            walletQueryService.cancel();
-        }
-    }
-
-    @Override
-    protected void installContent(final WalletPane parent) {
-        final Session session = this.session.getValue();
-        // No need to start service.
-        if (session == null) {
-            return;
-        }
-        updateWalletAsync();
-    }
 
     private void updateWalletAsync() {
         // Service lazy initialization.
@@ -149,6 +155,10 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
         addAndStartService(walletQueryService, "WalletPaneController::updateWalletAsync");
     }
 
+    /**
+     * Queries the wallet.
+     * @author Fabrice Bouyé
+     */
     private class WalletQueryTask extends Task<List<CurrencyWrapper>> {
 
         public WalletQueryTask() {
@@ -158,31 +168,28 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
         protected List<CurrencyWrapper> call() throws Exception {
             System.out.println("Wallet update!");
             List<CurrencyWrapper> result = Collections.EMPTY_LIST;
-            final Session session = WalletPaneController.this.session.getValue();
-            if (session != null) {
-                // Get wallet amounts on this account.
-                final List<CurrencyAmount> ammounts = JsonpContext.SAX.loadObjectArray(CurrencyAmount.class, new URL("https://api.guildwars2.com/v2/account/wallet?access_token=" + session.getAppKey()))
-                        .stream()
-                        .collect(Collectors.toList());
+            final Optional<WalletPane> parent = parentNode();
+            final List<CurrencyAmount> amounts = parent.isPresent() ? parent.get().getCurrencies() : null;
+            if (amounts != null && !amounts.isEmpty()) {
                 // Extract currency ids.
-                final int[] currencyIds = ammounts.stream()
+                final int[] currencyIds = amounts.stream()
                         .mapToInt(ammount -> ammount.getId())
                         .toArray();
                 // Get all currencies in wallet.
-                final Map<Integer, Currency> currencies = JsonpContext.SAX.loadObjectArray(Currency.class, new URL("https://api.guildwars2.com/v2/currencies?ids=" + JsonpUtils.INSTANCE.idsToParameter(currencyIds)))
+                final String path = String.format("https://api.guildwars2.com/v2/currencies?ids=%s&lang=%s", JsonpUtils.INSTANCE.idsToParameter(currencyIds), Locale.getDefault().getLanguage());
+                final Map<Integer, Currency> currencies = JsonpContext.SAX.loadObjectArray(Currency.class, new URL(path))
                         .stream()
                         .collect(Collectors.toMap(currency -> currency.getId(), Function.identity()));
                 // Wrap into single object.
-                result = ammounts.stream()
-                        .map(ammount -> {
-                            final Currency currency = currencies.get(ammount.getId());
-                            return new CurrencyWrapper(currency, ammount);
+                result = amounts.stream()
+                        .map(amount -> {
+                            final Currency currency = currencies.get(amount.getId());
+                            return new CurrencyWrapper(currency, amount);
                         })
                         .collect(Collectors.toList());
                 result.sort((v1, v2) -> v1.getCurrency().getOrder() - v2.getCurrency().getOrder());
             }
             return result;
         }
-
     }
 }

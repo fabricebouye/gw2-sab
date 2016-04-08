@@ -13,10 +13,9 @@ import com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController;
 import com.bouye.gw2.sab.tasks.world.WorldSolverTask;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -42,15 +41,11 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
-        worlId = Bindings.selectInteger(nodeProperty(), "worldId");
-        worlId.addListener(worldIdInvalidationListener);
     }
 
     @Override
     public void dispose() {
         try {
-            worlId.removeListener(worldIdInvalidationListener);
-            worlId.dispose();
             if (worldQueryService != null) {
                 worldQueryService.cancel();
             }
@@ -59,26 +54,37 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
         }
     }
 
-    private final InvalidationListener worldIdInvalidationListener = observable -> updateContent();
-
-    private IntegerBinding worlId;
+    /**
+     * Called whenever observed values are invalidated.
+     */
+    private final InvalidationListener valueInvalidationListener = observable -> updateUI();
 
     @Override
-    protected void clearContent(final WorldInfoPane parent) {
-        nameLabel.setText(null);
-        regionLabel.setText(null);
-        languageLabel.setText(null);
-        populationLabel.setText(null);
+    protected void uninstallNode(final WorldInfoPane parent) {
+        parent.worldIdProperty().removeListener(valueInvalidationListener);
     }
 
     @Override
-    protected void installContent(final WorldInfoPane parent) {
-        final int worldId = parent.getWorldId();
-        if (worldId == -1) {
-            return;
+    protected void installNode(final WorldInfoPane parent) {
+        parent.worldIdProperty().addListener(valueInvalidationListener);
+    }
+
+    @Override
+    protected void updateUI() {
+        if (worldQueryService != null) {
+            worldQueryService.cancel();
         }
-        nameLabel.setText(String.valueOf(worldId));
-        updateWorldValuesAsync(worldId);
+        final Optional<WorldInfoPane> parent = parentNode();
+        final int worldId = parent.isPresent() ? parent.get().getWorldId() : -1;
+        if (worldId == -1) {
+            nameLabel.setText(null);
+            regionLabel.setText(null);
+            languageLabel.setText(null);
+            populationLabel.setText(null);
+        } else {
+            nameLabel.setText(String.valueOf(worldId));
+            updateWorldValuesAsync(worldId);
+        }
         wvwSummaryController.setWorldId(worldId);
     }
 

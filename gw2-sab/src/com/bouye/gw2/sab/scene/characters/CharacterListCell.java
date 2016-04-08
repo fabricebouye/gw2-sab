@@ -22,8 +22,4 @@ public final class CharacterListCell extends SABListCellBase<String, CharacterLi
         super("fxml/scene/characters/CharacterListCell.fxml"); // NOI18N.
         getStyleClass().add("character-list-cell"); // NOI18N.
     }
-
-    @Override
-    protected void updateController(final CharacterListCellController controller, final String item) {
-    }       
 }
