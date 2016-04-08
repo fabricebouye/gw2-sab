@@ -22,7 +22,7 @@ import org.scenicview.ScenicView;
  * Test.
  * @author Fabrice Bouyé
  */
-public class TestDivisionPane extends Application {
+public final class TestDivisionPane extends Application {
 
     @Override
     public void start(Stage primaryStage) throws NullPointerException, IOException {
@@ -46,5 +46,4 @@ public class TestDivisionPane extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }
