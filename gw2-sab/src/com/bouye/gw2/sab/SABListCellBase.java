@@ -14,6 +14,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
@@ -43,38 +46,36 @@ public abstract class SABListCellBase<V, C extends SABControllerBase> extends Li
             final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, SABConstants.I18N);
             node = Optional.of(fxmlLoader.load());
             controller = Optional.of(fxmlLoader.getController());
-            controller.ifPresent(c -> c.setNode(SABListCellBase.this));
+            Platform.runLater(this::postInit);
         } catch (IOException ex) {
             Logger.getLogger(CharacterListCell.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
-    @Override
-    protected final void updateItem(final V item, final boolean empty) {
-        super.updateItem(item, empty);
-        String text = null;
-        Node graphic = null;
-        if (!empty) {
-            // We clear the graphic also when the item is null.
-            graphic = (item == null) ? null : node.orElse(null);
-            // Update controller, help cleaning previous ref.
-            controller.ifPresent(c -> updateController(c, item));
-        }
-        setText(text);
-        setGraphic(graphic);
+    /**
+     * Actions to execute after this list cell has been initialized.
+     */
+    private void postInit() {
+        controller.ifPresent(c -> c.setNode(SABListCellBase.this));
     }
 
     /**
-     * Update the controller with the item to display.
-     * <br>This method may be called :
-     * <ul>
-     * <li>When {@code item} is non-{@code null} and is going to be displayed in the list cell with the appropriate graphic.</li>
-     * <li>When {@code item} is {@code null} and the controller needs to be cleaned up from its previous reference.</li>
-     * </ul>
-     * <br>Default implementation does nothing.
-     * @param controller The controller, never {@code null}.
-     * @param item The item, may be {@code null}.
+     * Gets the controller of this list cell (if any).
+     * @return An {@code Optional<C>} instance, never {@code null}.
      */
-    protected void updateController(final C controller, final V item) {
+    protected final Optional<C> getController() {
+        return controller;
+    }
+
+    @Override
+    protected final void updateItem(final V item, final boolean empty) {
+        super.updateItem(item, empty);
+        final String text = null;
+        Node graphic = null;
+        if (!empty) {
+            graphic = (item == null) ? null : node.orElse(null);
+        }
+        setText(text);
+        setGraphic(graphic);
     }
 }

@@ -60,6 +60,9 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
         getController().ifPresent(c -> c.dispose());
     }
 
+    /**
+     * Actions to execute after this node has been initialized.
+     */
     private void postInit() {
         controller.ifPresent(c -> c.setNode(SABControlBase.this));
     }

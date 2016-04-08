@@ -35,6 +35,7 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
      * Creates a new instance.
      */
     public SABControllerBase() {
+        nodeProperty().addListener(nodeChangeListener);
     }
 
     @Override
@@ -45,9 +46,51 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
      * Dispose this controller.
      * <br>Once this method has been called, the controller is not in a usable state anymore.
      * <br>Default implementation stops all pending services.
-     */    
+     */
     public void dispose() {
         stopServices();
+    }
+
+    /**
+     * Called whenever the parent node changes.
+     */
+    private final ChangeListener<N> nodeChangeListener = (observable, oldValue, newValue) -> {
+        Optional.ofNullable(oldValue)
+                .ifPresent(this::uninstallNode);
+        Optional.ofNullable(newValue)
+                .ifPresent(this::installNode);
+        updateUI();
+    };
+
+    /**
+     * Uninstall parent node from this controller.
+     * <br>Default implementation does nothing.
+     * @param node The parent node to uninstall, never {@code null}.
+     */
+    protected void uninstallNode(final N node) {
+    }
+
+    /**
+     * Install parent node in this controller.
+     * <br>Default implementation does nothing.
+     * @param node The parent node to install, never {@code null}.
+     */
+    protected void installNode(final N node) {
+    }
+
+    /**
+     * Update this control's content.
+     * <br>Default implementation does nothing.
+     */
+    protected void updateUI() {
+    }
+
+    /**
+     * Gets an optional reference to the parent node.
+     * @return An {@code Optional<N>} instance, never {@code null}.
+     */
+    protected final Optional<N> parentNode() {
+        return Optional.ofNullable(getNode());
     }
 
     /**
@@ -166,17 +209,4 @@ public abstract class SABControllerBase<N extends Node> implements Initializable
             default:
         }
     };
-
-    protected final void updateContent() {
-        // @todo check if we REALLY nned a source node for that in most cases.
-        final Optional<N> parent = Optional.ofNullable(getNode());
-        parent.ifPresent(this::clearContent);
-        parent.ifPresent(this::installContent);
-    }
-
-    protected void clearContent(final N parent) {
-    }
-
-    protected void installContent(final N parent) {
-    }
 }
