@@ -40,6 +40,10 @@ public enum SABTestUtils {
         }
     }
 
+    /**
+     * Gets the test session object.
+     * @return A {@code Session} instance, never {@code null}.
+     */
     public Session getTestSession() {
         final String appKey = settings.getProperty("app.key"); // NOI18N.
         final Session result = new Session(appKey);
