@@ -6,9 +6,20 @@
     -fx-font-family: "Arial" ;
     -fx-font-size: 1.2em;
     -strong-text-color: firebrick;
-    -red-team-color: crimson;
-    -green-team-color: green;
-    -blue-team-color: dodgerblue;
+    -game-gw2-color: firebrick;
+    -game-hot-color: green;
+    -profession-elementalist-color: derive(deeppink, -10%);
+    -profession-engineer-color: derive(yellow, -10%);
+    -profession-guardian-color: derive(dodgerblue, -10%);
+    -profession-mesmer-color: magenta;
+    -profession-necromancer-color: derive(darkgreen, -30%);
+    -profession-ranger-color: derive(greenyellow, -30%);
+    -profession-revenant-color: derive(red, -20%);
+    -profession-thief-color: derive(orangered, -35%);
+    -profession-warrior-color: derive(orange, -10%);
+    -team-red-color: crimson;
+    -team-green-color: green;
+    -team-blue-color: dodgerblue;
 }
 .debug {
     -fx-border-color: red;
@@ -173,7 +184,7 @@
 }
 .account-list-cell:GuildWars2,
 .account-info-pane:GuildWars2 {
-    -strong-text-color: firebrick;
+    -strong-text-color: -game-gw2-color;
 }
 .account-list-cell:HeartOfThorns {
     -fx-background-image: url("../images/cell/cell-background-hot.jpg");
@@ -182,7 +193,7 @@
 }
 .account-list-cell:HeartOfThorns,
 .account-info-pane:HeartOfThorns {
-    -strong-text-color: green;
+    -strong-text-color: -game-hot-color;
 }
 .account-list-cell > * > .strong-label {
     -fx-font-size: 1.2em;
@@ -207,40 +218,72 @@
 /* WvW charts. */
 .wvw-bar-chart {    
 }
-.wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -blue-team-color; }
-.wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -green-team-color; }
-.wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -red-team-color; }
+.wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-blue-color; }
+.wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-green-color; }
+.wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -team-red-color; }
 .wvw-pie-chart {    
 }
-.wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -blue-team-color; }
-.wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -green-team-color; }
-.wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -red-team-color; }
+.wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -team-blue-color; }
+.wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -team-green-color; }
+.wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -team-red-color; }
+/* Character list cells. */
+.character-list-cell > * > .strong-label {
+    -fx-text-fill: black;
+} 
+.character-list-cell:Elementalist {
+    -base-color: derive(-profession-elementalist-color, 80%);
+}
+.character-list-cell:Engineer {
+    -base-color: derive(-profession-engineer-color, 80%);
+}
+.character-list-cell:Guardian {
+    -base-color: derive(-profession-guardian-color, 80%);
+}
+.character-list-cell:Mesmer {
+    -base-color: derive(-profession-mesmer-color, 80%);
+}
+.character-list-cell:Necromancer {
+    -base-color: derive(-profession-necromancer-color, 80%);
+}
+.character-list-cell:Ranger {
+    -base-color: derive(-profession-ranger-color, 80%);
+}
+.character-list-cell:Revenant {
+    -base-color: derive(-profession-revenant-color, 80%);
+}
+.character-list-cell:Thief {
+    -base-color: derive(-profession-thief-color, 80%);
+}
+.character-list-cell:Warrior {
+    -base-color: derive(-profession-warrior-color, 80%);
+}
+/* Specialization editor. */
 .specialization-editor:Elementalist {
-    -base-color: derive(deeppink, -10%);
+    -base-color: -profession-elementalist-color;
 }
 .specialization-editor:Engineer {
-    -base-color: derive(yellow, -10%);
+    -base-color: -profession-engineer-color;
 }
 .specialization-editor:Guardian {
-    -base-color: derive(dodgerblue, -10%);
+    -base-color: -profession-guardian-color;
 }
 .specialization-editor:Mesmer {
-    -base-color: magenta;
+    -base-color: -profession-mesmer-color;
 }
 .specialization-editor:Necromancer {
-    -base-color: derive(darkgreen, -30%);
+    -base-color: -profession-necromancer-color;
 }
 .specialization-editor:Ranger {
-    -base-color:  derive(greenyellow, -30%);
+    -base-color: -profession-ranger-color;
 }
 .specialization-editor:Revenant {
-    -base-color: derive(red, -20%);
+    -base-color: -profession-revenant-color;
 }
 .specialization-editor:Thief {
-    -base-color: derive(orangered, -35%);
+    -base-color: -profession-thief-color;
 }
 .specialization-editor:Warrior {
-    -base-color: derive(orange, -10%);
+    -base-color: -profession-warrior-color;
 }
 /* PvP League division pane. */ 
 .season-pane {

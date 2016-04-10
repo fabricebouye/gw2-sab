@@ -7,13 +7,16 @@
  */
 package com.bouye.gw2.sab.scene.characters;
 
+import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABListCellBase;
+import com.bouye.gw2.sab.wrappers.CharacterWrapper;
+import java.net.URL;
 
 /**
  * List cell for the characters list.
  * @author Fabrice Bouyé
  */
-public final class CharacterListCell extends SABListCellBase<String, CharacterListCellController> {
+public final class CharacterListCell extends SABListCellBase<CharacterWrapper, CharacterListCellController> {
 
     /**
      * Creates a new empty instance.
@@ -21,5 +24,11 @@ public final class CharacterListCell extends SABListCellBase<String, CharacterLi
     public CharacterListCell() {
         super("fxml/scene/characters/CharacterListCell.fxml"); // NOI18N.
         getStyleClass().add("character-list-cell"); // NOI18N.
+    }
+
+    @Override
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/characters/CharacterListCell.css"); // NOI18N.
+        return url.toExternalForm();
     }
 }

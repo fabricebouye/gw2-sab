@@ -1,0 +1,6 @@
+.character-list-cell,
+.character-list-cell:odd {    
+    -base-color: white;
+    -fx-background-color: -base-color;
+}
+
