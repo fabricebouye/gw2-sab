@@ -23,7 +23,7 @@ import org.scenicview.ScenicView;
  * Test.
  * @author Fabrice Bouyé
  */
-public class TestCharactersListPane extends Application {
+public final class TestCharactersListPane extends Application {
     
     @Override
     public void start(Stage primaryStage) throws NullPointerException, IOException {
