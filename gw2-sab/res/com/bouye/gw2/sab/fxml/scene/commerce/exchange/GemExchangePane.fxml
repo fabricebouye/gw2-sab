@@ -22,9 +22,9 @@
             <children>
                 <GridPane styleClass="exchange-content" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <children>
-                        <Spinner fx:id="gemsToConvertSpinner" />
+                        <Spinner fx:id="gemsToConvertSpinner" editable="true" />
                         <TextFlow fx:id="gemsConvertedLabel" GridPane.columnIndex="1" />
-                        <Spinner fx:id="coinsToConvertSpinner" GridPane.rowIndex="1" />
+                        <Spinner fx:id="coinsToConvertSpinner" editable="true" GridPane.rowIndex="1" />
                         <TextFlow fx:id="coinsConvertedLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     </children>
                     <columnConstraints>

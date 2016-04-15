@@ -12,6 +12,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import com.bouye.gw2.sab.scene.SABControllerBase;
+import com.bouye.gw2.sab.text.IntegerOnlyFilter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -21,6 +22,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
@@ -70,6 +73,12 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
                     return pane;
                 })
                 .collect(Collectors.toList()));
+        gemsToConvertSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
+        gemsToConvertSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerOnlyFilter(-1, Integer.MAX_VALUE)));
+        gemsToConvertSpinner.valueProperty().addListener(observable -> requestExchangeRate(ExchangeResource.GEMS));
+        coinsToConvertSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
+        coinsToConvertSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerOnlyFilter(0, Integer.MAX_VALUE)));
+        coinsToConvertSpinner.valueProperty().addListener(observable -> requestExchangeRate(ExchangeResource.COINS));
     }
 
     public ScheduledService<Void> updateService;
@@ -112,49 +121,9 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
         }
     }
 
-    @FXML
-    private void handleConvertGemsToGold() {
-        final int gems = gemsToConvertSpinner.getValue();
-        queryExchangeAsync(ExchangeResource.COINS, gems, gemsConvertedLabel); // NOI18N.
-    }
+    private Service<ExchangeRate> coinsToGemsConversionService;
+    private Service<ExchangeRate> gemsToCoinsConversionService;
 
-    @FXML
-    private void handleConvertGoldToGems() {
-        final int coins = coinsToConvertSpinner.getValue();
-        queryExchangeAsync(ExchangeResource.GEMS, coins, coinsConvertedLabel); // NOI18N.
-    }
-
-    /**
-     * Convert gem or coin amount into the other opposite currency.
-     * @param type The currency type.
-     * @param amountToConvert The amount to convert.
-     * @param resultLabel The text flow which will display the result.
-     */
-    private void queryExchangeAsync(final ExchangeResource type, final int amountToConvert, final TextFlow resultLabel) {
-        final Service<ExchangeRate> service = new Service<ExchangeRate>() {
-            @Override
-            protected Task<ExchangeRate> createTask() {
-                return new Task<ExchangeRate>() {
-                    @Override
-                    protected ExchangeRate call() throws Exception {
-                        final String query = String.format("https://api.guildwars2.com/v2/commerce/exchange/%s?quantity=%d", type.name().toLowerCase(), amountToConvert); // NOI18N.
-                        final ExchangeRate result = JsonpContext.SAX.loadObject(ExchangeRate.class, new URL(query));
-                        return result;
-                    }
-                };
-            }
-        };
-        service.setOnSucceeded(workerStateEvent -> {
-            final ExchangeRate result = (ExchangeRate) workerStateEvent.getSource().getValue();
-            final int quantity = result.getQuantity();
-            switch (type) {
-                case GEMS:
-                    break;
-                case COINS:
-                    break;
-            }
-            resultLabel.getChildren().setAll();
-        });
-        addAndStartService(service, "GemExchangePaneController::queryExchangeAsync");
+    private void requestExchangeRate(final ExchangeResource type) {
     }
 }

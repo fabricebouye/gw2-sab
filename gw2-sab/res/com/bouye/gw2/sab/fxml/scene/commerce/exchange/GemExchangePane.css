@@ -3,6 +3,8 @@
     -fx-pref-height: 400px;
 }
 .exchange-content {
+    -fx-padding: 10px;
+    -fx-border-color: red;
     -fx-pref-width: 200px;
     -fx-pref-height: 75px;    
 }
