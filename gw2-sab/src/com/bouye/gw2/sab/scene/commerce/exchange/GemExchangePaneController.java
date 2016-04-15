@@ -7,17 +7,22 @@
  */
 package com.bouye.gw2.sab.scene.commerce.exchange;
 
+import api.web.gw2.mapping.core.CoinAmount;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Spinner;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
@@ -31,6 +36,11 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
     private static final int TEST_GEMS_QUANTITY = 10000;
 
     @FXML
+    private VBox coinsBox;
+    @FXML
+    private VBox gemsBox;
+
+    @FXML
     private Spinner<Integer> gemsToConvertSpinner;
     @FXML
     private TextFlow gemsConvertedLabel;
@@ -42,6 +52,24 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
+        coinsBox.getChildren().setAll(
+                IntStream.of(250, 100, 50, 10, 1)
+                .mapToObj(CoinAmount::ofGold)
+                .map(coinAmount -> {
+                    final Pane pane = new Pane();
+                    pane.getStyleClass().add("exchange-content"); // NOI18N.
+                    pane.setUserData(coinAmount);
+                    return pane;
+                })
+                .collect(Collectors.toList()));
+        gemsBox.getChildren().addAll(0, IntStream.of(2000, 1200, 800, 400)
+                .mapToObj(gemQuantity -> {
+                    final Pane pane = new Pane();
+                    pane.getStyleClass().add("exchange-content"); // NOI18N.
+                    pane.setUserData(gemQuantity);
+                    return pane;
+                })
+                .collect(Collectors.toList()));
     }
 
     public ScheduledService<Void> updateService;

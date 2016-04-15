@@ -1,0 +1,9 @@
+.exchange-box {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 400px;
+}
+.exchange-content {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 75px;    
+}
+

@@ -8,11 +8,43 @@
  of the BSD license.  See the LICENSE file for details.
 -->
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 
-<GridPane id="GridPane" fx:id="rootPane" prefWidth="250.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.commerce.exchange.GemExchangePaneController">
+<GridPane id="GridPane" fx:id="rootPane" prefWidth="500.0" stylesheets="@GemExchangePane.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.commerce.exchange.GemExchangePaneController">
+    <children>
+        <VBox fx:id="coinsBox" styleClass="exchange-box" GridPane.rowSpan="2" />
+        <VBox fx:id="gemsBox" styleClass="exchange-box" GridPane.columnIndex="1">
+            <children>
+                <GridPane styleClass="exchange-content" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <children>
+                        <Spinner fx:id="gemsToConvertSpinner" />
+                        <TextFlow fx:id="gemsConvertedLabel" GridPane.columnIndex="1" />
+                        <Spinner fx:id="coinsToConvertSpinner" GridPane.rowIndex="1" />
+                        <TextFlow fx:id="coinsConvertedLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    </children>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="ALWAYS" />
+                        <RowConstraints vgrow="ALWAYS" />
+                    </rowConstraints>
+                </GridPane>
+            </children>
+        </VBox>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
 </GridPane>
