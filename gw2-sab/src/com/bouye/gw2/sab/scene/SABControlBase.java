@@ -5,8 +5,10 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab;
+package com.bouye.gw2.sab.scene;
 
+import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.session.Session;
 import java.io.IOException;
 import java.net.URL;
@@ -57,7 +59,10 @@ public abstract class SABControlBase<C extends SABControllerBase> extends Region
      * <br>Once this method has been called, the control is not in a usable state anymore.
      */
     public void dispose() {
-        getController().ifPresent(c -> c.dispose());
+        getController().ifPresent(c -> {
+            c.setNode(null);
+            c.dispose();
+        });
     }
 
     /**

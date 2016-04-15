@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.account;
 
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.Optional;

@@ -5,8 +5,10 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab;
+package com.bouye.gw2.sab.scene;
 
+import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.characters.CharacterListCell;
 import java.io.IOException;
 import java.net.URL;

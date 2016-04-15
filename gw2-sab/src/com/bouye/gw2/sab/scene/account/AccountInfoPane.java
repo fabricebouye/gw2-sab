@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 import com.bouye.gw2.sab.session.Session;
 import java.util.function.BiConsumer;
 import javafx.beans.property.ObjectProperty;

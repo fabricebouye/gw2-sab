@@ -12,7 +12,7 @@ import api.web.gw2.mapping.v2.pvp.seasons.Season;
 import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivision;
 import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivisionFlag;
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.net.URL;
 import java.util.List;

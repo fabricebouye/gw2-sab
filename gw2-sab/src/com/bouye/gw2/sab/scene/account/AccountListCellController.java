@@ -10,7 +10,7 @@ package com.bouye.gw2.sab.scene.account;
 import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
 import java.util.Arrays;

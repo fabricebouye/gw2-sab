@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.text.LabelUtils;

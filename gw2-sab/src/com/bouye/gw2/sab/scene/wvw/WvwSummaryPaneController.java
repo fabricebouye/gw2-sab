@@ -11,7 +11,7 @@ import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
 import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.net.URL;
 import java.util.Arrays;

@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.world;
 
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 

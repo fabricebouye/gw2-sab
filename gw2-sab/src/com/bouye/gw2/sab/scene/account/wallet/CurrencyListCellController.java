@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
 import com.bouye.gw2.sab.scene.world.WorldInfoPane;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;

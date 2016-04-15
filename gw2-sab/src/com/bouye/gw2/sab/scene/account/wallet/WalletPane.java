@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.account.wallet;
 
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

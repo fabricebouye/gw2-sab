@@ -14,7 +14,7 @@ import api.web.gw2.mapping.v2.account.AccountAccessType;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.net.URL;

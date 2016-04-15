@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.characters;
 
 import com.bouye.gw2.sab.SAB;
-import com.bouye.gw2.sab.SABListCellBase;
+import com.bouye.gw2.sab.scene.SABListCellBase;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;
 import java.net.URL;
 

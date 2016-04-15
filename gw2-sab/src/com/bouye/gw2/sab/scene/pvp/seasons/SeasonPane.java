@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.pvp.seasons;
 
 import api.web.gw2.mapping.v2.pvp.seasons.Season;
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 

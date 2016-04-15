@@ -10,7 +10,7 @@ package com.bouye.gw2.sab.scene.characters;
 import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;
 import java.net.URL;
 import java.util.Arrays;

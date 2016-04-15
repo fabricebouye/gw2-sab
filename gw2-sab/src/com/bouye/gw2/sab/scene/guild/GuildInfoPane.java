@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.guild;
 
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 

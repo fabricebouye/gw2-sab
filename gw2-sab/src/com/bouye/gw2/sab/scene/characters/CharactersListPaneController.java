@@ -9,7 +9,7 @@ package com.bouye.gw2.sab.scene.characters;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.characters.Character;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;

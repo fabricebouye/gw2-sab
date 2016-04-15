@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.characters;
 
-import com.bouye.gw2.sab.SABControlBase;
+import com.bouye.gw2.sab.scene.SABControlBase;
 
 /**
  * List characters from given account.

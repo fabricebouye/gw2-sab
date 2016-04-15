@@ -13,7 +13,7 @@ import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.log.LogEventType;
 import api.web.gw2.mapping.v2.guild.id.log.LogEventUpgradeAction;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.guild.log.LogEventListCell;
 import com.bouye.gw2.sab.session.Session;

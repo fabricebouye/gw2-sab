@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.world;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import com.bouye.gw2.sab.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController;
 import com.bouye.gw2.sab.tasks.world.WorldSolverTask;
 import java.net.URL;

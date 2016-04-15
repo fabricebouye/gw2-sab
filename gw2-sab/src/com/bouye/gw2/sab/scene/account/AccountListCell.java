@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import com.bouye.gw2.sab.SABListCellBase;
+import com.bouye.gw2.sab.scene.SABListCellBase;
 import com.bouye.gw2.sab.session.Session;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;

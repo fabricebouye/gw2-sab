@@ -7,7 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import com.bouye.gw2.sab.SABListCellBase;
+import com.bouye.gw2.sab.scene.SABListCellBase;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
 
 /**
