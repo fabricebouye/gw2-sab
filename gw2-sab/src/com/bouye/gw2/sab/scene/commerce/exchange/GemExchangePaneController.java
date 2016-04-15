@@ -9,11 +9,16 @@ package com.bouye.gw2.sab.scene.commerce.exchange;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
+import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.scene.control.Spinner;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 /**
@@ -25,6 +30,16 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
     private static final int TEST_COINS_QUANTITY = 10000;
     private static final int TEST_GEMS_QUANTITY = 10000;
 
+    @FXML
+    private Spinner<Integer> gemsToConvertSpinner;
+    @FXML
+    private TextFlow gemsConvertedLabel;
+
+    @FXML
+    private Spinner<Integer> coinsToConvertSpinner;
+    @FXML
+    private TextFlow coinsConvertedLabel;
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
     }
@@ -33,7 +48,7 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
 
     private final Duration updatePeriod = Duration.minutes(1);
 
-    private void start() {
+    private void startUpdaterService() {
         if (updateService == null) {
             updateService = new ScheduledService<Void>() {
                 @Override
@@ -44,17 +59,17 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
             updateService.setRestartOnFailure(true);
             updateService.setPeriod(updatePeriod);
         }
-        addAndStartService(updateService, "GemExchangePaneController::updateAsync");
+        addAndStartService(updateService, "GemExchangePaneController::startUpdaterService");
     }
 
-    private void stop() {
+    private void stopUpdaterService() {
         if (updateService != null) {
             updateService.cancel();
         }
     }
 
     /**
-     * FXML Controller class
+     * Exchange rate updater task.
      * @author Fabrice Bouyé
      */
     private final class ExchangeRateUpdateTask extends Task<Void> {
@@ -67,5 +82,51 @@ public final class GemExchangePaneController extends SABControllerBase<GemExchan
             final ExchangeRate coinExchangeRate = JsonpContext.SAX.loadObject(ExchangeRate.class, new URL(coinQuery));
             return null;
         }
+    }
+
+    @FXML
+    private void handleConvertGemsToGold() {
+        final int gems = gemsToConvertSpinner.getValue();
+        queryExchangeAsync(ExchangeResource.COINS, gems, gemsConvertedLabel); // NOI18N.
+    }
+
+    @FXML
+    private void handleConvertGoldToGems() {
+        final int coins = coinsToConvertSpinner.getValue();
+        queryExchangeAsync(ExchangeResource.GEMS, coins, coinsConvertedLabel); // NOI18N.
+    }
+
+    /**
+     * Convert gem or coin amount into the other opposite currency.
+     * @param type The currency type.
+     * @param amountToConvert The amount to convert.
+     * @param resultLabel The text flow which will display the result.
+     */
+    private void queryExchangeAsync(final ExchangeResource type, final int amountToConvert, final TextFlow resultLabel) {
+        final Service<ExchangeRate> service = new Service<ExchangeRate>() {
+            @Override
+            protected Task<ExchangeRate> createTask() {
+                return new Task<ExchangeRate>() {
+                    @Override
+                    protected ExchangeRate call() throws Exception {
+                        final String query = String.format("https://api.guildwars2.com/v2/commerce/exchange/%s?quantity=%d", type.name().toLowerCase(), amountToConvert); // NOI18N.
+                        final ExchangeRate result = JsonpContext.SAX.loadObject(ExchangeRate.class, new URL(query));
+                        return result;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded(workerStateEvent -> {
+            final ExchangeRate result = (ExchangeRate) workerStateEvent.getSource().getValue();
+            final int quantity = result.getQuantity();
+            switch (type) {
+                case GEMS:
+                    break;
+                case COINS:
+                    break;
+            }
+            resultLabel.getChildren().setAll();
+        });
+        addAndStartService(service, "GemExchangePaneController::queryExchangeAsync");
     }
 }
