@@ -7,15 +7,16 @@
  */
 package com.bouye.gw2.sab.db;
 
-import api.web.gw2.mapping.v2.worlds.World;
+import api.web.gw2.mapping.core.URLReference;
 import com.bouye.gw2.sab.SABConstants;
-import com.bouye.gw2.sab.demo.DemoSupport;
+import com.bouye.gw2.sab.net.IOUtils;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.session.Session;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -25,13 +26,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.image.Image;
 
 /**
  * Singleton instance for DB access.
@@ -47,6 +49,7 @@ public enum DBStorage {
     // Cache tables
     private static final String WORLDS_TABLE = "worlds"; // NOI18N.
     private static final String GUILDS_TABLE = "guilds"; // NOI18N.
+    private static final String FILES_TABLE = "files"; // NOI18N.
     //
     private Connection connection;
 
@@ -79,9 +82,12 @@ public enum DBStorage {
             // Drop cache tables.
             simpleUpdate(String.format("drop table if exists %s", WORLDS_TABLE)); // NOI18N.
             simpleUpdate(String.format("drop table if exists %s", GUILDS_TABLE)); // NOI18N.
+            simpleUpdate(String.format("drop table if exists %s", FILES_TABLE)); // NOI18N.
             // Re-create cache tables.
             simpleUpdate(String.format("create table if not exists %s (id integer primary key, value blob not null)", WORLDS_TABLE)); // NOI18N.
+            simpleUpdate(String.format("create table if not exists %s (id string primary key, value blob not null)", FILES_TABLE)); // NOI18N.
             updateWorldList();
+            updateImageCache();
             // Populate cache tables that can be populated.
         } catch (ClassNotFoundException | IOException | SQLException ex) {
             Logger.getLogger(DBStorage.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -89,15 +95,67 @@ public enum DBStorage {
     }
 
     private void updateWorldList() throws IOException, SQLException {
-        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(SABConstants.INSTANCE.isDemo());
-        final LocalDateTime now = LocalDateTime.now();
-        for (final World world : worlds) {
-            final byte[] data = serialize(world);
-            final String sql = String.format("insert or replace into %s (id, value) values (\"%s\", ?)", WORLDS_TABLE, world.getId()); // NOI18N.
-            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setObject(1, data);
-            preparedStatement.executeUpdate();
+//        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(SABConstants.INSTANCE.isDemo());
+//        final LocalDateTime now = LocalDateTime.now();
+//        for (final World world : worlds) {
+//            final byte[] data = serialize(world);
+//            final String sql = String.format("insert or replace into %s (id, value) values (\"%s\", ?)", WORLDS_TABLE, world.getId()); // NOI18N.
+//            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//            preparedStatement.setObject(1, data);
+//            preparedStatement.executeUpdate();
+//        }
+    }
+
+    /**
+     * Store files served by the API into a local storage.
+     * @throws SQLException In case of SQL error.
+     */
+    private void updateImageCache() throws SQLException {
+        final Collection<api.web.gw2.mapping.v2.files.File> files = WebQuery.INSTANCE.queryFiles(SABConstants.INSTANCE.isDemo());
+        for (final api.web.gw2.mapping.v2.files.File file : files) {
+            final String id = file.getId();
+            final URLReference iconURL = file.getIcon();
+            if (iconURL.isPresent()) {
+                try (final InputStream input = iconURL.get().openStream();
+                        final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    IOUtils.INSTANCE.copy(input, output);
+                    final byte[] data = output.toByteArray();
+                    final String sql = String.format("insert or replace into %s (id, value) values (\"%s\", ?)", FILES_TABLE, id); // NOI18N.
+                    final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.setObject(1, data);
+                    preparedStatement.executeUpdate();
+                    // May happen when download fails (ie: bad connexion, missing image, etc.).
+                } catch (IOException ex) {
+                    Logger.getLogger(DBStorage.class.getName()).log(Level.WARNING, ex.getMessage(), ex);
+                }
+            }
         }
+    }
+
+    /**
+     * Gets an image from the local cache.
+     * @param id The id of the image.
+     * @return An {@code Image} instance, may be {@code null}.
+     * @throws SQLException In case of SQL error.
+     */
+    public Image getImageFromCache(final String id) throws SQLException {
+        Image result = null;
+        if (id != null && !id.trim().isEmpty()) {
+            final String sql = String.format("select value from %s where id=\"%s\"", FILES_TABLE, id); // NOI18N.
+            result = select(sql, resultSet -> {
+                Image image = null;
+                if (resultSet.next()) {
+                    final byte[] bytes = resultSet.getBytes(1);
+                    try (final InputStream input = new ByteArrayInputStream(bytes)) {
+                        image = new Image(input);
+                    } catch (IOException ex) {
+                        throw new SQLException(ex);
+                    }
+                }
+                return image;
+            }, null);
+        }
+        return result;
     }
 
     private <T extends Serializable> byte[] serialize(final T value) throws IOException {
@@ -153,6 +211,7 @@ public enum DBStorage {
             try (final Statement stmt = connection.createStatement();
                     final ResultSet resultSet = stmt.executeQuery(sql)) {
                 result = converter.convert(resultSet);
+
             } catch (SQLException ex) {
                 Logger.getLogger(DBStorage.class
                         .getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -171,6 +230,7 @@ public enum DBStorage {
         if (connection != null) {
             try (final Statement stmt = connection.createStatement()) {
                 stmt.executeUpdate(sql);
+
             } catch (SQLException ex) {
                 Logger.getLogger(DBStorage.class
                         .getName()).log(Level.SEVERE, ex.getMessage(), ex);
