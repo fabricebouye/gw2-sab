@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.core.PageResult;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
+import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
@@ -44,7 +45,7 @@ public enum WebQuery {
         result = result.replaceAll("\\+", "%20"); // NOI18N.
         return result;
     }
-    
+
     /**
      * Return the language code to be used when doing queries that return localized values.
      * <br>If the user's current language is not supported, the default locale will be used instead.
@@ -102,14 +103,14 @@ public enum WebQuery {
      * Do a simply web query that returns a simple object.
      * @param <T> The type to use.
      * @param targetClass The target class.
-     * @param path The path to query.
+     * @param query The query.
      * @return An {@code Optional<T>} instance, never {@code null}.
      */
-    private <T> Optional<T> objectWebQuery(final Class<T> targetClass, final String path) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "objectWebQuery " + path); // NOI18N.
+    private <T> Optional<T> objectWebQuery(final Class<T> targetClass, final String query) {
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "objectWebQuery " + query); // NOI18N.
         Optional<T> result = Optional.empty();
         try {
-            final URL url = new URL(path);
+            final URL url = new URL(query);
             final T value = JsonpContext.SAX.loadObject(targetClass, url);
             result = Optional.ofNullable(value);
         } catch (NullPointerException | IOException ex) {
@@ -122,14 +123,14 @@ public enum WebQuery {
      * Do a simple web query that returns a list of object.
      * @param <T> The type to use.
      * @param targetClass The target class.
-     * @param path The path to query.
+     * @param query The query.
      * @return A {@code List<T>} instance, never {@code null}.
      */
-    private <T> List<T> arrayWebQuery(final Class<T> targetClass, final String path) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + path); // NOI18N.
+    private <T> List<T> arrayWebQuery(final Class<T> targetClass, final String query) {
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + query); // NOI18N.
         List<T> result = Collections.EMPTY_LIST;
         try {
-            final URL url = new URL(path);
+            final URL url = new URL(query);
             final Collection<T> value = JsonpContext.SAX.loadObjectArray(targetClass, url);
             result = new ArrayList<>(value);
             result = Collections.unmodifiableList(result);
@@ -139,11 +140,11 @@ public enum WebQuery {
         return result;
     }
 
-    private <T> PageResult<T> pageWebQuery(final Class<T> targetClass, final String path) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + path); // NOI18N.
+    private <T> PageResult<T> pageWebQuery(final Class<T> targetClass, final String query) {
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + query); // NOI18N.
         PageResult<T> result = PageResult.EMPTY;
         try {
-            final URL url = new URL(path);
+            final URL url = new URL(query);
             result = JsonpContext.SAX.loadPage(targetClass, url);;
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -156,8 +157,8 @@ public enum WebQuery {
         if (demo) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadTokenInfo());
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/tokeninfo?access_token=%s", appKey); // NOI18N.
-            result = objectWebQuery(TokenInfo.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/tokeninfo?access_token=%s", appKey); // NOI18N.
+            result = objectWebQuery(TokenInfo.class, query);
         }
         return result;
     }
@@ -167,8 +168,8 @@ public enum WebQuery {
         if (demo) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadAccount());
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/account?access_token=%s", appKey); // NOI18N.
-            result = objectWebQuery(Account.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/account?access_token=%s", appKey); // NOI18N.
+            result = objectWebQuery(Account.class, query);
         }
         return result;
     }
@@ -178,8 +179,17 @@ public enum WebQuery {
         if (demo) {
             result = DemoSupport.INSTANCE.loadWorlds(ids);
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/worlds?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(World.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/worlds?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(World.class, query);
+        }
+        return result;
+    }
+
+    public List<File> queryFiles(final boolean demo) {
+        List<File> result = Collections.EMPTY_LIST;
+        if (!demo) {
+            final String query = "https://api.guildwars2.com/v2/files?ids=all"; // NOI18N.        
+            result = arrayWebQuery(File.class, query);
         }
         return result;
     }
@@ -192,8 +202,8 @@ public enum WebQuery {
         } else {
             result = new ArrayList(ids.length);
             for (final String id : ids) {
-                final String path = String.format("https://api.guildwars2.com/v1/guild_details.php?guild_id=%s", id); // NOI18N.
-                final Optional<GuildDetails> value = objectWebQuery(GuildDetails.class, path);
+                final String query = String.format("https://api.guildwars2.com/v1/guild_details.php?guild_id=%s", id); // NOI18N.
+                final Optional<GuildDetails> value = objectWebQuery(GuildDetails.class, query);
                 if (value.isPresent()) {
                     result.add(value.get());
                 }
@@ -208,8 +218,8 @@ public enum WebQuery {
         if (demo) {
             result = DemoSupport.INSTANCE.loadGuildRoster(id);
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/guild/%s/members?access_token=%s", id, appKey); // NOI18N.
-            result = arrayWebQuery(Member.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/members?access_token=%s", id, appKey); // NOI18N.
+            result = arrayWebQuery(Member.class, query);
         }
         return result;
     }
@@ -219,19 +229,19 @@ public enum WebQuery {
         if (demo) {
             result = DemoSupport.INSTANCE.loadGuildLogs(id);
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
-            result = arrayWebQuery(LogEvent.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
+            result = arrayWebQuery(LogEvent.class, query);
         }
         return result;
     }
-    
+
     public Optional<Match> queryWvwMatch(final boolean demo, final int id) {
         Optional<Match> result = Optional.empty();
         if (demo) {
 
         } else {
-            final String path = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
-            result = objectWebQuery(Match.class, path);
+            final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
+            result = objectWebQuery(Match.class, query);
         }
         return result;
     }
