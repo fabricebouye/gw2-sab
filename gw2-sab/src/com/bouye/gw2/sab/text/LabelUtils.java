@@ -7,9 +7,15 @@
  */
 package com.bouye.gw2.sab.text;
 
+import com.bouye.gw2.sab.query.ImageCache;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,8 +25,12 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.css.PseudoClass;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -30,7 +40,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- *  Utilities class used for label and rich text management.
+ * Utilities class used for label and rich text management.
  * @author Fabrice Bouyé
  */
 public enum LabelUtils {
@@ -162,5 +172,117 @@ public enum LabelUtils {
 
     public String lineBreak() {
         return String.format("<%s/>", LINE_BREAK); // NOI18N.      
+    }
+
+    /**
+     * Gold coin in copper coins.
+     */
+    private static final int GOLD_VALUE = 10000;
+    /**
+     * Silver coin in copper coins.
+     */
+    private static final int SILVER_VALUE = 100;
+
+    /**
+     * Gem amount pseudo class.
+     */
+    private static final PseudoClass GEM_PSEUDO_CLASS = PseudoClass.getPseudoClass("gem"); // NOI18N.
+    /**
+     * Gold amount pseudo class.
+     */
+    private static final PseudoClass GOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("gold"); // NOI18N.
+    /**
+     * Silver amount pseudo class.
+     */
+    private static final PseudoClass SILVER_PSEUDO_CLASS = PseudoClass.getPseudoClass("silver"); // NOI18N.
+    /**
+     * Copper amount pseudo class.
+     */
+    private static final PseudoClass COPPER_PSEUDO_CLASS = PseudoClass.getPseudoClass("copper"); // NOI18N.
+
+    /**
+     * Create labels for given gem amount.
+     * <br>Value 0 is hidden.
+     * @param value The amount in gems.
+     * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
+     */
+    public List<Node> labelsForGems(final int value) {
+        final List<Node> result = new ArrayList<>();
+        labelsForCurrency(CurrencyType.GEM, value, result);
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Create labels for given copper amount.
+     * <br>Value 0 is hidden.
+     * @param value The amount in copper coins.
+     * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
+     */
+    public List<Node> labelsForCoins(final int value) {
+        return labelsForCoins(value, false);
+    }
+
+    /**
+     * Create labels for given copper amount.
+     * @param value The amount in copper coins.
+     * @param showEmpty If {@code true}, 0 values are shown.
+     * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
+     */
+    public List<Node> labelsForCoins(final int value, final boolean showEmpty) {
+        final List<Node> result = new ArrayList<>();
+        final int gold = value / GOLD_VALUE;
+        final int silver = (value - gold * GOLD_VALUE) / SILVER_VALUE;
+        final int copper = (value - gold * GOLD_VALUE - silver * SILVER_VALUE);
+        if (showEmpty || gold > 0) {
+            labelsForCurrency(CurrencyType.GOLD, gold, result);
+        }
+        if (showEmpty || silver > 0) {
+            labelsForCurrency(CurrencyType.SILVER, silver, result);
+        }
+        if (value == 0 || showEmpty || copper > 0) {
+            labelsForCurrency(CurrencyType.COPPER, copper, result);
+        }
+        if (!result.isEmpty()) {
+            result.remove(result.size() - 1);
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    private enum CurrencyType {
+        GOLD, SILVER, COPPER, GEM;
+    }
+
+    /**
+     * Number formatter.
+     */
+    private final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
+
+    private void labelsForCurrency(final CurrencyType currencyType, final int amount, final List<Node> result) {
+        final Text amountText = new Text(numberFormat.format(amount));
+        amountText.getStyleClass().add("coin-label"); // NOI18N.
+        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(currencyType.name().toLowerCase());
+        amountText.pseudoClassStateChanged(pseudoClass, true);
+        result.add(amountText);
+        result.add(new Text(" ")); // NOI18N.
+        result.add(iconForCurrency(currencyType));
+        result.add(new Text(" ")); // NOI18N.        
+    }
+
+    private Node iconForCurrency(final CurrencyType currencyType) {
+        final String imageId = (currencyType == CurrencyType.GEM) ? "ui_gem" : String.format("ui_coin_%s", currencyType.name().toLowerCase()); // NOI18N.
+        final Image image = ImageCache.INSTANCE.getImage(imageId);
+        Node result = null;
+        if (image != null) {
+            final ImageView imageView = new ImageView(image);
+            result = imageView;
+        } else {
+            final Region coin = new Region();
+            final PseudoClass pseudoClass = PseudoClass.getPseudoClass(currencyType.name().toLowerCase());
+            coin.pseudoClassStateChanged(pseudoClass, true);
+            result = coin;
+        }
+        final String styleClass = "coin"; // NOI18N.
+        result.getStyleClass().add(styleClass);
+        return result;
     }
 }

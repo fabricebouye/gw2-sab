@@ -306,3 +306,30 @@
     -fx-alignment: center;
     -fx-text-fill: gray;
 }
+/* Coins. */
+.coin-label {    
+    -fx-fill: -coin-color;
+}
+.coin {
+    -fx-background-color: derive(-coin-color, -20%), derive(-coin-color, 50%), -coin-color;
+    -fx-background-radius: 7px, 6px, 5px;
+    -fx-background-insets: 0px, 1px, 2px;
+    -fx-padding: 6px;
+    -fx-translate-y: 5px;
+}
+.coin-label:gem,
+.coin:gem {    
+    -coin-color: cornflowerblue;
+}
+.coin-label:gold,
+.coin:gold {    
+    -coin-color: derive(gold, -20%);
+}
+.coin-label:silver,
+.coin:silver{    
+    -coin-color: silver;
+}
+.coin-label:copper,
+.coin:copper{    
+    -coin-color: chocolate;
+}
