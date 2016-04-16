@@ -7,6 +7,9 @@
  */
 package com.bouye.gw2.sab.query;
 
+import com.bouye.gw2.sab.db.DBStorage;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -46,18 +49,23 @@ public enum ImageCache {
      * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null} or empty or invalid.
      */
     public Image getImage(final String url, final boolean backgroundLoading) {
-        if (url == null || url.trim().isEmpty()) {
-            return null;
-        }
-        Image result = cache.get(url);
-        if (result == null && !cache.containsKey(url)) {
-            try {
-                result = new Image(url, backgroundLoading);
-                cache.put(url, result);
-            } // Happens when URL is invalid.
-            catch (IllegalArgumentException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-                cache.put(url, null);
+        Image result = null;
+        if (url != null && !url.trim().isEmpty()) {
+            result = cache.get(url);
+            if (result == null && !cache.containsKey(url)) {
+                try {
+                    // For local images, access the data base and ignore the background loading parameter.
+                    if (!url.startsWith("https://")) { // NOI18N.
+                        result = DBStorage.INSTANCE.getImageFromCache(url);
+                    } else {
+                        // Local image.
+                        result = new Image(url, backgroundLoading);
+                    }
+                    cache.put(url, result);
+                } catch (Exception ex) {
+                    Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+                    cache.put(url, null);
+                }
             }
         }
         return result;
