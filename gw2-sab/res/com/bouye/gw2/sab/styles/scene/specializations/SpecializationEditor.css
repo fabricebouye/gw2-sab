@@ -6,34 +6,34 @@
     -connector-color: white;
     -fx-background-color: black, -base-color;
     -fx-background-insets: 0px, 1px;
-    -fx-min-width: 515px;
-    -fx-min-height: 110px;
-    -fx-pref-width: 515px;
-    -fx-pref-height: 110px;
-    -fx-max-width: 515px;
-    -fx-max-height: 110px;
+    -fx-min-width: 647px;
+    -fx-min-height: 136px;
+    -fx-pref-width: 647px;
+    -fx-pref-height: 136px;
+    -fx-max-width: 647px;
+    -fx-max-height: 136px;
 }
 .specialization-editor .elite-marker {
     -fx-opacity: 0.33;
-    -fx-border-color: gold;
-    -fx-border-width: 4px;
-    -fx-border-insets: 5px;
+    -fx-border-color: gold, gold;
+    -fx-border-width: 2px, 1px;
+    -fx-border-insets: 3px 3px 3px 15px, 8px 8px 8px 20px;
 }
 .specialization-editor .trait {
     -fx-background-color: black, -trait-color;
     -fx-background-insets: 0px, 1px;
-    -fx-min-width: 24px;
-    -fx-min-height: 24px;
-    -fx-pref-width: 24px;
-    -fx-pref-height: 24px;
-    -fx-max-width: 24px;
-    -fx-max-height: 24px;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
 }
 .specialization-editor .minor {
-    -fx-shape: "m -227.13341,229.55813 -4,2.30941 -4,-2.30941 0,-4.6188 4,-2.3094 4,2.3094 z";
-    -fx-min-height: 27px;
-    -fx-pref-height: 27px;
-    -fx-max-height: 27px;
+    -fx-shape: "m -227.13341,229.55813 -4,2.3 -4,-2.3 0,-4.6188 4,-2.3 4,2.3 z";
+    -fx-min-width: 27px;
+    -fx-pref-width: 27px;
+    -fx-max-width: 27px;
 }
 .specialization-editor .adept:selected, 
 .specialization-editor .master:selected,
