@@ -11,10 +11,7 @@ import com.bouye.gw2.sab.query.ImageCache;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +22,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.css.PseudoClass;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
@@ -285,4 +281,45 @@ public enum LabelUtils {
         result.getStyleClass().add(styleClass);
         return result;
     }
+
+    /**
+     * When not using icons, use roman numerals for traits.
+     * @param arabic The source number.
+     * @return A {@code String} instance, may be {@code null}.
+     */
+    public String toRomanNumeral(final int arabic) {
+        // We have only 9 numbers so far, no need to use a converter API.
+        String result = null;
+        switch (arabic) {
+            case 1:
+                result = "I"; // NOI18N.
+                break;
+            case 2:
+                result = "II"; // NOI18N.
+                break;
+            case 3:
+                result = "III"; // NOI18N.
+                break;
+            case 4:
+                result = "IV"; // NOI18N.
+                break;
+            case 5:
+                result = "V"; // NOI18N.
+                break;
+            case 6:
+                result = "VI"; // NOI18N.
+                break;
+            case 7:
+                result = "VII"; // NOI18N.
+                break;
+            case 8:
+                result = "VIII"; // NOI18N.
+                break;
+            case 9:
+                result = "IX"; // NOI18N.
+                break;
+        }
+        return result;
+    }
+
 }
