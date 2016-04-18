@@ -1,8 +1,10 @@
 .specialization-editor {
     -base-color: gray;
-    -trait-color: derive(-base-color, 25%);
-    -trait-hover-color: derive(-base-color, 75%);
-    -trait-selected-color: derive(-base-color, 75%);
+    -trait-color: derive(-base-color, 60%);
+    -trait-outer-border: derive(-base-color, -50%);
+    -trait-inner-border: derive(-trait-color, 75%);
+    -trait-hover-color: derive(-base-color, 90%);
+    -trait-selected-color: derive(-base-color, 85%);
     -connector-color: white;
     -fx-background-color: black, -base-color;
     -fx-background-insets: 0px, 1px;
@@ -19,9 +21,26 @@
     -fx-border-width: 2px, 1px;
     -fx-border-insets: 3px 3px 3px 15px, 8px 8px 8px 20px;
 }
+.specialization-editor .button {
+    -fx-background-color: -trait-outer-border, -trait-inner-border, -trait-color;
+    -fx-background-insets: 0px, 2px, 4px;
+    -fx-shape: "m -227.13341,229.55813 -4,2.3 -4,-2.3 0,-4.6188 4,-2.3 4,2.3 z";
+    -fx-min-width: 75px;
+    -fx-min-height: 85px;
+    -fx-pref-width: 75px;
+    -fx-pref-height: 85px;
+    -fx-max-width: 75px;
+    -fx-max-height: 85px;
+}
+.specialization-editor .button:hover {
+    -trait-color: -trait-hover-color;
+}
+.specialization-editor .button:pressed {
+    -trait-color: -trait-selected-color;
+}
 .specialization-editor .trait {
-    -fx-background-color: black, -trait-color;
-    -fx-background-insets: 0px, 1px;
+    -fx-background-color: -trait-outer-border, -trait-inner-border, -trait-color;
+    -fx-background-insets: 0px, 2px, 4px;
     -fx-min-width: 32px;
     -fx-min-height: 32px;
     -fx-pref-width: 32px;

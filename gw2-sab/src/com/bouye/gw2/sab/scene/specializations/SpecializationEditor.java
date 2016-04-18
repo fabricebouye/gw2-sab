@@ -7,10 +7,13 @@
  */
 package com.bouye.gw2.sab.scene.specializations;
 
+import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.core.URLReference;
+import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.specializations.Specialization;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.query.ImageCache;
+import com.bouye.gw2.sab.text.LabelUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,9 +23,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
@@ -32,8 +39,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 /**
  * Allows to edit a specialization and its traits.
@@ -43,21 +53,23 @@ public final class SpecializationEditor extends Region {
 
     private final ImageView background = new ImageView();
     private final Region eliteMarker = new Region();
-    private final Region minor1 = new Region();
-    private final Region minor2 = new Region();
-    private final Region minor3 = new Region();
-    private final ToggleTrait adept1 = new ToggleTrait();
-    private final ToggleTrait adept2 = new ToggleTrait();
-    private final ToggleTrait adept3 = new ToggleTrait();
+    private final Region button = new Region();
+    private final Region minor1 = new Minor(1);
+    private final Region minor2 = new Minor(2);
+    private final Region minor3 = new Minor(3);
+    private final ToggleTrait adept1 = new ToggleTrait(1, "adept");
+    private final ToggleTrait adept2 = new ToggleTrait(2, "adept");
+    private final ToggleTrait adept3 = new ToggleTrait(3, "adept");
     private final ToggleGroup adeptGroup = new ToggleGroup();
-    private final ToggleTrait master1 = new ToggleTrait();
-    private final ToggleTrait master2 = new ToggleTrait();
-    private final ToggleTrait master3 = new ToggleTrait();
+    private final ToggleTrait master1 = new ToggleTrait(4, "master");
+    private final ToggleTrait master2 = new ToggleTrait(5, "master");
+    private final ToggleTrait master3 = new ToggleTrait(6, "master");
     private final ToggleGroup masterGroup = new ToggleGroup();
-    private final ToggleTrait grandMaster1 = new ToggleTrait();
-    private final ToggleTrait grandMaster2 = new ToggleTrait();
-    private final ToggleTrait grandMaster3 = new ToggleTrait();
+    private final ToggleTrait grandMaster1 = new ToggleTrait(7, "grand-master");
+    private final ToggleTrait grandMaster2 = new ToggleTrait(8, "grand-master");
+    private final ToggleTrait grandMaster3 = new ToggleTrait(9, "grand-master");
     private final ToggleGroup grandMasterGroup = new ToggleGroup();
+    private final Line connector0 = new Line();
     private final Line connector1 = new Line();
     private final Line connector2 = new Line();
     private final Line connector3 = new Line();
@@ -74,32 +86,25 @@ public final class SpecializationEditor extends Region {
         //
         background.setPreserveRatio(false);
         //
-        eliteMarker.getStyleClass().add("elite-marker");
+        eliteMarker.getStyleClass().add("elite-marker"); // NOI18N.
         //
-        minor1.getStyleClass().addAll("trait", "minor", "minor1"); // NOI18N.
-        minor2.getStyleClass().addAll("trait", "minor", "minor2"); // NOI18N.
-        minor3.getStyleClass().addAll("trait", "minor", "minor3"); // NOI18N.
+        button.getStyleClass().add("button"); // NOI18N.
+        button.visibleProperty().bind(editableProperty());
         //
-        adept1.getStyleClass().addAll("trait", "adept", "adept1"); // NOI18N.
         adept1.setToggleGroup(adeptGroup);
-        adept2.getStyleClass().addAll("trait", "adept", "adept2"); // NOI18N.
         adept2.setToggleGroup(adeptGroup);
-        adept3.getStyleClass().addAll("trait", "adept", "adept3"); // NOI18N.
         adept3.setToggleGroup(adeptGroup);
         //
-        master1.getStyleClass().addAll("trait", "master", "master1"); // NOI18N.
         master1.setToggleGroup(masterGroup);
-        master2.getStyleClass().addAll("trait", "master", "master2"); // NOI18N.
         master2.setToggleGroup(masterGroup);
-        master3.getStyleClass().addAll("trait", "master", "master3"); // NOI18N.
         master3.setToggleGroup(masterGroup);
         //
-        grandMaster1.getStyleClass().addAll("trait", "grand-master", "grand-master1"); // NOI18N.
         grandMaster1.setToggleGroup(grandMasterGroup);
-        grandMaster2.getStyleClass().addAll("trait", "grand-master", "grand-master2"); // NOI18N.
         grandMaster2.setToggleGroup(grandMasterGroup);
-        grandMaster3.getStyleClass().addAll("trait", "grand-master", "grand-master2"); // NOI18N.
         grandMaster3.setToggleGroup(grandMasterGroup);
+        //
+        connector0.getStyleClass().addAll("connector"); // NOI18N.
+        connector0.visibleProperty().bind(specializationProperty().isNotNull());
         //
         connector1.getStyleClass().addAll("connector"); // NOI18N.
         connector2.getStyleClass().addAll("connector"); // NOI18N.
@@ -108,36 +113,18 @@ public final class SpecializationEditor extends Region {
         connector5.getStyleClass().addAll("connector"); // NOI18N.
         getChildren().setAll(background,
                 eliteMarker,
-                connector1, connector2, connector3, connector4, connector5,
+                connector0, connector1, connector2, connector3, connector4, connector5,
                 minor1,
                 adept1, adept2, adept3,
                 minor2,
                 master1, master2, master3,
                 minor3,
-                grandMaster1, grandMaster2, grandMaster3);
+                grandMaster1, grandMaster2, grandMaster3,
+                button);
         //
-        specializationProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                final URLReference backgroundURL = newValue.getBackground();
-                backgroundURL.ifPresent(url -> {
-                    System.out.println(url);
-                    final String urlValue = url.toExternalForm();
-                    final Image specializationBackground = ImageCache.INSTANCE.getImage(urlValue);
-                    specializationBackground.progressProperty().addListener((ob, ov, nv) -> {
-                        if (nv.intValue() == 1) {
-                            // Specialization images contain large blank areas that need to be removed.
-                            Rectangle2D crop = getOverrideCropArea(urlValue);
-                            if (crop == Rectangle2D.EMPTY) {
-                                crop = autoCropBackgroundImage(specializationBackground);
-                            }
-                            background.setViewport(crop);
-                            background.setImage(specializationBackground);
-                        }
-                    });
-                });
-                eliteMarker.setVisible(newValue.isElite());
-            }
-        });
+        uninstallSpecialization(null);
+        profession.addListener(professionChangeListener);
+        specializationProperty().addListener(specializationChangeListener);
     }
 
     @Override
@@ -194,6 +181,15 @@ public final class SpecializationEditor extends Region {
             adeptY = adeptY3;
         }
         //
+        final double buttonX = minorX1 - areaW / 6d;
+        final double buttonY = minorY;
+        layoutInArea(button, buttonX, buttonY, -1, -1, 0, HPos.CENTER, VPos.CENTER);
+        //
+        connector0.setStartX(buttonX);
+        connector0.setStartY(buttonY);
+        connector0.setEndX(minorX1);
+        connector0.setEndY(minorY);
+        //
         connector1.setStartX(minorX1);
         connector1.setStartY(minorY);
         connector1.setEndX(adeptX);
@@ -249,6 +245,64 @@ public final class SpecializationEditor extends Region {
         return url.toExternalForm();
     }
 
+    private final ChangeListener<CharacterProfession> professionChangeListener = (observable, oldValue, newValue) -> {
+        Optional.ofNullable(oldValue)
+                .ifPresent(this::uninstallProfession);
+        Optional.ofNullable(newValue)
+                .ifPresent(this::installProfession);
+    };
+
+    private final ChangeListener<Specialization> specializationChangeListener = (observable, oldValue, newValue) -> {
+        Optional.ofNullable(oldValue)
+                .ifPresent(this::uninstallSpecialization);
+        Optional.ofNullable(newValue)
+                .ifPresent(this::installSpecialization);
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    private void uninstallProfession(final CharacterProfession profession) {
+        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
+        pseudoClassStateChanged(pseudoClass, false);
+    }
+
+    private void installProfession(final CharacterProfession profession) {
+        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
+        pseudoClassStateChanged(pseudoClass, true);
+    }
+
+    private void uninstallSpecialization(final Specialization specialization) {
+        setProfession(null);
+        background.setImage(null);
+        background.setViewport(null);
+        eliteMarker.setVisible(false);
+    }
+
+    private void installSpecialization(final Specialization specialization) {
+        // Profession.
+        setProfession(specialization.getProfession());
+        // Spec background.
+        final URLReference backgroundURL = specialization.getBackground();
+        backgroundURL.ifPresent(url -> {
+            System.out.println(url);
+            final String urlValue = url.toExternalForm();
+            final Image specializationBackground = ImageCache.INSTANCE.getImage(urlValue);
+            specializationBackground.progressProperty().addListener((ob, ov, nv) -> {
+                if (nv.intValue() == 1) {
+                    // Specialization images contain large blank areas that need to be removed.
+                    Rectangle2D crop = getOverrideCropArea(urlValue);
+                    if (crop == Rectangle2D.EMPTY) {
+                        crop = autoCropBackgroundImage(specializationBackground);
+                    }
+                    background.setViewport(crop);
+                    background.setImage(specializationBackground);
+                }
+            });
+        });
+        // Elite marker.
+        eliteMarker.setVisible(specialization.isElite());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////    
     /**
      * Sets wether this control is editable.
      */
@@ -266,6 +320,20 @@ public final class SpecializationEditor extends Region {
         return editable;
     }
 
+    private final ReadOnlyObjectWrapper<CharacterProfession> profession = new ReadOnlyObjectWrapper<>(this, "profession", null); // NOI18N.
+
+    public final CharacterProfession getProfession() {
+        return profession.get();
+    }
+
+    public void setProfession(final CharacterProfession value) {
+        profession.set(value);
+    }
+
+    public final ReadOnlyObjectProperty<CharacterProfession> professionProperty() {
+        return profession.getReadOnlyProperty();
+    }
+
     private final ObjectProperty<Specialization> specialization = new SimpleObjectProperty<>(this, "specialization", null); // NOI18N.
 
     public final Specialization getSpecialization() {
@@ -280,6 +348,7 @@ public final class SpecializationEditor extends Region {
         return specialization;
     }
 
+    ////////////////////////////////////////////////////////////////////////////    
     private static final int BLACK_COLOR = 0xFF000000;
     private static final int TRANSPARENT_COLOR = 0x00000000;
 
@@ -359,30 +428,74 @@ public final class SpecializationEditor extends Region {
         return new Rectangle2D(cutoutX, cutoutY, cutoutW, cutoutH);
     }
 
-    private final class ToggleTrait extends Region implements Toggle {
+    private final class Minor extends StackPane {
 
-        private ToggleTrait() {
+        public Minor(final int index) {
             super();
-            toggleGroupProperty().addListener((observable, oldValue, newValue) -> {
-                final Optional<ToggleGroup> oldToggleGroup = Optional.ofNullable(oldValue);
-                oldToggleGroup.ifPresent(tg -> tg.getToggles().remove(ToggleTrait.this));
-                final Optional<ToggleGroup> newToggleGroup = Optional.ofNullable(newValue);
-                newToggleGroup.ifPresent(tg -> tg.getToggles().add(ToggleTrait.this));
-            });
-            selectedProperty().addListener((observable, oldValue, newValue) -> {
-                final Optional<ToggleGroup> toggleGroup = Optional.ofNullable(getToggleGroup());
-                toggleGroup.ifPresent(tg -> tg.selectToggle(newValue ? ToggleTrait.this : null));
-                ToggleTrait.this.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), newValue);
-            });
-            setOnMouseClicked(mouseEvent -> {
-                if (isEditable()) {
-                    setSelected(true);
-                    SpecializationEditor.this.requestLayout();
-                }
-            });
+            //
+            getStyleClass().addAll("trait", "minor", "minor" + index); // NOI18N.
+            // Label.
+            final String indexStr = String.valueOf(index);
+            final Text label = new Text(indexStr);
+            getChildren().add(label);
+        }
+    }
+
+    /**
+     * Toggle that allow to activate / deactivate a trait.
+     * @author Fabrice Bouyé
+     */
+    private final class ToggleTrait extends StackPane implements Toggle {
+
+        /**
+         * Creates a new instance.
+         * @param index The index of the trait.
+         */
+        public ToggleTrait(final int index, final String type) {
+            super();
+            //
+            final int offset = ((index - 1) % 3) + 1;
+            getStyleClass().addAll("trait", type, type + offset); // NOI18N.
+            // Label.
+            final String romanIndex = LabelUtils.INSTANCE.toRomanNumeral(index);
+            final Text label = new Text(romanIndex);
+            getChildren().add(label);
+            // Listeners.
+            toggleGroupProperty().addListener(toggleGroupChangeListener);
+            selectedProperty().addListener(selectedChangeListener);
+            setOnMouseClicked(mouseEventHandler);
         }
 
-        private final ObjectProperty<ToggleGroup> toggleGroup = new SimpleObjectProperty<>(this, "toggleGroup", null);
+        /**
+         * Called whenever the toggle group changes.
+         */
+        private final ChangeListener<ToggleGroup> toggleGroupChangeListener = (observable, oldValue, newValue) -> {
+            final Optional<ToggleGroup> oldToggleGroup = Optional.ofNullable(oldValue);
+            oldToggleGroup.ifPresent(tg -> tg.getToggles().remove(ToggleTrait.this));
+            final Optional<ToggleGroup> newToggleGroup = Optional.ofNullable(newValue);
+            newToggleGroup.ifPresent(tg -> tg.getToggles().add(ToggleTrait.this));
+        };
+
+        /**
+         * Called whenever the selected state of this trait changes.
+         */
+        private final ChangeListener<Boolean> selectedChangeListener = (observable, oldValue, newValue) -> {
+            final Optional<ToggleGroup> toggleGroup = Optional.ofNullable(getToggleGroup());
+            toggleGroup.ifPresent(tg -> tg.selectToggle(newValue ? ToggleTrait.this : null));
+            ToggleTrait.this.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), newValue); // NOI18N.
+        };
+
+        /**
+         * Called whenever the user clicks on this trait.
+         */
+        private final EventHandler<MouseEvent> mouseEventHandler = mouseEvent -> {
+            if (isEditable() && getSpecialization() != null) {
+                setSelected(true);
+                SpecializationEditor.this.requestLayout();
+            }
+        };
+
+        private final ObjectProperty<ToggleGroup> toggleGroup = new SimpleObjectProperty<>(this, "toggleGroup", null); // NOI18N.
 
         @Override
         public ToggleGroup getToggleGroup() {
