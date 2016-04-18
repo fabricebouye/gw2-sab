@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.specializations.Specialization;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.db.DBStorage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,7 +37,12 @@ import org.scenicview.ScenicView;
  * @author Fabrice Bouyé
  */
 public final class TestSpecializationEditor extends Application {
-    
+
+    @Override
+    public void init() throws Exception {
+        DBStorage.INSTANCE.init();
+    }
+
     @Override
     public void start(final Stage primaryStage) throws Exception {
         final Tab styleTab = new Tab("Style");
@@ -55,7 +61,7 @@ public final class TestSpecializationEditor extends Application {
         primaryStage.show();
         ScenicView.show(scene);
     }
-    
+
     private Node createStyleTest() {
         final List<SpecializationEditor> editors = new ArrayList<>(10);
         // Base non-styled editor.
@@ -78,16 +84,16 @@ public final class TestSpecializationEditor extends Application {
         scrollPane.setContent(vbox);
         return scrollPane;
     }
-    
+
     private Node createEditionTab() {
         final SpecializationEditor editor = new SpecializationEditor();
         final StackPane stackPane = new StackPane();
         stackPane.getChildren().add(editor);
-        final Optional<URL> jsonURL = Optional.ofNullable(getClass().getResource("specialization01.json"));
+        final Optional<URL> jsonURL = Optional.ofNullable(getClass().getResource("specialization01.json")); // NOI18N.
         jsonURL.ifPresent(url -> {
             try {
                 final Specialization specialization = JsonpContext.SAX.loadObject(Specialization.class, url);
-//                editor.setSpecialization(specialization);
+                editor.setSpecialization(specialization);
             } catch (NullPointerException | IOException ex) {
                 Logger.getLogger(TestSpecializationEditor.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
