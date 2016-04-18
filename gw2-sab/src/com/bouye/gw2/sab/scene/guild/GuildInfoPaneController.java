@@ -132,8 +132,7 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
                 return new Task<Optional<GuildDetails>>() {
                     @Override
                     protected Optional<GuildDetails> call() throws Exception {
-                        final boolean isDemo = session.isDemo();
-                        final List<GuildDetails> guildDetails = WebQuery.INSTANCE.queryGuildDetails(isDemo, guildId);
+                        final List<GuildDetails> guildDetails = WebQuery.INSTANCE.queryGuildDetails(guildId);
                         final Optional<GuildDetails> result = guildDetails.isEmpty() ? Optional.empty() : Optional.of(guildDetails.get(0));
                         return result;
                     }
@@ -161,9 +160,8 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
                 return new Task<List<Member>>() {
                     @Override
                     protected List<Member> call() throws Exception {
-                        final boolean isDemo = session.isDemo();
                         final String appKey = session.getAppKey();
-                        final List<Member> result = WebQuery.INSTANCE.queryGuildMembers(isDemo, appKey, guildId);
+                        final List<Member> result = WebQuery.INSTANCE.queryGuildMembers(appKey, guildId);
                         return result;
                     }
                 };
@@ -197,9 +195,8 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
                 return new Task<List<LogEvent>>() {
                     @Override
                     protected List<LogEvent> call() throws Exception {
-                        final boolean isDemo = session.isDemo();
                         final String appKey = session.getAppKey();
-                        final List<LogEvent> result = WebQuery.INSTANCE.queryGuildLogs(isDemo, appKey, guildId);
+                        final List<LogEvent> result = WebQuery.INSTANCE.queryGuildLogs(appKey, guildId);
                         return result;
                     }
                 };

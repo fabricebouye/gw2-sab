@@ -66,7 +66,7 @@ public final class Session {
     }
 
     public boolean isDemo() {
-        return SABConstants.INSTANCE.isDemo() | DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
+        return SABConstants.INSTANCE.isOffline() | DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
     }
 
     /**

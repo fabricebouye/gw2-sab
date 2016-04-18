@@ -9,9 +9,7 @@ package com.bouye.gw2.sab.tasks.account;
 
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
-import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.session.Session;
-import com.bouye.gw2.sab.demo.DemoSupport;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.util.Optional;
 import javafx.application.Platform;
@@ -40,9 +38,8 @@ public final class SessionUpdaterTask extends Task<Void> {
     protected Void call() throws Exception {
         for (final Session session : sessions) {
             final String appKey = session.getAppKey();
-            final boolean isDemo = SABConstants.INSTANCE.isDemo() || DemoSupport.INSTANCE.isDemoApplicationKey(appKey);
-            final Optional<TokenInfo> tokenInfo = WebQuery.INSTANCE.queryTokenInfo(isDemo, appKey);
-            final Optional<Account> account = WebQuery.INSTANCE.queryAccount(isDemo, appKey);
+            final Optional<TokenInfo> tokenInfo = WebQuery.INSTANCE.queryTokenInfo(appKey);
+            final Optional<Account> account = WebQuery.INSTANCE.queryAccount(appKey);
             // Update results on JavaFX application thread.
             Platform.runLater(() -> {
                 tokenInfo.ifPresent(t -> session.setTokenInfo(t));

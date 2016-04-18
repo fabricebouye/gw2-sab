@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.tasks.world;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.util.List;
 import javafx.concurrent.Task;
@@ -35,7 +34,6 @@ public final class WorldSolverTask extends Task<List<World>> {
 
     @Override
     protected List<World> call() throws Exception {
-        final boolean isDemo = SABConstants.INSTANCE.isDemo();
-        return WebQuery.INSTANCE.queryWorlds(isDemo, ids);
+        return WebQuery.INSTANCE.queryWorlds(ids);
     }
 }

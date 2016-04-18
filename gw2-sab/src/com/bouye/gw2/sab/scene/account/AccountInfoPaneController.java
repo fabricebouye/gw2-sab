@@ -265,10 +265,9 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
 
         @Override
         protected Void call() throws Exception {
-            boolean isDemo = session.isDemo();
             // World.
             final int worldId = (Integer) worldLabel.getUserData();
-            final List<World> worlds = WebQuery.INSTANCE.queryWorlds(isDemo, worldId);
+            final List<World> worlds = WebQuery.INSTANCE.queryWorlds(worldId);
             if (!worlds.isEmpty()) {
                 final World world = worlds.get(0);
                 // Update on JavaFX application thread.
@@ -278,7 +277,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             final String[] guildIds = guildLinks.stream()
                     .map(hyperlink -> (String) hyperlink.getUserData())
                     .toArray(size -> new String[size]);
-            final Map<String, GuildDetails> guilds = WebQuery.INSTANCE.queryGuildDetails(isDemo, guildIds)
+            final Map<String, GuildDetails> guilds = WebQuery.INSTANCE.queryGuildDetails(guildIds)
                     .stream()
                     .collect(Collectors.toMap(guildDetails -> guildDetails.getGuildId(), Function.identity()));
             // Update on JavaFX application thread.

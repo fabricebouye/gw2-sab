@@ -89,9 +89,8 @@ public final class WvwSummaryPaneController extends SABControllerBase {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        final boolean isDemo = SABConstants.INSTANCE.isDemo();
                         // Get match result.
-                        final Optional<Match> matchResult = WebQuery.INSTANCE.queryWvwMatch(isDemo, worldId);
+                        final Optional<Match> matchResult = WebQuery.INSTANCE.queryWvwMatch(worldId);
                         if (matchResult.isPresent()) {
                             final Match match = matchResult.get();
                             final int[] worldIds = match.getWorlds()
@@ -101,7 +100,7 @@ public final class WvwSummaryPaneController extends SABControllerBase {
                                     .toArray();
                             WvwSummaryPaneController.this.match = Optional.of(match);
                             // Get world names.
-                            final List<World> worlds = WebQuery.INSTANCE.queryWorlds(isDemo, worldIds);
+                            final List<World> worlds = WebQuery.INSTANCE.queryWorlds(worldIds);
                             WvwSummaryPaneController.this.worlds = Optional.of(worlds);
                         }
                         return null;

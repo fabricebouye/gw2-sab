@@ -152,9 +152,10 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<TokenInfo> queryTokenInfo(final boolean demo, final String appKey) {
+    public Optional<TokenInfo> queryTokenInfo(final String appKey) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<TokenInfo> result = Optional.empty();
-        if (demo) {
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadTokenInfo());
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/tokeninfo?access_token=%s", appKey); // NOI18N.
@@ -163,9 +164,10 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<Account> queryAccount(final boolean demo, final String appKey) {
+    public Optional<Account> queryAccount(final String appKey) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<Account> result = Optional.empty();
-        if (demo) {
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadAccount());
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/account?access_token=%s", appKey); // NOI18N.
@@ -174,9 +176,10 @@ public enum WebQuery {
         return result;
     }
 
-    public List<World> queryWorlds(final boolean demo, final int... ids) {
+    public List<World> queryWorlds(final int... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<World> result = Collections.EMPTY_LIST;
-        if (demo) {
+        if (isOffline) {
             result = DemoSupport.INSTANCE.loadWorlds(ids);
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/worlds?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
@@ -185,19 +188,22 @@ public enum WebQuery {
         return result;
     }
 
-    public List<File> queryFiles(final boolean demo) {
+    public List<File> queryFiles() {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<File> result = Collections.EMPTY_LIST;
-        if (!demo) {
+        if (isOffline) {
+        } else {
             final String query = "https://api.guildwars2.com/v2/files?ids=all"; // NOI18N.        
             result = arrayWebQuery(File.class, query);
         }
         return result;
     }
 
-    public List<GuildDetails> queryGuildDetails(final boolean demo, final String... ids) {
+    public List<GuildDetails> queryGuildDetails(final String... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         // V1 endpoint: can only query one guild at a time.
         List<GuildDetails> result = Collections.EMPTY_LIST;
-        if (demo) {
+        if (isOffline) {
             result = DemoSupport.INSTANCE.loadGuilds(ids);
         } else {
             result = new ArrayList(ids.length);
@@ -213,9 +219,10 @@ public enum WebQuery {
         return result;
     }
 
-    public List<Member> queryGuildMembers(final boolean demo, final String appKey, final String id) {
+    public List<Member> queryGuildMembers(final String appKey, final String id) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<Member> result = Collections.EMPTY_LIST;
-        if (demo) {
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildRoster(id);
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/guild/%s/members?access_token=%s", id, appKey); // NOI18N.
@@ -224,9 +231,10 @@ public enum WebQuery {
         return result;
     }
 
-    public List<LogEvent> queryGuildLogs(final boolean demo, final String appKey, final String id) {
+    public List<LogEvent> queryGuildLogs(final String appKey, final String id) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<LogEvent> result = Collections.EMPTY_LIST;
-        if (demo) {
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildLogs(id);
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
@@ -235,10 +243,10 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<Match> queryWvwMatch(final boolean demo, final int id) {
+    public Optional<Match> queryWvwMatch(final int id) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<Match> result = Optional.empty();
-        if (demo) {
-
+        if (isOffline) {
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
             result = objectWebQuery(Match.class, query);

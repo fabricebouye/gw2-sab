@@ -117,8 +117,13 @@ public enum SABConstants {
         return supportedWebApiLanguages;
     }
 
-    public boolean isDemo() {
-        final String valueStr = settings.getProperty("demo.mode", "false"); // NOI18N.
+    /**
+    * Indicates whether the software runs in offline (debug) mode.
+    * <br>When in offline mode, no attempt should be made to contact the web API, all tests are local.s
+    * @return {@code True} if the property is verified, {@code false} otherwise.
+    */
+    public boolean isOffline() {
+        final String valueStr = settings.getProperty("offline.mode", "false"); // NOI18N.
         final boolean result = Boolean.parseBoolean(valueStr);
         return result;
     }

@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.db;
 
 import api.web.gw2.mapping.core.URLReference;
-import com.bouye.gw2.sab.SABConstants;
+import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.net.IOUtils;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.session.Session;
@@ -95,7 +95,7 @@ public enum DBStorage {
     }
 
     private void updateWorldList() throws IOException, SQLException {
-//        final List<World> worlds = WebQuery.INSTANCE.queryWorlds(SABConstants.INSTANCE.isDemo());
+        final List<World> worlds = WebQuery.INSTANCE.queryWorlds();
 //        final LocalDateTime now = LocalDateTime.now();
 //        for (final World world : worlds) {
 //            final byte[] data = serialize(world);
@@ -111,7 +111,7 @@ public enum DBStorage {
      * @throws SQLException In case of SQL error.
      */
     private void updateImageCache() throws SQLException {
-        final Collection<api.web.gw2.mapping.v2.files.File> files = WebQuery.INSTANCE.queryFiles(SABConstants.INSTANCE.isDemo());
+        final Collection<api.web.gw2.mapping.v2.files.File> files = WebQuery.INSTANCE.queryFiles();
         for (final api.web.gw2.mapping.v2.files.File file : files) {
             final String id = file.getId();
             final URLReference iconURL = file.getIcon();

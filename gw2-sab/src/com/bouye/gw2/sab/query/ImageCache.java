@@ -7,6 +7,7 @@
  */
 package com.bouye.gw2.sab.query;
 
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.db.DBStorage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -57,8 +58,9 @@ public enum ImageCache {
                     // For local images, access the data base and ignore the background loading parameter.
                     if (!url.startsWith("https://")) { // NOI18N.
                         result = DBStorage.INSTANCE.getImageFromCache(url);
-                    } else {
-                        // Local image.
+                    } // @todo Return a non-null image when in offline mode.
+                    else if (!SABConstants.INSTANCE.isOffline()) {
+                        // Remote image.
                         result = new Image(url, backgroundLoading);
                     }
                     cache.put(url, result);
