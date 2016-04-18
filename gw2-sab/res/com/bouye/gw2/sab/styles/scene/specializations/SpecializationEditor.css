@@ -25,12 +25,12 @@
     -fx-background-color: -trait-outer-border, -trait-inner-border, -trait-color;
     -fx-background-insets: 0px, 2px, 4px;
     -fx-shape: "m -227.13341,229.55813 -4,2.3 -4,-2.3 0,-4.6188 4,-2.3 4,2.3 z";
-    -fx-min-width: 75px;
-    -fx-min-height: 85px;
-    -fx-pref-width: 75px;
-    -fx-pref-height: 85px;
-    -fx-max-width: 75px;
-    -fx-max-height: 85px;
+    -fx-min-width: 55px;
+    -fx-min-height: 64px;
+    -fx-pref-width: 55px;
+    -fx-pref-height: 64px;
+    -fx-max-width: 55px;
+    -fx-max-height: 64px;
 }
 .specialization-editor .button:hover {
     -trait-color: -trait-hover-color;
