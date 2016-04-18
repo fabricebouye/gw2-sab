@@ -7,12 +7,20 @@
  */
 package com.bouye.gw2.sab.scene.specializations;
 
+import api.web.gw2.mapping.v2.characters.CharacterSpecialization;
+import api.web.gw2.mapping.v2.specializations.Specialization;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -32,14 +40,23 @@ public final class SpecializationsPane extends Region {
         super();
         setId("SpecializationsPane"); // NOI18N.
         getStyleClass().add("specializations-pane"); // NOI18N.
-        IntStream.rangeClosed(0, 3)
-                .forEach(index -> {
+        setMaxWidth(VBox.USE_PREF_SIZE);
+        setMaxHeight(VBox.USE_PREF_SIZE);
+        //
+        content.setMaxWidth(VBox.USE_PREF_SIZE);
+        content.setMaxHeight(VBox.USE_PREF_SIZE);
+        content.getChildren().setAll(
+                IntStream.range(0, 3)
+                .mapToObj(index -> {
                     final SpecializationEditor editor = new SpecializationEditor();
                     editor.editableProperty().bind(editableProperty());
                     editors.add(editor);
-                    content.getChildren().add(editor);
-                });
+                    return editor;
+                })
+                .collect(Collectors.toList()));
         getChildren().setAll(content);
+//        specializationPool.addListener(listener);
+        build.addListener(buildChangeListener);
     }
 
     @Override
@@ -54,13 +71,12 @@ public final class SpecializationsPane extends Region {
         final double areaH = Math.max(0, height - (insets.getTop() + insets.getBottom()));
         content.resizeRelocate(areaX, areaY, areaW, areaH);
     }
+    ////////////////////////////////////////////////////////////////////////////
 
+    private final ListChangeListener<CharacterSpecialization> buildChangeListener = change -> forwardBuildChange();
+
+    ////////////////////////////////////////////////////////////////////////////
     private final List<SpecializationEditor> editors = new ArrayList<>();
-    private final List<SpecializationEditor> editorsReadOnly = Collections.unmodifiableList(editors);
-
-    public List<SpecializationEditor> getEditors() {
-        return editorsReadOnly;
-    }
 
     /**
      * Sets wether this control is editable.
@@ -77,6 +93,54 @@ public final class SpecializationsPane extends Region {
 
     public final BooleanProperty editableProperty() {
         return editable;
+    }
+
+    private ObservableList<Specialization> specializationPool = FXCollections.observableArrayList();
+
+    public ObservableList<Specialization> getSpecializationPool() {
+        return specializationPool;
+    }
+
+    private ObservableList<CharacterSpecialization> build = FXCollections.observableArrayList(null, null, null);
+
+    public void setBuild1(final CharacterSpecialization specialization) {
+        build.set(0, specialization);
+    }
+
+    public void setBuild2(final CharacterSpecialization specialization) {
+        build.set(1, specialization);
+    }
+
+    public void setBuild3(final CharacterSpecialization specialization) {
+        build.set(2, specialization);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Called whenever the character build changes.
+     */
+    private void forwardBuildChange() {
+        IntStream.range(0, build.size())
+                .forEach(index -> {
+                    final CharacterSpecialization charSpec = build.get(index);
+                    final SpecializationEditor editor = editors.get(index);
+                    if (charSpec == null) {
+                        editor.setSpecialization(null);
+                    } else {
+                        final Optional<Specialization> specFound = getSpecializationPool()
+                                .stream()
+                                .filter(s -> s.getId() == charSpec.getId())
+                                .findFirst();
+                        final Specialization specialization = specFound.orElse(null);
+                        editor.setSpecialization(specialization);
+                        if (specialization != null) {
+                            final Iterator<Integer> traitsIterator = charSpec.getTraits().iterator();
+                            editor.setMajorTrait1(traitsIterator.next());
+                            editor.setMajorTrait2(traitsIterator.next());
+                            editor.setMajorTrait3(traitsIterator.next());
+                        }
+                    }
+                });
     }
 
 }
