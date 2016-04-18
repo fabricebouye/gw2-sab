@@ -14,6 +14,7 @@ import com.bouye.gw2.sab.SAB;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,14 +22,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.scenicview.ScenicView;
 
 /**
  * Test.
  * @author Fabrice Bouyé
  */
 public final class TestSpecializationPane extends Application {
-    
+
     @Override
     public void start(final Stage primaryStage) throws Exception {
         final SpecializationsPane specializationsPane = new SpecializationsPane();
@@ -48,7 +48,10 @@ public final class TestSpecializationPane extends Application {
                 final Collection<Specialization> specializations = JsonpContext.SAX.loadObjectArray(Specialization.class, specializationURL.get());
                 specializationsPane.getSpecializationPool().setAll(specializations);
                 final Collection<CharacterSpecialization> charSpecs = JsonpContext.SAX.loadObjectArray(CharacterSpecialization.class, charSpecsURL.get());
-                specializationsPane.setBuild1(charSpecs.iterator().next());
+                final Iterator<CharacterSpecialization> it = charSpecs.iterator();
+                specializationsPane.setBuild1(it.next());
+                specializationsPane.setBuild2(it.next());
+                specializationsPane.setBuild3(it.next());
             } catch (NullPointerException | IOException ex) {
                 Logger.getLogger(TestSpecializationEditor.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
