@@ -17,6 +17,10 @@ import com.bouye.gw2.sab.text.LabelUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -28,14 +32,19 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
@@ -54,20 +63,20 @@ public final class SpecializationEditor extends Region {
     private final ImageView background = new ImageView();
     private final Region eliteMarker = new Region();
     private final Region button = new Region();
-    private final Region minor1 = new Minor(1);
-    private final Region minor2 = new Minor(2);
-    private final Region minor3 = new Minor(3);
-    private final ToggleTrait adept1 = new ToggleTrait(1, "adept");
-    private final ToggleTrait adept2 = new ToggleTrait(2, "adept");
-    private final ToggleTrait adept3 = new ToggleTrait(3, "adept");
+    private final Minor minor1 = new Minor(1);
+    private final Minor minor2 = new Minor(2);
+    private final Minor minor3 = new Minor(3);
+    private final Major adept1 = new Major(1, "adept"); // NOI18N.
+    private final Major adept2 = new Major(2, "adept"); // NOI18N.
+    private final Major adept3 = new Major(3, "adept"); // NOI18N.
     private final ToggleGroup adeptGroup = new ToggleGroup();
-    private final ToggleTrait master1 = new ToggleTrait(4, "master");
-    private final ToggleTrait master2 = new ToggleTrait(5, "master");
-    private final ToggleTrait master3 = new ToggleTrait(6, "master");
+    private final Major master1 = new Major(4, "master"); // NOI18N.
+    private final Major master2 = new Major(5, "master"); // NOI18N.
+    private final Major master3 = new Major(6, "master"); // NOI18N.
     private final ToggleGroup masterGroup = new ToggleGroup();
-    private final ToggleTrait grandMaster1 = new ToggleTrait(7, "grand-master");
-    private final ToggleTrait grandMaster2 = new ToggleTrait(8, "grand-master");
-    private final ToggleTrait grandMaster3 = new ToggleTrait(9, "grand-master");
+    private final Major grandMaster1 = new Major(7, "grand-master"); // NOI18N.
+    private final Major grandMaster2 = new Major(8, "grand-master"); // NOI18N.
+    private final Major grandMaster3 = new Major(9, "grand-master"); // NOI18N.
     private final ToggleGroup grandMasterGroup = new ToggleGroup();
     private final Line connector0 = new Line();
     private final Line connector1 = new Line();
@@ -104,7 +113,7 @@ public final class SpecializationEditor extends Region {
         grandMaster3.setToggleGroup(grandMasterGroup);
         //
         connector0.getStyleClass().addAll("connector"); // NOI18N.
-        connector0.visibleProperty().bind(specializationProperty().isNotNull());
+        connector0.visibleProperty().bind(editableProperty().and(specializationProperty().isNotNull()));
         //
         connector1.getStyleClass().addAll("connector"); // NOI18N.
         connector2.getStyleClass().addAll("connector"); // NOI18N.
@@ -125,6 +134,7 @@ public final class SpecializationEditor extends Region {
         uninstallSpecialization(null);
         profession.addListener(professionChangeListener);
         specializationProperty().addListener(specializationChangeListener);
+        majorTraits.addListener(majorTraitListChangeListener);
     }
 
     @Override
@@ -133,7 +143,6 @@ public final class SpecializationEditor extends Region {
         final double width = getWidth();
         final double height = getHeight();
         final Insets insets = getInsets();
-        System.out.println(insets);
         final double areaX = insets.getLeft();
         final double areaY = insets.getTop();
         final double areaW = Math.max(0, width - (insets.getLeft() + insets.getRight()));
@@ -245,6 +254,10 @@ public final class SpecializationEditor extends Region {
         return url.toExternalForm();
     }
 
+    ////////////////////////////////////////////////////////////////////////////    
+    /**
+     * Called whenever the profession changes.
+     */
     private final ChangeListener<CharacterProfession> professionChangeListener = (observable, oldValue, newValue) -> {
         Optional.ofNullable(oldValue)
                 .ifPresent(this::uninstallProfession);
@@ -252,31 +265,59 @@ public final class SpecializationEditor extends Region {
                 .ifPresent(this::installProfession);
     };
 
+    /**
+     * Called whenever the specialization changes.
+     */
     private final ChangeListener<Specialization> specializationChangeListener = (observable, oldValue, newValue) -> {
         Optional.ofNullable(oldValue)
                 .ifPresent(this::uninstallSpecialization);
         Optional.ofNullable(newValue)
                 .ifPresent(this::installSpecialization);
+        requestLayout();
     };
 
+    private final ListChangeListener<Integer> majorTraitListChangeListener = change -> requestLayout();
+
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Uninstall a profession.
+     * @param profession The profession, never {@code null}.
+     */
     private void uninstallProfession(final CharacterProfession profession) {
         final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
         pseudoClassStateChanged(pseudoClass, false);
     }
 
+    /**
+     * Install a profession.
+     * @param profession The profession, never {@code null}.
+     */
     private void installProfession(final CharacterProfession profession) {
         final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
         pseudoClassStateChanged(pseudoClass, true);
     }
 
+    /**
+     * Uninstall a specialization.
+     * @param specialization The specialization, never {@code null}.
+     */
     private void uninstallSpecialization(final Specialization specialization) {
         setProfession(null);
         background.setImage(null);
         background.setViewport(null);
         eliteMarker.setVisible(false);
+        //
+        removeTraitTooltips(minorTraitNodes);
+        removeTraitTooltips(majorTraitNodes);
+        //
+        Arrays.stream(majorTraitNodes)
+                .forEach(node -> node.setSelected(false));
     }
 
+    /**
+     * Install a specialization.
+     * @param specialization The specialization, never {@code null}.
+     */
     private void installSpecialization(final Specialization specialization) {
         // Profession.
         setProfession(specialization.getProfession());
@@ -303,6 +344,49 @@ public final class SpecializationEditor extends Region {
         });
         // Elite marker.
         eliteMarker.setVisible(specialization.isElite());
+        // Traits tooltip.
+        setTraitTooltips(minorTraitNodes, specialization.getMinorTraits());
+        setTraitTooltips(majorTraitNodes, specialization.getMajorTraits());
+    }
+
+    private final Minor[] minorTraitNodes = {minor1, minor2, minor3};
+    private final Major[] majorTraitNodes = {adept1, adept2, adept3, master1, master2, master3, grandMaster1, grandMaster2, grandMaster3};
+
+    private final Map<Integer, Tooltip> traitTooltipMap = new HashMap<>();
+
+    /**
+     * Remove trait tool tips.
+     * @param nodes The trait nodes.
+     */
+    private void removeTraitTooltips(final Node[] nodes) {
+        Arrays.stream(nodes)
+                .forEach(node -> {
+                    final Optional<Integer> id = Optional.ofNullable((Integer) node.getUserData());
+                    id.ifPresent(value -> {
+                        final Optional<Tooltip> tooltip = Optional.ofNullable(traitTooltipMap.remove(value));
+                        tooltip.ifPresent(t -> Tooltip.uninstall(node, t));
+                    });
+                    node.setUserData(null);
+                });
+    }
+
+    /**
+     * Create tool tip for each trait node.
+     * @param nodes The trait nodes.
+     * @param ids The trait ids.
+     */
+    private void setTraitTooltips(final Node[] nodes, final Collection<Integer> ids) {
+        if (ids.size() == nodes.length) {
+            int index = 0;
+            for (final int id : ids) {
+                final Node node = nodes[index];
+                final Tooltip tooltip = new Tooltip(String.valueOf(id));
+                node.setUserData(id);
+                Tooltip.install(node, tooltip);
+                traitTooltipMap.put(id, tooltip);
+                index++;
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////    
@@ -351,12 +435,48 @@ public final class SpecializationEditor extends Region {
         return specialization;
     }
 
+    private final ObservableList<Integer> majorTraits = FXCollections.observableArrayList(null, null, null);
+    private final ObservableList<Integer> majorTraitsReadOnly = FXCollections.unmodifiableObservableList(majorTraits);
+
+    public final ObservableList<Integer> getMajorTraitsReadOnly() {
+        return majorTraitsReadOnly;
+    }
+
+    public void setMajorTrait1(final Integer id) {
+        selectTraitMaybe(Arrays.asList(adept1, adept2, adept3), id, 0);
+    }
+
+    public void setMajorTrait2(final Integer id) {
+        selectTraitMaybe(Arrays.asList(master1, master2, master3), id, 1);
+    }
+
+    public void setMajorTrait3(final Integer id) {
+        selectTraitMaybe(Arrays.asList(grandMaster1, grandMaster2, grandMaster3), id, 2);
+    }
+
+    private void selectTraitMaybe(final Collection<Major> nodes, final Integer traitId, final int slotIndex) {
+        final Specialization specialization = getSpecialization();
+        if (specialization == null || traitId == null) {
+            nodes.stream()
+                    .forEach(node -> node.setSelected(false));
+            majorTraits.set(slotIndex, null);
+        } else {
+            nodes.stream()
+                    .filter(node -> traitId.equals(node.getUserData()))
+                    .findFirst()
+                    .ifPresent(node -> node.setSelected(true));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////    
     private static final int BLACK_COLOR = 0xFF000000;
     private static final int TRANSPARENT_COLOR = 0x00000000;
 
     private static Properties CROP_DEFS;
 
+    /**
+    * Load the crop definitions from the stored property file.
+    */
     private static void loadCropDefs() {
         if (CROP_DEFS == null) {
             CROP_DEFS = new Properties();
@@ -377,8 +497,8 @@ public final class SpecializationEditor extends Region {
         loadCropDefs();
         final String imageFile = urlValue.substring(urlValue.lastIndexOf('/') + 1, urlValue.length()); // NOI18N.
         Rectangle2D result = Rectangle2D.EMPTY;
-        for (String name : new String[]{"default", imageFile}) {
-            final String cropDef = CROP_DEFS.getProperty(name);
+        for (final String defName : new String[]{"default", imageFile}) {
+            final String cropDef = CROP_DEFS.getProperty(defName);
             if (cropDef != null) {
                 final String[] tokens = cropDef.split("\\s+"); // NOI18N.
                 if (tokens.length == 4) {
@@ -431,6 +551,10 @@ public final class SpecializationEditor extends Region {
         return new Rectangle2D(cutoutX, cutoutY, cutoutW, cutoutH);
     }
 
+    /**
+     * Minor trait node.
+     * @author Fabrice Bouyé
+     */
     private final class Minor extends StackPane {
 
         public Minor(final int index) {
@@ -445,17 +569,24 @@ public final class SpecializationEditor extends Region {
     }
 
     /**
-     * Toggle that allow to activate / deactivate a trait.
+     * Major trait node.
+     * <br>A {@code Toggle} that allows to activate / deactivate a trait.
      * @author Fabrice Bouyé
      */
-    private final class ToggleTrait extends StackPane implements Toggle {
+    private final class Major extends StackPane implements Toggle {
+
+        /**
+         * The index of the trait.
+         */
+        private final int index;
 
         /**
          * Creates a new instance.
          * @param index The index of the trait.
          */
-        public ToggleTrait(final int index, final String type) {
+        public Major(final int index, final String type) {
             super();
+            this.index = index;
             //
             final int offset = ((index - 1) % 3) + 1;
             getStyleClass().addAll("trait", type, type + offset); // NOI18N.
@@ -469,14 +600,15 @@ public final class SpecializationEditor extends Region {
             setOnMouseClicked(mouseEventHandler);
         }
 
+        ////////////////////////////////////////////////////////////////////////////
         /**
          * Called whenever the toggle group changes.
          */
         private final ChangeListener<ToggleGroup> toggleGroupChangeListener = (observable, oldValue, newValue) -> {
             final Optional<ToggleGroup> oldToggleGroup = Optional.ofNullable(oldValue);
-            oldToggleGroup.ifPresent(tg -> tg.getToggles().remove(ToggleTrait.this));
+            oldToggleGroup.ifPresent(tg -> tg.getToggles().remove(Major.this));
             final Optional<ToggleGroup> newToggleGroup = Optional.ofNullable(newValue);
-            newToggleGroup.ifPresent(tg -> tg.getToggles().add(ToggleTrait.this));
+            newToggleGroup.ifPresent(tg -> tg.getToggles().add(Major.this));
         };
 
         /**
@@ -484,9 +616,26 @@ public final class SpecializationEditor extends Region {
          */
         private final ChangeListener<Boolean> selectedChangeListener = (observable, oldValue, newValue) -> {
             final Optional<ToggleGroup> toggleGroup = Optional.ofNullable(getToggleGroup());
-            toggleGroup.ifPresent(tg -> tg.selectToggle(newValue ? ToggleTrait.this : null));
-            ToggleTrait.this.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), newValue); // NOI18N.
+            // Selection.
+            toggleGroup.ifPresent(tg -> tg.selectToggle(newValue ? Major.this : null));
+            // Style.
+            Major.this.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), newValue); // NOI18N.
+            // Forward value.
+            if (newValue) {
+                forwardTraitValue();
+            }
         };
+
+        /**
+         * Forward new major trait value to the editor.
+         */
+        private void forwardTraitValue() {
+            final Optional<Integer> id = Optional.ofNullable((Integer) getUserData());
+            id.ifPresent(value -> {
+                final int traitIndex = (index - 1) / 3;
+                majorTraits.set(traitIndex, value);
+            });
+        }
 
         /**
          * Called whenever the user clicks on this trait.
@@ -498,6 +647,10 @@ public final class SpecializationEditor extends Region {
             }
         };
 
+        ////////////////////////////////////////////////////////////////////////////        
+        /**
+         * Toggle group as defined in {@code Toggle}.
+         */
         private final ObjectProperty<ToggleGroup> toggleGroup = new SimpleObjectProperty<>(this, "toggleGroup", null); // NOI18N.
 
         @Override
@@ -515,7 +668,10 @@ public final class SpecializationEditor extends Region {
             return toggleGroup;
         }
 
-        private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
+        /**
+         * Selected state as defined in {@code Toggle}.
+         */
+        private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false); // NOI18N.
 
         @Override
         public boolean isSelected() {

@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -86,14 +87,28 @@ public final class TestSpecializationEditor extends Application {
     }
 
     private Node createEditionTab() {
-        final SpecializationEditor editor = new SpecializationEditor();
+        final SpecializationEditor editor1 = new SpecializationEditor();
+        editor1.getMajorTraitsReadOnly().addListener((ListChangeListener) change -> System.out.println(editor1.getMajorTraitsReadOnly()));
+        final SpecializationEditor editor2 = new SpecializationEditor();
+        editor2.setEditable(false);
+        final VBox vbox = new VBox();
+        vbox.setMaxWidth(VBox.USE_PREF_SIZE);
+        vbox.setMaxHeight(VBox.USE_PREF_SIZE);
+        vbox.getChildren().setAll(editor1, editor2);
         final StackPane stackPane = new StackPane();
-        stackPane.getChildren().add(editor);
+        stackPane.getChildren().add(vbox);
         final Optional<URL> jsonURL = Optional.ofNullable(getClass().getResource("specialization01.json")); // NOI18N.
         jsonURL.ifPresent(url -> {
             try {
                 final Specialization specialization = JsonpContext.SAX.loadObject(Specialization.class, url);
-                editor.setSpecialization(specialization);
+                editor1.setSpecialization(specialization);
+                editor1.setMajorTrait1(701);
+                editor1.setMajorTrait2(1960);
+                editor1.setMajorTrait3(704);
+                editor2.setSpecialization(specialization);
+                editor2.setMajorTrait1(701);
+                editor2.setMajorTrait2(1960);
+                editor2.setMajorTrait3(704);
             } catch (NullPointerException | IOException ex) {
                 Logger.getLogger(TestSpecializationEditor.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
