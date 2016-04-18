@@ -286,6 +286,9 @@ public final class SpecializationEditor extends Region {
             System.out.println(url);
             final String urlValue = url.toExternalForm();
             final Image specializationBackground = ImageCache.INSTANCE.getImage(urlValue);
+            if (specializationBackground == null) {
+                return;
+            }
             specializationBackground.progressProperty().addListener((ob, ov, nv) -> {
                 if (nv.intValue() == 1) {
                     // Specialization images contain large blank areas that need to be removed.
