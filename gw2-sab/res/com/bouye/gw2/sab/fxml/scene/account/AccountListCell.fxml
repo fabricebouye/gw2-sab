@@ -17,7 +17,7 @@
 <GridPane id="GridPane" fx:id="rootPane" prefWidth="150.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountListCellController">
     <children>
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="0" />
-        <Button fx:id="deleteButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteButton" styleClass="bad-button, delete-knob" text="%icon.times" GridPane.columnIndex="1" GridPane.rowSpan="2147483647" />
+        <Button fx:id="deleteButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteButton" styleClass="bad-button, delete-knob" text="%icon.fa.times" GridPane.columnIndex="1" GridPane.rowSpan="2147483647" />
         <Label fx:id="appKeyLabel" styleClass="app-key-label" text="label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
     </children>
     <columnConstraints>

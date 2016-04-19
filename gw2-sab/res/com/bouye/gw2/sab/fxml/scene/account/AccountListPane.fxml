@@ -26,7 +26,7 @@
         <ListView fx:id="accountsListView" prefHeight="300.0" VBox.vgrow="ALWAYS" />
         <Button fx:id="addAccountButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddAccountButton" styleClass="primary-button, good-button" text="%action.add.account.label" VBox.vgrow="NEVER">
             <graphic>
-                <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.user-add" />
+                <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.fa.user-plus" />
             </graphic>
         </Button>
     </children>

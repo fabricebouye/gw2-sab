@@ -16,7 +16,7 @@
 <FlowPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="greeting-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.greeting.GreetingPaneController">
     <Button fx:id="bltButton" styleClass="greeting-button" text="%greeting.blt.label" >
         <graphic>
-            <Label fx:id="bltIcon" styleClass="awesome-icon" text="%icon.bill" />
+            <Label fx:id="bltIcon" styleClass="awesome-icon" text="%icon.fa.money" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="bltTip"  text="%greeting.blt.label"/>
@@ -24,7 +24,7 @@
     </Button>
     <Button fx:id="mfButton" styleClass="greeting-button" text="%greeting.mf.label" >
         <graphic>
-            <Label fx:id="mfIcon" styleClass="awesome-icon" text="%icon.magic" />
+            <Label fx:id="mfIcon" styleClass="awesome-icon" text="%icon.fa.magic" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="mfTip" text="%greeting.mf.label" />
@@ -32,7 +32,7 @@
     </Button>
     <Button fx:id="pvpButton" styleClass="greeting-button" text="%greeting.pvp.label" >
         <graphic>
-            <Label fx:id="pvpIcon" styleClass="awesome-icon" text="%icon.crossed-swords" />
+            <Label fx:id="pvpIcon" styleClass="awesome-icon" text="%icon.unicode.crossed-swords" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="pvpTip" text="%greeting.pvp.label" />
@@ -40,7 +40,7 @@
     </Button>
     <Button fx:id="wvwButton" styleClass="greeting-button" text="%greeting.wvw.label" >
         <graphic>
-            <Label fx:id="wvwIcon" styleClass="awesome-icon" text="%icon.castle" />
+            <Label fx:id="wvwIcon" styleClass="awesome-icon" text="%icon.fa.fort-awesome" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="wvwTip" text="%greeting.wvw.label"/>
@@ -48,7 +48,7 @@
     </Button>
     <Button fx:id="guildsButton" styleClass="greeting-button" text="%greeting.guilds.label" >
         <graphic>
-            <Label fx:id="guildsIcon" styleClass="awesome-icon" text="%icon.shield" />
+            <Label fx:id="guildsIcon" styleClass="awesome-icon" text="%icon.fa.shield" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="guildsTip" text="%greeting.guilds.label"/>
@@ -57,7 +57,7 @@
     <Button fx:id="charactersButton" styleClass="greeting-button" />
     <Button fx:id="accountButton" styleClass="greeting-button" text="%greeting.account.label" >
         <graphic>
-            <Label fx:id="accountIcon" styleClass="awesome-icon" text="%icon.account" />
+            <Label fx:id="accountIcon" styleClass="awesome-icon" text="%icon.fa.user" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="accountTip" text="%greeting.account.label"/>
@@ -65,7 +65,7 @@
     </Button>
     <Button fx:id="addAccountButton" styleClass="greeting-button" text="%greeting.add.account.label" >
         <graphic>
-            <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.user-add" />
+            <Label fx:id="addAccountIcon" styleClass="awesome-icon" text="%icon.fa.user-plus" />
         </graphic>
         <tooltip>
             <Tooltip fx:id="addAccountTip" text="%greeting.add.account.label"/>

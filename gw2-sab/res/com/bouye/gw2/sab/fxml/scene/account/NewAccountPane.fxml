@@ -37,11 +37,11 @@
                <tooltip>
                   <Tooltip text="Empty Tooltip" />
                </tooltip></TextField>
-                <Button fx:id="pasteButton" styleClass="awesome-icon" mnemonicParsing="false" onAction="#onHandlePasteButton" text="%icon.paste">
+                <Button fx:id="pasteButton" styleClass="awesome-icon" mnemonicParsing="false" onAction="#onHandlePasteButton" text="%icon.fa.paste">
                <tooltip>
                   <Tooltip text="Empty Tooltip" />
                </tooltip></Button>
-                <Button fx:id="qrCodeButton" styleClass="awesome-icon" mnemonicParsing="false" onAction="#onHandleQRCodeButton" text="%icon.qr-code">
+                <Button fx:id="qrCodeButton" styleClass="awesome-icon" mnemonicParsing="false" onAction="#onHandleQRCodeButton" text="%icon.fa.qrcode">
                <tooltip>
                   <Tooltip text="Empty Tooltip" />
                </tooltip></Button>

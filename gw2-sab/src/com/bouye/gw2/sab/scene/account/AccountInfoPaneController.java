@@ -166,7 +166,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             final List<Label> permissionLabels = tokenInfo.getPermissions()
                     .stream()
                     .map(permission -> {
-                        final Label icon = new Label(SABConstants.I18N.getString("icon.gear")); // NOI18N.
+                        final Label icon = new Label(SABConstants.I18N.getString("icon.fa.gear")); // NOI18N.
                         icon.getStyleClass().addAll("awesome-icon", "permission-icon"); // NOI18N.
                         final Label label = new Label();
                         label.getStyleClass().add("permission-label"); // NOI18N.

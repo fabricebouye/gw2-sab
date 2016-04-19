@@ -18,7 +18,7 @@
     <children>
         <Label fx:id="nameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="0" />
       <Label fx:id="levelLabel" text="Label" GridPane.columnIndex="1" />        
-        <Button fx:id="actionButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleActionButton" styleClass="flat-button, awesome-button" text="%icon.chevron-right" GridPane.columnIndex="2" GridPane.rowSpan="2147483647" />
+        <Button fx:id="actionButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleActionButton" styleClass="flat-button, awesome-button" text="%icon.fa.chevron-right" GridPane.columnIndex="2" GridPane.rowSpan="2147483647" />
         <Label fx:id="professionLabel" text="label" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />        
     </children>
     <columnConstraints>

@@ -20,7 +20,7 @@
 
 <GridPane id="GridPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="container-pane, account-info-pane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.AccountInfoPaneController">
     <children>
-        <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.account" GridPane.columnIndex="0" GridPane.rowSpan="3" GridPane.valignment="TOP" />
+        <Label fx:id="accountIconLabel" styleClass="awesome-icon, account-icon" text="%icon.fa.user" GridPane.columnIndex="0" GridPane.rowSpan="3" GridPane.valignment="TOP" />
         <Label fx:id="accountNameLabel" styleClass="strong-label" text="label" GridPane.columnIndex="1" />
         <Label fx:id="accessLabel" text="Label" GridPane.columnIndex="2" />
         <Hyperlink fx:id="worldLink" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
@@ -30,17 +30,17 @@
             <children>
                 <Label fx:id="dailyApLabel" text="Label">
                     <graphic>
-                        <Label fx:id="dailyApIcon" text="%icon.cup" styleClass="awesome-icon"/>
+                        <Label fx:id="dailyApIcon" text="%icon.fa.trophy" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
                 <Label fx:id="monthlyApLabel" text="Label" >
                     <graphic>
-                        <Label fx:id="monthlyApIcon" text="%icon.cup" styleClass="awesome-icon"/>
+                        <Label fx:id="monthlyApIcon" text="%icon.fa.trophy" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
                 <Label fx:id="wvwRankLabel" text="Label" >
                     <graphic>
-                        <Label fx:id="wvwRankIcon" text="%icon.castle" styleClass="awesome-icon"/>
+                        <Label fx:id="wvwRankIcon" text="%icon.fa.fort-awesome" styleClass="awesome-icon"/>
                     </graphic>
                 </Label>
             </children>
