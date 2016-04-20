@@ -1,0 +1,26 @@
+.inventory-pane {
+}
+.inventory-pane .bag {
+}
+.inventory-pane .bag-content {
+    -fx-padding: 0px;
+}
+.inventory-pane .slot {
+    -slot-inner: gray;
+    -slot-border: derive(-slot-inner, -80%);
+    -fx-background-color: -slot-inner;
+    -fx-border-color: -slot-border;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+.inventory-pane .slot:account {
+    -slot-inner: orange;
+}
+.inventory-pane .slot:character {
+}
+.inventory-pane .slot:hover {
+    -fx-background-color: derive(-slot-inner, 50%);
+}
+
+
+
