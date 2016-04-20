@@ -21,7 +21,7 @@
             <children>
                 <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" styleClass="awesome-button" text="%action.back.label" />
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-                <MenuButton fx:id="accountMenuButton" mnemonicParsing="false" styleClass="account-button, awesome-menu-button" text="%icon.accounts">
+                <MenuButton fx:id="accountMenuButton" mnemonicParsing="false" styleClass="account-button, awesome-menu-button" text="%icon.fa.users">
                     <items>
                         <CustomMenuItem fx:id="accountListItem" hideOnClick="false" mnemonicParsing="false" styleClass="custom-menu-item">
                             <content>
@@ -30,7 +30,7 @@
                         </CustomMenuItem>
                     </items>
                 </MenuButton>
-                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" styleClass="awesome-button" text="%icon.help" />
+                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" styleClass="awesome-button" text="%icon.fa.question-circle" />
             </children>
         </HBox>
     </top>
