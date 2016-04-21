@@ -10,19 +10,16 @@ package com.bouye.gw2.sab.scene.characters.inventory;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
+import com.bouye.gw2.sab.SAB;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
@@ -57,24 +54,11 @@ public final class TestInventoryPane extends Application {
         final ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setContent(inventoryPane);
-        final ToolBar toolBar = new ToolBar();
-        final ToggleGroup displayToggleGroup = new ToggleGroup();
-        Arrays.stream(InventoryDisplay.values())
-                .forEach(display -> {
-                    final RadioButton button = new RadioButton(display.name());
-                    button.setSelected(display == inventoryPane.getDisplay());
-                    button.setUserData(display);
-                    button.setToggleGroup(displayToggleGroup);
-                    toolBar.getItems().add(button);
-                });
-        displayToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            final InventoryDisplay display = (InventoryDisplay) newValue.getUserData();
-            inventoryPane.setDisplay(display);
-        });
         final BorderPane root = new BorderPane();
-        root.setTop(toolBar);
         root.setCenter(scrollPane);
         final Scene scene = new Scene(root, 600, 600);
+        final Optional<URL> cssURL = Optional.ofNullable(SAB.class.getResource("styles/Styles.css")); // NOI18N.
+        cssURL.ifPresent(url -> scene.getStylesheets().add(url.toExternalForm()));
         primaryStage.setTitle("TestInventoryPane"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();

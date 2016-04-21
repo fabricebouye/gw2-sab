@@ -11,7 +11,9 @@ import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.characters.inventory.Inventory;
 import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +30,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -41,7 +48,12 @@ import javafx.scene.text.Text;
  * Display the account and character inventory.
  * @author Fabrice Bouyé
  */
-public final class InventoryPane extends VBox {
+public final class InventoryPane extends BorderPane {
+
+    private final TextField searchField = new TextField();
+    private final MenuButton optionsButton = new MenuButton();
+    private final HBox topBar = new HBox();
+    private final VBox container = new VBox();
 
     /**
      * Creates a new instance.
@@ -51,6 +63,36 @@ public final class InventoryPane extends VBox {
         setId("inventoryPane"); // NOI18N.
         getStyleClass().add("inventory-pane"); // NOI18N.
 //        setPrefHeight(USE_COMPUTED_SIZE);
+        //
+        final Text optionsGraphic = new Text(SABConstants.I18N.getString("icon.fa.gear")); // NOI18N.
+        optionsGraphic.getStyleClass().add("awesome-icon"); // NOI18N.
+        optionsButton.setId("optionsButton"); // NOI18N.
+        optionsButton.getStyleClass().add("options-button"); // NOI18N.
+        optionsButton.setText(SABConstants.I18N.getString("inventory.options.label")); // NOI18N.)
+        optionsButton.setGraphic(optionsGraphic);
+        final ToggleGroup displayToggleGroup = new ToggleGroup();
+        Arrays.stream(InventoryDisplay.values())
+                .forEach(display -> {
+                    final String displayKey = String.format("inventory.display.%s.label", display.name().toLowerCase().replaceAll("_", "-")); // NOI18N.
+                    final String displayText = SABConstants.I18N.getString(displayKey);
+                    final RadioMenuItem displayItem = new RadioMenuItem(displayText);
+                    displayItem.setSelected(display == getDisplay());
+                    displayItem.setUserData(display);
+                    displayItem.setToggleGroup(displayToggleGroup);
+                    optionsButton.getItems().add(displayItem);
+                });
+        displayToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue instanceof RadioMenuItem) {
+                final InventoryDisplay display = (InventoryDisplay) newValue.getUserData();
+                setDisplay(display);
+            }
+        });
+        HBox.setHgrow(searchField, Priority.ALWAYS);
+        topBar.setId("topBar"); // NOI18N.
+        topBar.getStyleClass().add("top-bar"); // NOI18N.
+        topBar.getChildren().setAll(searchField, optionsButton);
+        setTop(topBar);
+        setCenter(container);
         //
         displayProperty().addListener(displayChangeListener);
         getSharedInventory().addListener(sharedInventoryListChangeListener);
@@ -96,9 +138,9 @@ public final class InventoryPane extends VBox {
             break;
         }
         if (inventoryContent.containsKey("all")) {
-            getChildren().setAll(createBagContent(inventoryContent.get("all"))); // NOI18N.
+            container.getChildren().setAll(createBagContent(inventoryContent.get("all"))); // NOI18N.
         } else {
-            getChildren().setAll(
+            container.getChildren().setAll(
                     inventoryContent.entrySet()
                     .stream()
                     .map(entry -> createBagView(entry.getKey(), entry.getValue()))

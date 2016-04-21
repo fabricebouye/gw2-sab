@@ -1,17 +1,21 @@
 .inventory-pane {
+    -fx-padding: 6px;
 }
 .inventory-pane .bag {
 }
 .inventory-pane .bag-content {
     -fx-padding: 0px;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
 }
 .inventory-pane .slot {
     -slot-inner: gray;
     -slot-border: derive(-slot-inner, -80%);
-    -fx-background-color: -slot-inner;
+    -fx-background-color: -slot-inner, derive(-slot-inner, 80%), -slot-inner;
+    -fx-background-insets: 0px, 2px, 3px;
     -fx-border-color: -slot-border;
-    -fx-pref-width: 32px;
-    -fx-pref-height: 32px;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
 }
 .inventory-pane .slot:account {
     -slot-inner: orange;
@@ -21,6 +25,13 @@
 .inventory-pane .slot:hover {
     -fx-background-color: derive(-slot-inner, 50%);
 }
-
+.inventory-pane .top-bar {
+    -fx-spacing: 6px;
+    -fx-padding: 0px 0px 6px 0px;
+    -fx-alignment: center-left;
+}
+.inventory-pane .options-button {
+    -fx-content-display: graphic-only;
+}
 
 
