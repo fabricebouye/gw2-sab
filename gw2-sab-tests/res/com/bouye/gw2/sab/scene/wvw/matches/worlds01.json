@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1001,
+        "name": "Test Server #1",
+        "population": "Medium"
+    },
+    {
+        "id": 1005,
+        "name": "Test Server #2",
+        "population": "VeryHigh"
+    },
+    {
+        "id": 1012,
+        "name": "Test Server #3",
+        "population": "High"
+    },
+    {
+        "id": 1016,
+        "name": "Test Server #4",
+        "population": "High"
+    }
+]
