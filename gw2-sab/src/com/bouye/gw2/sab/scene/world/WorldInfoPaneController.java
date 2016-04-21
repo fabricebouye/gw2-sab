@@ -11,6 +11,8 @@ import api.web.gw2.mapping.v2.worlds.World;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController;
 import com.bouye.gw2.sab.tasks.world.WorldSolverTask;
+import com.bouye.gw2.sab.wrappers.MatchWrapper;
+import com.bouye.gw2.sab.tasks.wvw.matches.MatchSolverTask;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -84,8 +86,8 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
         } else {
             nameLabel.setText(String.valueOf(worldId));
             updateWorldValuesAsync(worldId);
+            updateWorldWvWResultsAsync();
         }
-        wvwSummaryController.setWorldId(worldId);
     }
 
     private ScheduledService<List<World>> worldQueryService;
@@ -109,10 +111,45 @@ public final class WorldInfoPaneController extends SABControllerBase<WorldInfoPa
                     regionLabel.setText(world.getRegion().name());
                     languageLabel.setText(world.getLanguage().name());
                     populationLabel.setText(world.getPopulation().name());
+                } else {
+                    nameLabel.setText(null);
+                    regionLabel.setText(null);
+                    languageLabel.setText(null);
+                    populationLabel.setText(null);
                 }
             });
             worldQueryService = service;
         }
         addAndStartService(worldQueryService, "WorldInfoPaneController::updateWorldValuesAsync");
+    }
+
+    private ScheduledService<List<MatchWrapper>> wwwQueryService;
+
+    private void updateWorldWvWResultsAsync() {
+        if (wwwQueryService == null) {
+            final ScheduledService<List<MatchWrapper>> service = new ScheduledService<List<MatchWrapper>>() {
+                @Override
+                protected Task<List<MatchWrapper>> createTask() {
+                    final Optional<WorldInfoPane> parent = parentNode();
+                    final int worldId = parent.isPresent() ? parent.get().getWorldId() : -1;
+                    return new MatchSolverTask(worldId);
+                }
+            };
+            service.setPeriod(Duration.minutes(5));
+            service.setRestartOnFailure(true);
+            service.setOnSucceeded(workerStateEvent -> {
+                final List<MatchWrapper> result = (List<MatchWrapper>) workerStateEvent.getSource().getValue();
+                if (!result.isEmpty()) {
+                    final MatchWrapper queryResult = result.get(0);
+                    wvwSummaryController.setMatch(queryResult.getMatch());
+                    wvwSummaryController.getWorlds().setAll(queryResult.getWorlds());
+                } else {
+                    wvwSummaryController.setMatch(null);
+                    wvwSummaryController.getWorlds().clear();
+                }
+            });
+            wwwQueryService = service;
+        }
+        addAndStartService(wwwQueryService, "WorldInfoPaneController::updateWorldWvWResultsAsync");
     }
 }
