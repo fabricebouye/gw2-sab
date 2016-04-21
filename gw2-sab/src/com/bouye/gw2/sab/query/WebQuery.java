@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Centralized class for web-queries.
@@ -66,14 +68,9 @@ public enum WebQuery {
     public String idsToString(final int... ids) {
         String result = "all"; // NOI18N.
         if (ids.length > 0) {
-            final StringBuilder builder = new StringBuilder();
-            for (final int id : ids) {
-                builder.append(id);
-                builder.append(','); // NOI18N.
-            }
-            // Remove last comma.
-            builder.replace(builder.length() - 1, builder.length(), ""); // NOI18N.
-            result = builder.toString();
+            result = Arrays.stream(ids)
+                    .mapToObj(value -> String.valueOf(value))
+                    .collect(Collectors.joining(",")); // NOI18N.
         }
         return result;
     }
@@ -87,14 +84,8 @@ public enum WebQuery {
     public String idsToString(final String... ids) {
         String result = "all"; // NOI18N.
         if (ids.length > 0) {
-            final StringBuilder builder = new StringBuilder();
-            for (final String id : ids) {
-                builder.append(id);
-                builder.append(','); // NOI18N.
-            }
-            // Remove last comma.
-            builder.replace(builder.length() - 1, builder.length(), ""); // NOI18N.
-            result = builder.toString();
+            result = Arrays.stream(ids)
+                    .collect(Collectors.joining(",")); // NOI18N.
         }
         return result;
     }
@@ -243,6 +234,11 @@ public enum WebQuery {
         return result;
     }
 
+    /**
+     * Query a WvW using world id.
+     * @param id The id of a world participating in the match.
+     * @return An {@code Optional<Match>} instance, never {@code null}.
+     */
     public Optional<Match> queryWvwMatch(final int id) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<Match> result = Optional.empty();
@@ -250,6 +246,22 @@ public enum WebQuery {
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
             result = objectWebQuery(Match.class, query);
+        }
+        return result;
+    }
+
+    /**
+     * Query a WvW using match ids.
+     * @param ids The id(s) of WvW matches.
+     * @return A {@code List<Match>} instance, never {@code null}.
+     */
+    public List<Match> queryWvwMatches(final String... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Match> result = Collections.EMPTY_LIST;
+        if (isOffline) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?ids=%s", idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(Match.class, query);
         }
         return result;
     }
