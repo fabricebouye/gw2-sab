@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
@@ -51,11 +50,8 @@ public final class TestInventoryPane extends Application {
                 Logger.getLogger(TestInventoryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
         });
-        final ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        scrollPane.setContent(inventoryPane);
         final BorderPane root = new BorderPane();
-        root.setCenter(scrollPane);
+        root.setCenter(inventoryPane);
         final Scene scene = new Scene(root, 600, 600);
         final Optional<URL> cssURL = Optional.ofNullable(SAB.class.getResource("styles/Styles.css")); // NOI18N.
         cssURL.ifPresent(url -> scene.getStylesheets().add(url.toExternalForm()));
