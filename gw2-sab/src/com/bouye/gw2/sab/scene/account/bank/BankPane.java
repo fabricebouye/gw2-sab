@@ -8,7 +8,9 @@
 package com.bouye.gw2.sab.scene.account.bank;
 
 import api.web.gw2.mapping.v2.account.bank.BankSlot;
+import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
+import java.net.URL;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -41,6 +43,13 @@ public final class BankPane extends VBox {
 //    public void dispose() {
 //        SABFXMLUtils.INSTANCE.disposeController(controller);
 //    }
+    
+    @Override
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/account/bank/BankPane.css"); // NOI18N.
+        return url.toExternalForm();
+    }
+    
     private final ObservableList<BankSlot> slots = FXCollections.observableArrayList();
 
     /**

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<fx:root id="VBox" prefHeight="400.0" prefWidth="600.0" styleClass="bank-pane" stylesheets="@../../../../styles/scene/account/bank/BankPane.css" type="VBox" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.bank.BankPaneController">
+<fx:root id="VBox" prefHeight="400.0" prefWidth="600.0" styleClass="bank-pane" type="VBox" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.bank.BankPaneController">
    <children>
       <HBox fx:id="headerHBox" styleClass="top-bar">
          <children>
