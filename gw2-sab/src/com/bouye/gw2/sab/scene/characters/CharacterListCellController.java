@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -105,15 +106,23 @@ public final class CharacterListCellController extends SABControllerBase<Charact
     }
 
     private void installNewStyle(final CharacterListCell parent) {
-        final Character character = (characterBindging == null) ? null : characterBindging.get();
-        if (character != null) {
-            final CharacterProfession profession = character.getProfession();
+        final Optional<Character> character = Optional.ofNullable((characterBindging == null) ? null : characterBindging.get());
+        character.ifPresent(c -> {
+            final CharacterProfession profession = c.getProfession();
             final PseudoClass professionPseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
             parent.pseudoClassStateChanged(professionPseudoClass, true);
-        }
+        });
     }
 
     @FXML
     private void handleActionButton() {
+        final Optional<CharacterListCell> parent = parentNode();
+        parent.ifPresent(n -> {
+            final Optional<CharacterWrapper> item = Optional.ofNullable(n.getItem());
+            final Optional<Consumer<CharacterWrapper>> onSelect = Optional.ofNullable(n.getOnSelect());
+            if (item.isPresent() && onSelect.isPresent()) {
+                onSelect.get().accept(item.get());
+            }
+        });
     }
 }

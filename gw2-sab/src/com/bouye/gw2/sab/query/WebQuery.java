@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.core.PageResult;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
+import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
@@ -262,6 +263,33 @@ public enum WebQuery {
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?ids=%s", idsToString(ids)); // NOI18N.
             result = arrayWebQuery(Match.class, query);
+        }
+        return result;
+    }
+
+    public List<String> getCharacterNames(final String appKey) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<String> result = Collections.EMPTY_LIST;
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/characters?access_token=%s", appKey); // NOI18N.
+            result = arrayWebQuery(String.class, query);
+        }
+        return result;
+    }
+
+    public Optional<Character> getCharacter(final String appKey, final String characterName) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        Optional<Character> result = Optional.empty();
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            try {
+                final String escapedCharacterName = encodeURLParameter(characterName);
+                final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey);
+                result = objectWebQuery(Character.class, query);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            }
         }
         return result;
     }
