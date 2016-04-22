@@ -5,8 +5,9 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab;
+package com.bouye.gw2.sab.views.welcome;
 
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.scene.SABControlBase;
 import com.bouye.gw2.sab.scene.account.AccountListPaneController;
@@ -49,10 +50,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 
 /**
- * FXML Controller class
+ * FXML Controller class.
  * @author Fabrice Bouyé
  */
-public final class WelcomeViewController extends SABControllerBase {
+public final class WelcomeViewController extends SABControllerBase<WelcomeView> {
 
     @FXML
     private BorderPane rootPane;
@@ -202,7 +203,7 @@ public final class WelcomeViewController extends SABControllerBase {
         history.clear();
         rootPane.setCenter(null);
     }
-    
+
     private void pushToDisplay(final Node content) {
         if (content != null) {
             history.add(0, content);
@@ -216,7 +217,7 @@ public final class WelcomeViewController extends SABControllerBase {
             final Node previous = history.get(0);
             history.remove(0);
             if (previous instanceof SABControlBase) {
-                ((SABControlBase)previous).dispose();
+                ((SABControlBase) previous).dispose();
             }
         }
         // Restore previous.

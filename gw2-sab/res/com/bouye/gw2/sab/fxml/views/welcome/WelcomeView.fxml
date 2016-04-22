@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-<BorderPane id="BorderPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.WelcomeViewController">
+<fx:root id="BorderPane" fx:id="rootPane" type="BorderPane" styleClass="welcome-view" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.views.welcome.WelcomeViewController">
     <top>
         <HBox id="HBox" fx:id="topBar" styleClass="top-bar" BorderPane.alignment="CENTER">
             <children>
@@ -25,7 +25,7 @@
                     <items>
                         <CustomMenuItem fx:id="accountListItem" hideOnClick="false" mnemonicParsing="false" styleClass="custom-menu-item">
                             <content>
-                                <fx:include fx:id="accountListPane" source="scene/account/AccountListPane.fxml" />
+                                <fx:include fx:id="accountListPane" source="../../scene/account/AccountListPane.fxml" />
                             </content>
                         </CustomMenuItem>
                     </items>
@@ -35,6 +35,6 @@
         </HBox>
     </top>
     <center>
-        <fx:include fx:id="greetingPane" source="scene/greeting/GreetingPane.fxml"/>
+        <fx:include fx:id="greetingPane" source="../../scene/greeting/GreetingPane.fxml"/>
     </center>
-</BorderPane>
+</fx:root>

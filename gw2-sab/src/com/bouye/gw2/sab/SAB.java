@@ -8,11 +8,11 @@
 package com.bouye.gw2.sab;
 
 import com.bouye.gw2.sab.db.DBStorage;
+import com.bouye.gw2.sab.views.welcome.WelcomeView;
 import java.net.URL;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +20,7 @@ import javafx.stage.Stage;
  * @author Fabrice Bouyé
  */
 public final class SAB extends Application {
+
     @Override
     public void init() throws Exception {
         DBStorage.INSTANCE.init();
@@ -27,9 +28,9 @@ public final class SAB extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        final URL fxmlURL = getClass().getResource("fxml/WelcomeView.fxml"); // NOI18N.
-        final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, SABConstants.I18N);
-        final Parent root = fxmlLoader.load();
+        final WelcomeView welcomeView = new WelcomeView();
+        final StackPane root = new StackPane();
+        root.getChildren().setAll(welcomeView);
         final Scene scene = new Scene(root);
         final URL cssURL = getClass().getResource("styles/Styles.css"); // NOI18N.
         scene.getStylesheets().add(cssURL.toExternalForm());

@@ -76,12 +76,6 @@
     -fx-text-fill: -strong-text-color;
     -fx-font-weight: bold;
 }
-.top-bar {
-    -fx-alignment: baseline-center;
-    -fx-padding: 6px;
-    -fx-border-color: derive(-fx-background, -10%);
-    -fx-border-width: 0px 0px 1px 0xp;
-}
 .primary-button {
     -fx-font-size: 1.35em;
 }
@@ -332,4 +326,11 @@
 .coin-label:copper,
 .coin:copper{    
     -coin-color: chocolate;
+}
+/* Welcome view. */
+.welcome-view .top-bar {
+    -fx-alignment: baseline-center;
+    -fx-padding: 6px;
+    -fx-border-color: derive(-fx-background, -10%);
+    -fx-border-width: 0px 0px 1px 0xp;
 }
