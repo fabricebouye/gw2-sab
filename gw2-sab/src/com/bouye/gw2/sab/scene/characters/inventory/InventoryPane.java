@@ -9,7 +9,9 @@ package com.bouye.gw2.sab.scene.characters.inventory;
 
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
+import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
+import java.net.URL;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -39,11 +41,16 @@ public final class InventoryPane extends VBox {
         // An issue here is that we do not dispose of the controller.
         controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/characters/inventory/InventoryPane.fxml", this); // NOI18N.
     }
-    
+
 //    @Override 
 //    public void dispose() {
 //        SABFXMLUtils.INSTANCE.disposeController(controller);
 //    }
+    @Override
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/characters/inventory/InventoryPane.css"); // NOI18N.
+        return url.toExternalForm();
+    }
 
     private final ObservableList<SharedInventory> sharedInventory = FXCollections.observableArrayList();
 
