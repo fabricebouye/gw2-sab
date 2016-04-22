@@ -1,0 +1,34 @@
+.bank-pane {
+    -fx-padding: 6px;
+    -fx-spacing: 6px;
+}
+.bank-pane .bank-tab {
+}
+.bank-pane .bank-tab-content {
+    -fx-padding: 0px;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.bank-pane .slot {
+    -slot-inner: gray;
+    -slot-border: derive(-slot-inner, -80%);
+    -fx-background-color: -slot-inner, derive(-slot-inner, 80%), -slot-inner;
+    -fx-background-insets: 0px, 2px, 3px;
+    -fx-border-color: -slot-border;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+}
+.bank-pane .slot:hover {
+    -fx-background-color: derive(-slot-inner, 50%);
+}
+.bank-pane .top-bar {
+    -fx-border-color: null;
+    -fx-padding: 0px;
+    -fx-spacing: 6px;
+    -fx-alignment: center-left;
+}
+.bank-pane .options-button {
+    -fx-content-display: graphic-only;
+}
+
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<fx:root id="VBox" prefHeight="400.0" prefWidth="600.0" styleClass="bank-pane" stylesheets="@../../../../styles/scene/account/bank/BankPane.css" type="VBox" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.bank.BankPaneController">
+   <children>
+      <HBox fx:id="headerHBox" styleClass="top-bar">
+         <children>
+            <TextField promptText="%action.search.prompt" HBox.hgrow="ALWAYS" />
+            <MenuButton fx:id="optionsButton" mnemonicParsing="false" styleClass="options-button" text="%action.options.label">
+               <graphic>
+                  <Text fx:id="optionsIcon" styleClass="awesome-icon" text="%icon.fa.gear" />
+               </graphic>
+            </MenuButton>
+         </children>
+      </HBox>
+      <ScrollPane fx:id="bankScrollPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <content>
+            <StackPane fx:id="bankContent">
+               <children>
+                  <VBox fx:id="bankVBox" />
+               </children>
+            </StackPane>
+         </content>
+      </ScrollPane>
+   </children>
+</fx:root>

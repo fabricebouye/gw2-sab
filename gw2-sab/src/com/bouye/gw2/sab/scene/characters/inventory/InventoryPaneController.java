@@ -129,7 +129,7 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
                 inventoryContent.put("shared", allSharedInventory); // NOI18N.
                 IntStream.range(0, characterInventory.size())
                         .forEach(index -> {
-                            InventoryBag bag = characterInventory.get(index);
+                            final InventoryBag bag = characterInventory.get(index);
                             final Stream<Node> bagInventory = createCharacterInventorySlots(bag);
                             final String key = (bag == null) ? String.valueOf(index) : String.valueOf(bag.getId());
                             inventoryContent.put(key, bagInventory);
@@ -162,7 +162,6 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     }
 
     // Some of the inventory layout management code will be re-used for bank, collection and wardrobe.
-    
     /**
      * Creates a view of shared inventories.
      * @return A {@code Stream<Node>}, never {@code null}.
@@ -170,7 +169,8 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     private Stream<Node> createSharedInventorySlots(final List<SharedInventory> sharedInventory) {
         return sharedInventory
                 .stream()
-                .map(si -> createInventorySlot(Optional.ofNullable(si), true));
+                .map(Optional::ofNullable)
+                .map(si -> createInventorySlot(si, true));
     }
 
     /**
@@ -180,7 +180,8 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     private Stream<Node> createCharacterInventorySlots(final InventoryBag bag) {
         return (bag == null) ? Stream.empty() : bag.getInventory()
                 .stream()
-                .map(i -> createInventorySlot(Optional.ofNullable(i), false));
+                .map(Optional::ofNullable)
+                .map(i -> createInventorySlot(i, false));
     }
 
     /**

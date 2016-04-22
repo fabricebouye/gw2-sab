@@ -9,7 +9,6 @@ package com.bouye.gw2.sab.scene;
 
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
