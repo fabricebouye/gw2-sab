@@ -53,7 +53,7 @@ public final class BankPane extends VBox {
     private final ObservableList<BankSlot> slots = FXCollections.observableArrayList();
 
     /**
-     * Gets the shared inventory.
+     * Gets the bank content.
      * @return An {@code ObservableList<BankSlot>} instance, never {@code null}.
      */
     public final ObservableList<BankSlot> getSlots() {
