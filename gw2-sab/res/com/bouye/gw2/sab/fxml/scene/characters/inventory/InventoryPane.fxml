@@ -32,7 +32,7 @@
             </MenuButton>
          </children>
       </HBox>
-      <TextField promptText="%action.search.prompt" />
+      <TextField fx:id="searchField" promptText="%action.search.prompt" />
       <ScrollPane fx:id="inventoryScrollPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <content>
             <StackPane fx:id="inventoryContent">
