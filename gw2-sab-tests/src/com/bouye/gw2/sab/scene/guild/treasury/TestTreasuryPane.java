@@ -17,7 +17,6 @@ import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.SABTestUtils;
-import com.bouye.gw2.sab.scene.characters.inventory.TestInventoryPane;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.wrappers.TreasuryWrapper;
 import java.io.IOException;
@@ -89,6 +88,10 @@ public final class TestTreasuryPane extends Application {
                 };
             }
         };
+        service.setOnFailed(workerStateEvent -> {
+            final Throwable ex = workerStateEvent.getSource().getException();
+            Logger.getLogger(TestTreasuryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        });
         service.start();
     }
 
@@ -96,34 +99,30 @@ public final class TestTreasuryPane extends Application {
      * Run the local test.
      * @return A {@code List<TreasuryWrapper>}, never {@code null}.
      */
-    private List<TreasuryWrapper> loadLocalTest() {
+    private List<TreasuryWrapper> loadLocalTest() throws IOException {
         List<TreasuryWrapper> result = Collections.EMPTY_LIST;
         final Optional<URL> guildTreasuryURL = Optional.ofNullable(getClass().getResource("guild_treasury.json")); // NOI18N.
         final Optional<URL> guildUpgradesURL = Optional.ofNullable(getClass().getResource("guild_upgrades.json")); // NOI18N.
         final Optional<URL> itemsURL = Optional.ofNullable(getClass().getResource("items.json")); // NOI18N.
         if (guildTreasuryURL.isPresent() && guildUpgradesURL.isPresent() && itemsURL.isPresent()) {
-            try {
-                final Collection<Treasury> guildTreasury = JsonpContext.SAX.loadObjectArray(Treasury.class, guildTreasuryURL.get());
-                final Map<Integer, Upgrade> guildUpgrades = JsonpContext.SAX.loadObjectArray(Upgrade.class, guildUpgradesURL.get())
-                        .stream()
-                        .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
-                final Map<Integer, Item> items = JsonpContext.SAX.loadObjectArray(Item.class, itemsURL.get())
-                        .stream()
-                        .collect(Collectors.toMap(Item::getId, Function.identity()));
-                // Wrap everything (we still have upgrades & items missing currently so they'll end up being null).
-                result = guildTreasury.stream()
-                        .map(treasury -> {
-                            final Item item = items.get(treasury.getId());
-                            final Upgrade[] upgrades = treasury.getNeededBy()
-                                    .stream()
-                                    .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
-                                    .toArray(Upgrade[]::new);
-                            return new TreasuryWrapper(treasury, item, upgrades);
-                        })
-                        .collect(Collectors.toList());
-            } catch (IOException ex) {
-                Logger.getLogger(TestInventoryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            }
+            final Collection<Treasury> guildTreasury = JsonpContext.SAX.loadObjectArray(Treasury.class, guildTreasuryURL.get());
+            final Map<Integer, Upgrade> guildUpgrades = JsonpContext.SAX.loadObjectArray(Upgrade.class, guildUpgradesURL.get())
+                    .stream()
+                    .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
+            final Map<Integer, Item> items = JsonpContext.SAX.loadObjectArray(Item.class, itemsURL.get())
+                    .stream()
+                    .collect(Collectors.toMap(Item::getId, Function.identity()));
+            // Wrap everything (we still have upgrades & items missing currently so they'll end up being null).
+            result = guildTreasury.stream()
+                    .map(treasury -> {
+                        final Item item = items.get(treasury.getId());
+                        final Upgrade[] upgrades = treasury.getNeededBy()
+                                .stream()
+                                .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
+                                .toArray(Upgrade[]::new);
+                        return new TreasuryWrapper(treasury, item, upgrades);
+                    })
+                    .collect(Collectors.toList());
         }
         return result;
     }
