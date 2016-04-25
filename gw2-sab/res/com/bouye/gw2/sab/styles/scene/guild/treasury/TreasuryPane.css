@@ -1,0 +1,33 @@
+.treasury-pane {    
+    -fx-padding: 6px;
+    -fx-spacing: 6px;
+}
+.treasury-pane .treasury-content {
+    -fx-padding: 0px;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.treasury-pane .treasury {
+    -fx-fill-width: false;
+    -fx-alignment: center;
+    -fx-spacing: 6px;
+    -fx-pref-width: 75px;
+}
+.treasury-pane .quantity-label {
+    -fx-font-size: 0.9em;
+}
+.treasury-pane .slot {
+    -slot-inner: gray;
+    -slot-border: derive(-slot-inner, -80%);
+    -fx-background-color: -slot-inner, derive(-slot-inner, 80%), -slot-inner;
+    -fx-background-insets: 0px, 2px, 3px;
+    -fx-border-color: -slot-border;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+}
+.treasury-pane .top-bar {
+    -fx-spacing: 6px;
+}
+.treasury-pane .options-button {
+    -fx-content-display: graphic-only;
+}

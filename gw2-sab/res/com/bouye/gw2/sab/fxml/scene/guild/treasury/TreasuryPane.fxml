@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<fx:root id="VBox" prefHeight="400.0" prefWidth="600.0" styleClass="treasury-pane" type="VBox" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.guild.treasury.TreasuryPaneController">
+    <children>
+        <HBox fx:id="headerHBox" styleClass="top-bar" VBox.vgrow="NEVER">
+            <children>
+                <TextField fx:id="searchField" promptText="%action.search.prompt" HBox.hgrow="ALWAYS" />        
+                <MenuButton fx:id="optionsButton" mnemonicParsing="false" styleClass="options-button" text="%action.options.label">
+                    <graphic>
+                        <Text fx:id="optionsIcon" styleClass="awesome-icon" text="%icon.fa.gear" />
+                    </graphic>
+                </MenuButton>
+            </children>
+        </HBox>
+        <ScrollPane fx:id="treasuryScrollPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <content>
+                <FlowPane fx:id="treasuryContentFlow" styleClass="treasury-content" />
+            </content>
+        </ScrollPane>
+    </children>
+</fx:root>
