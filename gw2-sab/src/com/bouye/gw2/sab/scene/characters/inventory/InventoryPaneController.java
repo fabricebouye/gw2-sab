@@ -10,8 +10,13 @@ package com.bouye.gw2.sab.scene.characters.inventory;
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.characters.inventory.Inventory;
 import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
+import api.web.gw2.mapping.v2.items.Item;
+import api.web.gw2.mapping.v2.skins.Skin;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.SABControllerBase;
+import com.bouye.gw2.sab.wrappers.CharacterBagWrapper;
+import com.bouye.gw2.sab.wrappers.CharacterInventoryWrapper;
+import com.bouye.gw2.sab.wrappers.SharedInventoryWrapper;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -105,19 +110,19 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
         final Optional<InventoryPane> parent = parentNode();
         inventoryContent.clear();
         final InventoryDisplay display = parent.isPresent() ? parent.get().getDisplay() : InventoryDisplay.BAGS_SHOWN;
-        final List<SharedInventory> sharedInventory = parent.isPresent() ? parent.get().getSharedInventory() : Collections.EMPTY_LIST;
-        final List<InventoryBag> characterInventory = parent.isPresent() ? parent.get().getCharacterInventory() : Collections.EMPTY_LIST;
+        final List<SharedInventoryWrapper> sharedInventory = parent.isPresent() ? parent.get().getSharedInventory() : Collections.EMPTY_LIST;
+        final List<CharacterBagWrapper> characterInventory = parent.isPresent() ? parent.get().getCharacterInventory() : Collections.EMPTY_LIST;
         //
         final int totalSharedSlots = sharedInventory.size();
         final int totalCharacterSlots = characterInventory.stream()
-                .mapToInt(bag -> (bag == null) ? 0 : bag.getSize())
+                .mapToInt(bag -> (bag == null) ? 0 : bag.getBag().getSize())
                 .sum();
         final int totalSlots = totalSharedSlots + totalCharacterSlots;
         final int usedSharedSlots = sharedInventory.stream()
                 .mapToInt(inventory -> (inventory == null) ? 0 : 1)
                 .sum();
         final int usedCharacterSlots = characterInventory.stream()
-                .mapToInt(bag -> (bag == null) ? 0 : bag.getInventory()
+                .mapToInt(bag -> (bag == null) ? 0 : bag.getBag().getInventory()
                         .stream()
                         .mapToInt(inventory -> (inventory == null) ? 0 : 1)
                         .sum())
@@ -131,9 +136,9 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
                 inventoryContent.put("shared", allSharedInventory); // NOI18N.
                 IntStream.range(0, characterInventory.size())
                         .forEach(index -> {
-                            final InventoryBag bag = characterInventory.get(index);
+                            final CharacterBagWrapper bag = characterInventory.get(index);
                             final Stream<Node> bagInventory = createCharacterInventorySlots(bag);
-                            final String key = (bag == null) ? String.valueOf(index) : String.valueOf(bag.getId());
+                            final String key = (bag == null) ? String.valueOf(index) : String.valueOf(bag.getBag().getId());
                             inventoryContent.put(key, bagInventory);
                         });
             }
@@ -168,31 +173,29 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
      * Creates a view of shared inventories.
      * @return A {@code Stream<Node>}, never {@code null}.
      */
-    private Stream<Node> createSharedInventorySlots(final List<SharedInventory> sharedInventory) {
+    private Stream<Node> createSharedInventorySlots(final List<SharedInventoryWrapper> sharedInventory) {
         return sharedInventory
                 .stream()
-                .map(Optional::ofNullable)
-                .map(si -> createInventorySlot(si, true));
+                .map(this::createSharedInventorySlot);
     }
 
     /**
      * Creates a view of a character bag.
      * @return A {@code Stream<Node>}, never {@code null}.
      */
-    private Stream<Node> createCharacterInventorySlots(final InventoryBag bag) {
-        return (bag == null) ? Stream.empty() : bag.getInventory()
+    private Stream<Node> createCharacterInventorySlots(final CharacterBagWrapper bag) {
+        return (bag == null) ? Stream.empty() : bag.getContent()
                 .stream()
-                .map(Optional::ofNullable)
-                .map(i -> createInventorySlot(i, false));
+                .map(this::createCharacterInventorySlot);
     }
 
     /**
      * Creates a compact view of all character bags.
      * @return A {@code Stream<Node>}, never {@code null}.
      */
-    private Stream<Node> createCompactCharacterInventorySlots(final List<InventoryBag> characterInventory) {
+    private Stream<Node> createCompactCharacterInventorySlots(final List<CharacterBagWrapper> characterInventory) {
         Stream<Node> result = Stream.empty();
-        for (final InventoryBag bag : characterInventory) {
+        for (final CharacterBagWrapper bag : characterInventory) {
             result = Stream.concat(result, createCharacterInventorySlots(bag));
         }
         return result;
@@ -217,19 +220,39 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     private static final PseudoClass ACCOUNT_PSEUDO_CLASS = PseudoClass.getPseudoClass("account"); // NOI18N.
     private static final PseudoClass CHARACTER_PSEUDO_CLASS = PseudoClass.getPseudoClass("character"); // NOI18N.
 
-    private Node createInventorySlot(final Optional<?> value, final boolean isShared) {
+    private Node createSharedInventorySlot(final SharedInventoryWrapper value) {
         final StackPane result = new StackPane();
         result.getStyleClass().add("slot"); // NOI18N.
-        result.pseudoClassStateChanged(ACCOUNT_PSEUDO_CLASS, isShared);
-        result.pseudoClassStateChanged(CHARACTER_PSEUDO_CLASS, !isShared);
-        value.ifPresent(val -> {
-            final int id = (val instanceof SharedInventory) ? ((SharedInventory) val).getId() : ((Inventory) val).getId();
+        result.pseudoClassStateChanged(ACCOUNT_PSEUDO_CLASS, true);
+        if (value != null) {
+            final SharedInventory inventory = value.getInventory();
+            final Item item = value.getItem();
+            final Skin skin = value.getSkin();
+            final int id = inventory.getId();
             result.setUserData(id);
-            final int count = (val instanceof SharedInventory) ? ((SharedInventory) val).getCount() : ((Inventory) val).getCount();
+            final int count = inventory.getCount();
             final Text countText = new Text();
             countText.setText(String.valueOf(count));
             result.getChildren().add(countText);
-        });
+        };
+        return result;
+    }
+
+    private Node createCharacterInventorySlot(final CharacterInventoryWrapper value) {
+        final StackPane result = new StackPane();
+        result.getStyleClass().add("slot"); // NOI18N.
+        result.pseudoClassStateChanged(CHARACTER_PSEUDO_CLASS, true);
+        if (value != null) {
+            final Inventory inventory = value.getInventory();
+            final Item item = value.getItem();
+            final Skin skin = value.getSkin();
+            final int id = inventory.getId();
+            result.setUserData(id);
+            final int count = inventory.getCount();
+            final Text countText = new Text();
+            countText.setText(String.valueOf(count));
+            result.getChildren().add(countText);
+        }
         return result;
     }
 
@@ -252,12 +275,12 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     /**
      * Called whenever the shared inventory changes in the parent node.
      */
-    private final ListChangeListener<SharedInventory> sharedInventoryListChangeListener = change -> updateUI();
+    private final ListChangeListener<SharedInventoryWrapper> sharedInventoryListChangeListener = change -> updateUI();
 
     /**
      * Called whenever the character inventory changes in the parent node.
      */
-    private final ListChangeListener<InventoryBag> characterInventoryListChangeListener = change -> updateUI();
+    private final ListChangeListener<CharacterBagWrapper> characterInventoryListChangeListener = change -> updateUI();
 
     /**
      * Called whenever the search text is invalidated.

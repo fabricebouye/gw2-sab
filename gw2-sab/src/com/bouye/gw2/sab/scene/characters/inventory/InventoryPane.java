@@ -7,10 +7,10 @@
  */
 package com.bouye.gw2.sab.scene.characters.inventory;
 
-import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
-import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
+import com.bouye.gw2.sab.wrappers.CharacterBagWrapper;
+import com.bouye.gw2.sab.wrappers.SharedInventoryWrapper;
 import java.net.URL;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
@@ -52,23 +52,23 @@ public final class InventoryPane extends VBox {
         return url.toExternalForm();
     }
 
-    private final ObservableList<SharedInventory> sharedInventory = FXCollections.observableArrayList();
+    private final ObservableList<SharedInventoryWrapper> sharedInventory = FXCollections.observableArrayList();
 
     /**
      * Gets the shared inventory.
-     * @return An {@code ObservableList<SharedInventory>} instance, never {@code null}.
+     * @return An {@code ObservableList<SharedInventoryWrapper>} instance, never {@code null}.
      */
-    public final ObservableList<SharedInventory> getSharedInventory() {
+    public final ObservableList<SharedInventoryWrapper> getSharedInventory() {
         return sharedInventory;
     }
 
-    private final ObservableList<InventoryBag> characterInventory = FXCollections.observableArrayList();
+    private final ObservableList<CharacterBagWrapper> characterInventory = FXCollections.observableArrayList();
 
     /**
      * Gets the character inventory.
-     * @return An {@code ObservableList<InventoryBag>} instance, never {@code null}.
+     * @return An {@code ObservableList<CharacterBagWrapper>} instance, never {@code null}.
      */
-    public ObservableList<InventoryBag> getCharacterInventory() {
+    public ObservableList<CharacterBagWrapper> getCharacterInventory() {
         return characterInventory;
     }
 
