@@ -109,9 +109,9 @@ public final class MaterialsPaneController extends SABControllerBase<MaterialsPa
         result.setUserData(materialId);
         material.ifPresent(m -> {
             final int count = m.getCount();
-            final Text counText = new Text();
-            counText.setText(String.valueOf(count));
-            result.getChildren().add(counText);
+            final Text countText = new Text();
+            countText.setText(String.valueOf(count));
+            result.getChildren().add(countText);
         });
         return result;
     }

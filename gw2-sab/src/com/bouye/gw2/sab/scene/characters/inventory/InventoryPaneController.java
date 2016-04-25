@@ -226,9 +226,9 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
             final int id = (val instanceof SharedInventory) ? ((SharedInventory) val).getId() : ((Inventory) val).getId();
             result.setUserData(id);
             final int count = (val instanceof SharedInventory) ? ((SharedInventory) val).getCount() : ((Inventory) val).getCount();
-            final Text counText = new Text();
-            counText.setText(String.valueOf(count));
-            result.getChildren().add(counText);
+            final Text countText = new Text();
+            countText.setText(String.valueOf(count));
+            result.getChildren().add(countText);
         });
         return result;
     }

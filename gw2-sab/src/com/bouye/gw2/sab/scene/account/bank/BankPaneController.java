@@ -99,9 +99,9 @@ public final class BankPaneController extends SABControllerBase<BankPane> {
             final int id = val.getId();
             result.setUserData(id);
             final int count = val.getCount();
-            final Text counText = new Text();
-            counText.setText(String.valueOf(count));
-            result.getChildren().add(counText);
+            final Text countText = new Text();
+            countText.setText(String.valueOf(count));
+            result.getChildren().add(countText);
         });
         return result;
     }
