@@ -267,7 +267,7 @@ public enum WebQuery {
         return result;
     }
 
-    public List<String> getCharacterNames(final String appKey) {
+    public List<String> queryCharacterNames(final String appKey) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<String> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
@@ -278,7 +278,7 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<Character> getCharacter(final String appKey, final String characterName) {
+    public Optional<Character> queryCharacter(final String appKey, final String characterName) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<Character> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {

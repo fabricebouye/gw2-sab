@@ -95,7 +95,7 @@ public final class TestCharactersListPane extends Application {
 
         @Override
         protected Void call() throws Exception {
-            final List<String> characterNames = new ArrayList(WebQuery.INSTANCE.getCharacterNames(session.getAppKey()));
+            final List<String> characterNames = new ArrayList(WebQuery.INSTANCE.queryCharacterNames(session.getAppKey()));
             Collections.sort(characterNames);
             final List<CharacterWrapper> wrappers = characterNames.stream()
                     .map(characterName -> new CharacterWrapper(characterName))
@@ -104,7 +104,7 @@ public final class TestCharactersListPane extends Application {
             // Now update wrappers.
             wrappers.stream()
                     .forEach(wrapper -> {
-                        final Optional<Character> character = WebQuery.INSTANCE.getCharacter(session.getAppKey(), wrapper.getName());
+                        final Optional<Character> character = WebQuery.INSTANCE.queryCharacter(session.getAppKey(), wrapper.getName());
                         character.ifPresent(c -> Platform.runLater(() -> wrapper.setCharacter(c)));
                     });
             return null;
