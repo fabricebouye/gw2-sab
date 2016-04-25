@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.css.PseudoClass;
@@ -77,6 +78,7 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
                     optionsButton.getItems().add(displayItem);
                 });
         displayToggleGroup.selectedToggleProperty().addListener(selectedDisplayChangeListener);
+        searchField.textProperty().addListener(searchTextInvalidationListener);
     }
 
     @Override
@@ -256,4 +258,17 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
      * Called whenever the character inventory changes in the parent node.
      */
     private final ListChangeListener<InventoryBag> characterInventoryListChangeListener = change -> updateUI();
+
+    /**
+     * Called whenever the search text is invalidated.
+     */
+    private final InvalidationListener searchTextInvalidationListener = observable -> applySearchFilter();
+
+    /**
+     * Apply filter from the search box.
+     */
+    private void applySearchFilter() {
+        final String searchValue = searchField.getText();
+        // @todo Filter content.
+    }
 }
