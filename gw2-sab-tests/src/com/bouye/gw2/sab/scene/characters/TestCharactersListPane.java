@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.characters;
 
-import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.characters.Character;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.query.WebQuery;
@@ -19,7 +18,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -100,12 +101,21 @@ public final class TestCharactersListPane extends Application {
             final List<CharacterWrapper> wrappers = characterNames.stream()
                     .map(characterName -> new CharacterWrapper(characterName))
                     .collect(Collectors.toList());
+            // Load wrappers straigth into list.
             Platform.runLater(() -> charactersListPane.getCharacters().setAll(wrappers));
+            final String[] characterIds = characterNames.stream()
+                    .toArray(String[]::new);
+            // Upload all characters at once (previous test did individual requests which was slow.
+            // @todo We may want to do page queries for account with huge numbers of characters.
+            final Map<String, Character> characterMap = WebQuery.INSTANCE.queryCharacters(session.getAppKey(), characterIds)
+                    .stream()
+                    .collect(Collectors.toMap(Character::getName, Function.identity()));
             // Now update wrappers.
             wrappers.stream()
                     .forEach(wrapper -> {
-                        final Optional<Character> character = WebQuery.INSTANCE.queryCharacter(session.getAppKey(), wrapper.getName());
-                        character.ifPresent(c -> Platform.runLater(() -> wrapper.setCharacter(c)));
+                        final String characterName = wrapper.getName();
+                        final Character character = characterMap.get(characterName);
+                        Platform.runLater(() -> wrapper.setCharacter(character));
                     });
             return null;
         }

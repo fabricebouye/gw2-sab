@@ -14,6 +14,13 @@ import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Wraps a character.
+ * <br>Issues with character data as of 2016/04:
+ * <ul>
+ * <li>The endpoint does not provide a way to get minimalistic character information (ie: just name, sex, race, profession, level, nothing else). 
+ * In list and tables we would only need those data.</li>
+ * <li>There's a large amount of optional data that depends heavily on the permissions of the app-key used.</li>
+ * <li>Full character data is quite heavy and may take some time to return and parse.</li>
+ * </ul>
  * @author Fabrice Bouyé
  */
 public final class CharacterWrapper {

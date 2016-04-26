@@ -293,4 +293,18 @@ public enum WebQuery {
         }
         return result;
     }
+
+    public List<Character> queryCharacters(final String appKey, final String... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Character> result = Collections.EMPTY_LIST;
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            final String[] escapeIds = Arrays.stream(ids)
+                    .map(this::idsToString)
+                    .toArray(String[]::new);
+            final String query = String.format("https://api.guildwars2.com/v2/characters?access_token=%s&ids=%s", appKey, idsToString(escapeIds)); // NOI18N.
+            result = arrayWebQuery(Character.class, query);
+        }
+        return result;
+    }
 }
