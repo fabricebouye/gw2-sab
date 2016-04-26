@@ -25,9 +25,17 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public final class CharacterWrapper {
 
+    /**
+     * The name of the character.
+     */
     private final String name;
 
-    public CharacterWrapper(final String name) {
+    /**
+     * Creates a new instance.
+     * @param name The name of the character.
+     * @throws NullPointerException If {@code name} is {@code null}.
+     */
+    public CharacterWrapper(final String name) throws NullPointerException {
         Objects.requireNonNull(name);
         this.name = name;
     }
@@ -41,6 +49,9 @@ public final class CharacterWrapper {
         return name;
     }
 
+    /**
+    * The referenced character, initialy {@code null} until loaded by a background service.
+    */
     private final ObjectProperty<Character> character = new SimpleObjectProperty<>(this, "character", null); // NOI18N.
 
     public final Character getCharacter() {
