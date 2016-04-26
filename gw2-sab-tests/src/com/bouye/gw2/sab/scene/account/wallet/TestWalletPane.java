@@ -23,15 +23,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
+import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Test.
@@ -54,7 +57,7 @@ public final class TestWalletPane extends Application {
     }
 
     private void loadTestAsync(final WalletPane walletPane) {
-        final Service<Void> service = new Service<Void>() {
+        final ScheduledService<Void> service = new ScheduledService<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
@@ -69,6 +72,12 @@ public final class TestWalletPane extends Application {
                 };
             }
         };
+        service.setOnFailed(workerStateEvent -> {
+            final Throwable ex = workerStateEvent.getSource().getException();
+            Logger.getLogger(TestWalletPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        });
+        service.setPeriod(Duration.minutes(5));
+        service.setRestartOnFailure(true);
         service.start();
     }
 
