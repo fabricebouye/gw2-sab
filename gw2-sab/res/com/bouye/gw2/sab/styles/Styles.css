@@ -209,17 +209,6 @@
     -fx-vgap: 3px;
 }
 /* Guild info pane. */
-/* WvW charts. */
-.wvw-bar-chart {    
-}
-.wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-blue-color; }
-.wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-green-color; }
-.wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -team-red-color; }
-.wvw-pie-chart {    
-}
-.wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -team-blue-color; }
-.wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -team-green-color; }
-.wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -team-red-color; }
 /* Character list cells. */
 .character-list-cell > * > .strong-label {
     -fx-text-fill: black;

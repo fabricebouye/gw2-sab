@@ -7,46 +7,54 @@
  */
 package com.bouye.gw2.sab.scene.wvw;
 
-import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import com.bouye.gw2.sab.scene.SABControlBase;
+import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.scene.SABFXMLUtils;
+import com.bouye.gw2.sab.wrappers.MatchWrapper;
+import java.net.URL;
+import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.scene.layout.GridPane;
 
 /**
  * Standalone WvW summary pane control.
  * @author Fabrice Bouyé
  */
-public final class WvwSummaryPane extends SABControlBase<WvwSummaryPaneController> {
+public final class WvwSummaryPane extends GridPane {
+
+    private final Optional<WvwSummaryPaneController> controller;
 
     /**
      * Creates a new instance.
      */
     public WvwSummaryPane() {
-        super("fxml/scene/wvw/WvwSummaryPane.fxml"); // NOI18N.
-        setId("wvwSummaryPane");
-        getStyleClass().add("wvw-summary-pane"); // NOI18N.
+        super();
+        setId("wvwSummaryPane"); // NOI18N.     
+        // An issue here is that we do not dispose of the controller.
+        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/wvw/WvwSummaryPane.fxml", this); // NOI18N.                
     }
 
-    private final ObjectProperty<Match> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
+//    @Override 
+//    public void dispose() {
+//        SABFXMLUtils.INSTANCE.disposeController(controller);
+//    }
+    @Override
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/wvw/WvwSummaryPane.css"); // NOI18N.
+        return url.toExternalForm();
+    }
 
-    public final Match getMatch() {
+    private final ObjectProperty<MatchWrapper> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
+
+    public final MatchWrapper getMatch() {
         return match.get();
     }
 
-    public final void setMatch(final Match value) {
+    public final void setMatch(final MatchWrapper value) {
         match.set(value);
     }
 
-    public final ObjectProperty<Match> matchProperty() {
+    public final ObjectProperty<MatchWrapper> matchProperty() {
         return match;
-    }
-
-    private final ObservableList<World> worlds = FXCollections.observableArrayList();
-
-    public final ObservableList<World> getWorlds() {
-        return worlds;
     }
 }

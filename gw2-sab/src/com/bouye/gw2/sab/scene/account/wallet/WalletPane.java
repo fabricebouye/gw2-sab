@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;

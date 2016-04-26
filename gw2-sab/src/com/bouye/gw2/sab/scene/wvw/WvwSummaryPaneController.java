@@ -11,6 +11,7 @@ import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
 import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
 import com.bouye.gw2.sab.scene.SABControllerBase;
+import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,13 +23,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -89,29 +86,26 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
         pieCharts = new PieChart[]{ebPieChart, bluePieChart, greenPieChart, redPieChart};
         //
         matchProperty().addListener(matchChangleListener);
-        getWorlds().addListener(worldsListChangeListener);
     }
 
     // When in linked node.
     @Override
     protected void uninstallNode(final WvwSummaryPane node) {
         matchProperty().unbind();
-        worlds.set(null);
     }
 
     @Override
     protected void installNode(final WvwSummaryPane node) {
         matchProperty().bind(node.matchProperty());
-        worlds.set(node.getWorlds());
     }
 
-    private final ChangeListener<Match> matchChangleListener = (observable, oldValue, newValue) -> updateUI();
-    private final ListChangeListener<World> worldsListChangeListener = nullchange -> updateUI();
+    private final ChangeListener<MatchWrapper> matchChangleListener = (observable, oldValue, newValue) -> updateUI();
 
     @Override
     protected void updateUI() {
-        final Match match = getMatch();
-        final List<World> worlds = getWorlds();
+        final MatchWrapper wrapper = getMatch();
+        final Match match = (wrapper == null) ? null : wrapper.getMatch();
+        final List<World> worlds = (wrapper == null) ? null : wrapper.getWorlds();
         if (match == null) {
             // Clear bar chart.
             scoreBarChart.getData()
@@ -224,23 +218,17 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    private final ObjectProperty<Match> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
+    private final ObjectProperty<MatchWrapper> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
 
-    public final Match getMatch() {
+    public final MatchWrapper getMatch() {
         return match.get();
     }
 
-    public final void setMatch(final Match value) {
+    public final void setMatch(final MatchWrapper value) {
         match.set(value);
     }
 
-    public final ObjectProperty<Match> matchProperty() {
+    public final ObjectProperty<MatchWrapper> matchProperty() {
         return match;
-    }
-
-    private final ListProperty<World> worlds = new SimpleListProperty<>(this, "worlds");
-
-    public final ObservableList<World> getWorlds() {
-        return worlds;
     }
 }

@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane id="GridPane" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController">
+<fx:root id="GridPane" prefHeight="400.0" prefWidth="400.0" styleClass="wvw-summary-pane" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwSummaryPaneController">
     <children>
         <BarChart fx:id="scoreBarChart" styleClass="wvw-bar-chart" title="%wvw.total-scores.label">
             <xAxis>
@@ -27,7 +27,7 @@
                 <CategoryAxis fx:id="scoreCategoryAxis" side="LEFT" />
             </yAxis>
         </BarChart>
-        <HBox GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+        <HBox styleClass="pie-hbox" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
             <children>
                 <PieChart fx:id="ebPieChart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" styleClass="wvw-pie-chart" title="%wvw.map.center.label" />
                 <PieChart fx:id="greenPieChart" labelsVisible="false" legendVisible="false" minHeight="75.0" minWidth="50.0" styleClass="wvw-pie-chart" title="%wvw.map.green-home.label" />
@@ -43,4 +43,4 @@
         <RowConstraints vgrow="ALWAYS" />
         <RowConstraints maxHeight="300.0" vgrow="NEVER" />
     </rowConstraints>
-</GridPane>
+</fx:root>
