@@ -11,7 +11,9 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.core.PageResult;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
+import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.Character;
+import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
@@ -304,6 +306,28 @@ public enum WebQuery {
                     .toArray(String[]::new);
             final String query = String.format("https://api.guildwars2.com/v2/characters?access_token=%s&ids=%s", appKey, idsToString(escapeIds)); // NOI18N.
             result = arrayWebQuery(Character.class, query);
+        }
+        return result;
+    }
+
+    public List<Currency> queryCurrencies(int... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Currency> result = Collections.EMPTY_LIST;
+        if (isOffline) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/currencies?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(Currency.class, query);
+        }
+        return result;
+    }
+
+    public List<CurrencyAmount> queryWallet(final String appKey) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<CurrencyAmount> result = Collections.EMPTY_LIST;
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/account/wallet?access_token=%s", appKey); // NOI18N.
+            result = arrayWebQuery(CurrencyAmount.class, query);
         }
         return result;
     }
