@@ -99,7 +99,7 @@ public final class TestCharactersListPane extends Application {
             final List<String> characterNames = new ArrayList(WebQuery.INSTANCE.queryCharacterNames(session.getAppKey()));
             Collections.sort(characterNames);
             final List<CharacterWrapper> wrappers = characterNames.stream()
-                    .map(characterName -> new CharacterWrapper(characterName))
+                    .map(CharacterWrapper::new)
                     .collect(Collectors.toList());
             // Load wrappers straigth into list.
             Platform.runLater(() -> charactersListPane.getCharacters().setAll(wrappers));
