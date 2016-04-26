@@ -16,7 +16,7 @@ import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.db.DBStorage;
 import com.bouye.gw2.sab.scene.account.AccountInfoPane;
 import com.bouye.gw2.sab.scene.guild.GuildInfoPane;
-import com.bouye.gw2.sab.scene.world.WorldInfoPane;
+import com.bouye.gw2.sab.scene.worlds.WorldInfoPane;
 import com.bouye.gw2.sab.tasks.account.SessionUpdaterTask;
 import java.io.IOException;
 import java.net.URL;
@@ -247,10 +247,11 @@ public final class WelcomeViewController extends SABControllerBase<WelcomeView> 
      * @param worldId The id of the world.
      */
     private void displayWorldDetails(final Session session, final int worldId) {
-        final WorldInfoPane content = new WorldInfoPane();
-        content.setSession(session);
-        content.setWorldId(worldId);
-        pushToDisplay(content);
+        // @todo create a view instead.
+//        final WorldInfoPane content = new WorldInfoPane();
+//        content.setSession(session);
+//        content.setWorldId(worldId);
+//        pushToDisplay(content);
     }
 
     /**
