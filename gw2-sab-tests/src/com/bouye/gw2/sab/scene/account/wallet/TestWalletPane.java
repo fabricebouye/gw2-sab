@@ -106,9 +106,14 @@ public final class TestWalletPane extends Application {
         return wrapCurrencies(currencies, wallet);
     }
 
+    /**
+     * Wrap into single object.
+     * @param currencies The currencies.
+     * @param wallet The wallet.
+     * @return A {@code List<CurrencyWrapper>}, never {@code null}, might be empty.
+     */
     private List<CurrencyWrapper> wrapCurrencies(final List<Currency> currencies, final Map<Integer, CurrencyAmount> wallet) {
-        // Wrap into single object.
-        List<CurrencyWrapper> result = currencies.stream()
+        final List<CurrencyWrapper> result = currencies.stream()
                 .map(currency -> {
                     final CurrencyAmount amount = wallet.get(currency.getId());
                     return new CurrencyWrapper(currency, amount);
@@ -118,9 +123,6 @@ public final class TestWalletPane extends Application {
         return Collections.unmodifiableList(result);
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         launch(args);
     }
