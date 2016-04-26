@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import java.lang.String?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.SubScene?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<fx:root id="FlowPane" prefWidth="775.0" styleClass="equipment-pane" type="FlowPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.characters.equipment.EquipmentPaneController">
+    <children>
+        <BorderPane fx:id="characterPane" prefHeight="600.0" prefWidth="375.0" styleClass="character-pane">
+            <center>
+                <StackPane styleClass="character-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <Group>
+                            <children>
+                                <StackPane fx:id="characterStackPane" styleClass="character-render-pane">
+                                    <children>
+                                        <SubScene fx:id="characterSubScene" height="550.0" width="250.0">
+                                            <root>
+                                                <Region />
+                                            </root>
+                                        </SubScene>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </Group>
+                    </children>
+                </StackPane>
+            </center>
+            <left>
+                <VBox fx:id="armorVBox" alignment="CENTER" layoutX="48.0" layoutY="39.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <StackPane fx:id="helmSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="shoulderSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="coatSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="glovesSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="leggingsSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="bootsSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <Region VBox.vgrow="ALWAYS" />
+                        <StackPane fx:id="weaponA1Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="weaponA2Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="awesome-icon" text="%icon.fa.refresh" />
+                        <StackPane fx:id="weaponB1Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="weaponB2Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                    </children>
+                    <styleClass>
+                        <String fx:value="equipment-box" />
+                        <String fx:value="armor-box" />
+                    </styleClass>
+                </VBox>
+            </left>
+            <right>
+                <VBox fx:id="skinVBox" alignment="CENTER" layoutX="58.0" layoutY="49.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <StackPane fx:id="costumeSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="gliderSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <Region VBox.vgrow="ALWAYS" />
+                        <StackPane fx:id="miniatureSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                    </children>
+                    <styleClass>
+                        <String fx:value="equipment-box" />
+                        <String fx:value="skin-box" />
+                    </styleClass>
+                </VBox>
+            </right>                
+        </BorderPane>
+        <VBox fx:id="sideBox" prefWidth="375.0" styleClass="side-pane">
+            <children>
+            <HBox styleClass="icon-box" VBox.vgrow="NEVER">
+               <children>
+                  <ImageView fx:id="professionIcon" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </HBox>
+            <TitledPane fx:id="attributesPane" animated="false" collapsible="false" maxHeight="1.7976931348623157E308" text="%equipment-pane.attributes.label" VBox.vgrow="ALWAYS">
+               <content>
+                  <ScrollPane fx:id="attributesScrollPane" fitToWidth="true" />
+               </content>
+            </TitledPane>
+            <Separator prefWidth="200.0" />
+                <GridPane styleClass="trinquet-box">
+                    <children>
+                        <StackPane fx:id="backpackSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="accessory1Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" GridPane.columnIndex="1" />
+                        <StackPane fx:id="accessory2Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" GridPane.columnIndex="2" />
+                        <StackPane fx:id="anuletSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" GridPane.rowIndex="1" />
+                        <StackPane fx:id="ring1Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <StackPane fx:id="ring2Slot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    </children>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="NEVER" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
+                    </rowConstraints>
+                </GridPane>
+            <Separator prefWidth="200.0" />
+                <HBox fx:id="gatheringHBox" styleClass="equipment-box" VBox.vgrow="NEVER">
+                    <children>
+                        <StackPane fx:id="sickleSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="axeSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="pickSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                    </children>
+                </HBox>
+            <Separator prefWidth="200.0" />
+                <HBox fx:id="aquaticWeaponsHBox" styleClass="equipment-box" VBox.vgrow="NEVER">
+                    <children>
+                        <StackPane fx:id="aquaticHelmSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <StackPane fx:id="aquaticWeaponASlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="awesome-icon" text="%icon.fa.refresh" />
+                        <StackPane fx:id="aquaticWeaponBSlot" prefHeight="32.0" prefWidth="32.0" styleClass="slot" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</fx:root>

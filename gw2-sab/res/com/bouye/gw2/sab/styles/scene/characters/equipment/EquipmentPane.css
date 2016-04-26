@@ -1,0 +1,52 @@
+.equipment-pane { 
+    -fx-alignment: center;
+    -fx-padding: 6px;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.equipment-pane .character-pane {
+    -fx-border-color: violet;    
+}
+.equipment-pane .side-pane {    
+    -fx-border-color: blue;
+    -fx-fill-width: true;
+    -fx-alignment: top-center;
+    -fx-spacing: 6px;
+}
+.equipment-pane .equipment-box {    
+    -fx-border-color: gray;
+    -fx-alignment: center;
+    -fx-spacing: 6px;
+}
+.equipment-pane .armor-box, 
+.equipment-pane .skin-box {
+    -fx-alignment: top-center;
+}
+.equipment-pane .weapon-box {
+    -fx-alignment: left-center;
+}
+.equipment-pane .slot {    
+    -fx-border-color: red;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+}
+.equipment-pane .separator {
+    -fx-max-width: 200px;
+}
+.equipment-pane .trinquet-box {        
+    -fx-border-color: green;
+    -fx-alignment: center;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.equipment-pane .character-container {    
+    -fx-padding: 6px;
+}
+.equipment-pane .character-render-pane {    
+    -fx-border-color: orange;
+}
+.equipment-pane .icon-box {
+    -fx-border-color: cyan;
+    -fx-alignment: left-center;
+    -fx-padding: 6px;
+}
