@@ -103,6 +103,10 @@ public final class TestCharactersListPane extends Application {
                     .collect(Collectors.toList());
             // Load wrappers straigth into list.
             Platform.runLater(() -> charactersListPane.getCharacters().setAll(wrappers));
+            // Nothing to do.
+            if (wrappers.isEmpty()) {
+                return null;
+            }
             final String[] characterIds = characterNames.stream()
                     .toArray(String[]::new);
             // Upload all characters at once (previous test did individual requests which was slow.
@@ -110,6 +114,9 @@ public final class TestCharactersListPane extends Application {
             final Map<String, Character> characterMap = WebQuery.INSTANCE.queryCharacters(session.getAppKey(), characterIds)
                     .stream()
                     .collect(Collectors.toMap(Character::getName, Function.identity()));
+            if (characterMap.isEmpty()) {
+                return null;
+            }
             // Now update wrappers.
             wrappers.stream()
                     .forEach(wrapper -> {
