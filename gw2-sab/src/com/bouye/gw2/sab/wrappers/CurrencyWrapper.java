@@ -29,12 +29,11 @@ public final class CurrencyWrapper {
     /**
      * Creates a new instance.
      * @param currency The currency.
-     * @param currencyAmount The currency amount.
-     * @throws NullPointerException If either {@code currency} or {@code currencyAmount} is {@code null}.
+     * @param currencyAmount The currency amount, may be {@code null}.
+     * @throws NullPointerException If {@code currency} is {@code null}.
      */
     public CurrencyWrapper(final Currency currency, final CurrencyAmount currencyAmount) throws NullPointerException {
         Objects.requireNonNull(currency);
-        Objects.requireNonNull(currencyAmount);
         this.currency = currency;
         this.currencyAmount = currencyAmount;
     }

@@ -7,16 +7,15 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
+import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
+import api.web.gw2.mapping.v2.currencies.Currency;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
-import com.bouye.gw2.sab.scene.world.WorldInfoPane;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -66,20 +65,23 @@ public final class CurrencyListCellController extends SABControllerBase<Currency
     @Override
     protected void updateUI() {
         final Optional<CurrencyListCell> parent = parentNode();
-        final CurrencyWrapper currency = parent.isPresent() ? parent.get().getItem() : null;
-        if (currency == null) {
+        final CurrencyWrapper wrapper = parent.isPresent() ? parent.get().getItem() : null;
+        if (wrapper == null) {
             nameLabel.setText(null);
             amountLabel.setText(null);
             icon.setImage(null);
             infoTip.setText(null);
         } else {
-            nameLabel.setText(currency.getCurrency().getName());
-            amountLabel.setText(String.valueOf(currency.getCurrencyAmount().getValue()));
-            currency.getCurrency().getIcon().ifPresent(url -> {
+            final Currency currency = wrapper.getCurrency();
+            final CurrencyAmount currencyAmount = wrapper.getCurrencyAmount();
+            nameLabel.setText(currency.getName());
+            final int amount = (currencyAmount == null) ? 0 : currencyAmount.getValue();
+            amountLabel.setText(String.valueOf(amount));
+            currency.getIcon().ifPresent(url -> {
                 final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
                 icon.setImage(image);
             });
-            infoTip.setText(currency.getCurrency().getDescription());
+            infoTip.setText(currency.getDescription());
         }
     }
 }

@@ -9,29 +9,39 @@ package com.bouye.gw2.sab.scene.account.wallet;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
+import api.web.gw2.mapping.v2.currencies.Currency;
+import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
+import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.scene.SABTestUtils;
+import com.bouye.gw2.sab.session.Session;
+import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.scenicview.ScenicView;
 
 /**
  * Test.
  * @author Fabrice Bouyé
  */
-public class TestWalletPane extends Application {
+public final class TestWalletPane extends Application {
+
     @Override
     public void start(Stage primaryStage) throws NullPointerException, IOException {
-        final List<CurrencyAmount> wallet = JsonpContext.SAX.loadObjectArray(CurrencyAmount.class, getClass().getResource("wallet.json"))
-                .stream()
-                .collect(Collectors.toList()); // NOI18N.
         final WalletPane walletPane = new WalletPane();
-        walletPane.getCurrencies().setAll(wallet);
         final StackPane root = new StackPane();
         root.setBackground(Background.EMPTY);
         root.getChildren().add(walletPane);
@@ -40,6 +50,72 @@ public class TestWalletPane extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 //        ScenicView.show(root);
+        loadTestAsync(walletPane);
+    }
+
+    private void loadTestAsync(final WalletPane walletPane) {
+        final Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        final List<CurrencyWrapper> wallet = (SABConstants.INSTANCE.isOffline()) ? doLocalTest() : doRemoteTest();
+                        if (!wallet.isEmpty()) {
+                            Platform.runLater(() -> walletPane.getCurrencies().setAll(wallet));
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        service.start();
+    }
+
+    /**
+     * Do a remote test.
+     * @return A {@code List<CurrencyWrapper>}, never {@code null}, might be empty.
+     */
+    private List<CurrencyWrapper> doRemoteTest() {
+        List<Currency> currencies = Collections.EMPTY_LIST;
+        Map<Integer, CurrencyAmount> wallet = Collections.EMPTY_MAP;
+        final Session session = SABTestUtils.INSTANCE.getTestSession();
+        if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.WALLET)) {
+            currencies = WebQuery.INSTANCE.queryCurrencies();
+            wallet = WebQuery.INSTANCE.queryWallet(session.getAppKey())
+                    .stream()
+                    .collect(Collectors.toMap(CurrencyAmount::getId, Function.identity()));
+        }
+        return wrapCurrencies(currencies, wallet);
+    }
+
+    /**
+     * Do a local test.
+     * @return A {@code List<CurrencyWrapper>}, never {@code null}, might be empty.
+     * @throws IOException In case of IO errors.
+     */
+    private List<CurrencyWrapper> doLocalTest() throws IOException {
+        final Optional<URL> currenciesURL = Optional.ofNullable(getClass().getResource("currencies.json"));  // NOI18N.
+        final List<Currency> currencies = (!currenciesURL.isPresent()) ? Collections.EMPTY_LIST : JsonpContext.SAX.loadObjectArray(Currency.class, currenciesURL.get())
+                .stream()
+                .collect(Collectors.toList());
+        final Optional<URL> walletURL = Optional.ofNullable(getClass().getResource("wallet.json"));  // NOI18N.
+        final Map<Integer, CurrencyAmount> wallet = (!walletURL.isPresent()) ? Collections.EMPTY_MAP : JsonpContext.SAX.loadObjectArray(CurrencyAmount.class, walletURL.get())
+                .stream()
+                .collect(Collectors.toMap(CurrencyAmount::getId, Function.identity()));
+        return wrapCurrencies(currencies, wallet);
+    }
+
+    private List<CurrencyWrapper> wrapCurrencies(final List<Currency> currencies, final Map<Integer, CurrencyAmount> wallet) {
+        // Wrap into single object.
+        List<CurrencyWrapper> result = currencies.stream()
+                .map(currency -> {
+                    final CurrencyAmount amount = wallet.get(currency.getId());
+                    return new CurrencyWrapper(currency, amount);
+                })
+                .collect(Collectors.toList());
+        result.sort((v1, v2) -> v1.getCurrency().getOrder() - v2.getCurrency().getOrder());
+        return Collections.unmodifiableList(result);
     }
 
     /**

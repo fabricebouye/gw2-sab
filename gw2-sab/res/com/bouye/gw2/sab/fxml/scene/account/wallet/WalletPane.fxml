@@ -12,9 +12,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox id="VBox" fx:id="rootPane" prefHeight="600" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="com.bouye.gw2.sab.scene.account.wallet.WalletPaneController">
+<fx:root id="VBox" styleClass="wallet-pane" fx:id="rootPane" prefHeight="600" prefWidth="400.0" type="VBox" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.wallet.WalletPaneController">
     <children>
         <TextField fx:id="searchField" promptText="%action.search" />
         <ListView id="walletListView" fx:id="walletListView" VBox.vgrow="ALWAYS" />    
     </children>
-</VBox>
+</fx:root>
