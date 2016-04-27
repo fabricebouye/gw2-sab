@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -100,7 +101,7 @@ public final class TestWorldInfoPane extends Application {
                     .getAllWorlds()
                     .values()
                     .stream()
-                    .map(set -> set.stream())
+                    .map(Set::stream)
                     .reduce(Stream.empty(), Stream::concat);
 //            Stream<Integer> allIds = Stream.empty();
 //            for (Set<Integer> worlds : match.get().getAllWorlds().values()) {
