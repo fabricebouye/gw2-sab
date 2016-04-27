@@ -287,7 +287,7 @@ public enum WebQuery {
         } else {
             try {
                 final String escapedCharacterName = encodeURLParameter(characterName);
-                final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey);
+                final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey); // NOI18N.
                 result = objectWebQuery(Character.class, query);
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -301,11 +301,20 @@ public enum WebQuery {
         List<Character> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String[] escapeIds = Arrays.stream(ids)
-                    .map(this::idsToString)
-                    .toArray(String[]::new);
-            final String query = String.format("https://api.guildwars2.com/v2/characters?access_token=%s&ids=%s", appKey, idsToString(escapeIds)); // NOI18N.
-            result = arrayWebQuery(Character.class, query);
+            result = new ArrayList(ids.length);
+            for (final String id : ids) {
+                try {
+                    final String escapedCharacterName = encodeURLParameter(id);
+                    final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey); // NOI18N.
+                    final Optional<Character> value = objectWebQuery(Character.class, query);
+                    if (value.isPresent()) {
+                        result.add(value.get());
+                    }
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            }
+            result = Collections.unmodifiableList(result);
         }
         return result;
     }
