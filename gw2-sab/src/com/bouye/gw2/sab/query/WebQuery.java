@@ -17,6 +17,9 @@ import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.Member;
+import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
+import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
+import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
@@ -233,6 +236,39 @@ public enum WebQuery {
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
             result = arrayWebQuery(LogEvent.class, query);
+        }
+        return result;
+    }
+
+    public List<Treasury> queryGuildTreasury(final String appKey, final String id) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Treasury> result = Collections.EMPTY_LIST;
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/treasury?access_token=%s", id, appKey); // NOI18N.
+            result = arrayWebQuery(Treasury.class, query);
+        }
+        return result;
+    }
+
+    public List<Upgrade> queryGuildUpgrades(int... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Upgrade> result = Collections.EMPTY_LIST;
+        if (isOffline) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/guild/upgrades?ids=%s", idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(Upgrade.class, query);
+        }
+        return result;
+    }
+
+    public List<Item> queryItems(int... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Item> result = Collections.EMPTY_LIST;
+        if (isOffline) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/items?ids=%s", idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(Item.class, query);
         }
         return result;
     }

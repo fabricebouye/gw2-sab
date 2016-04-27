@@ -10,6 +10,7 @@ package com.bouye.gw2.sab.scene.guild.treasury;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
+import api.web.gw2.mapping.v2.guild.id.treasury.TreasuryUpgrade;
 import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
@@ -26,24 +27,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.scenicview.ScenicView;
+import javafx.util.Duration;
 
 /**
  * Test.
  * @author Fabrice Bouyé
  */
 public final class TestTreasuryPane extends Application {
+
+    private Stage stage;
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
@@ -56,7 +66,8 @@ public final class TestTreasuryPane extends Application {
         primaryStage.setTitle("TestTreasuryPane"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
-        ScenicView.show(scene);
+        stage = primaryStage;
+//        ScenicView.show(scene);
         loadTestAsync(treasuryPane);
     }
 
@@ -65,24 +76,14 @@ public final class TestTreasuryPane extends Application {
      * @param treasuryPane The target pane.
      */
     private void loadTestAsync(final TreasuryPane treasuryPane) {
-        final Service<Void> service = new Service<Void>() {
+        final ScheduledService<Void> service = new ScheduledService<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        List<TreasuryWrapper> wrappers = Collections.EMPTY_LIST;
-                        if (SABConstants.INSTANCE.isOffline()) {
-                            wrappers = loadLocalTest();
-                        } else {
-                            final Session session = SABTestUtils.INSTANCE.getTestSession();
-                            if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.GUILDS)) {
-                                final String[] guildIds = session.getAccount().getGuilds().stream().toArray(String[]::new);
-                                final List<GuildDetails> guildDetails = WebQuery.INSTANCE.queryGuildDetails(guildIds);
-                            }
-                        }
-                        final List<TreasuryWrapper> w = wrappers;
-                        Platform.runLater(() -> treasuryPane.getTreasury().setAll(w));
+                        final List<TreasuryWrapper> wrappers = (SABConstants.INSTANCE.isOffline()) ? loadLocalTest() : loadRemoteTest();
+                        Platform.runLater(() -> treasuryPane.getTreasury().setAll(wrappers));
                         return null;
                     }
                 };
@@ -92,6 +93,8 @@ public final class TestTreasuryPane extends Application {
             final Throwable ex = workerStateEvent.getSource().getException();
             Logger.getLogger(TestTreasuryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         });
+        service.setPeriod(Duration.minutes(5));
+        service.setRestartOnFailure(true);
         service.start();
     }
 
@@ -115,7 +118,7 @@ public final class TestTreasuryPane extends Application {
             // Wrap everything (we still have upgrades & items missing currently so they'll end up being null).
             result = guildTreasury.stream()
                     .map(treasury -> {
-                        final Item item = items.get(treasury.getId());
+                        final Item item = items.get(treasury.getItemId());
                         final Upgrade[] upgrades = treasury.getNeededBy()
                                 .stream()
                                 .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
@@ -126,6 +129,72 @@ public final class TestTreasuryPane extends Application {
         }
         return result;
     }
+
+    private synchronized List<TreasuryWrapper> loadRemoteTest() throws InterruptedException {
+        List<TreasuryWrapper> result = Collections.EMPTY_LIST;
+        final Session session = SABTestUtils.INSTANCE.getTestSession();
+        if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.GUILDS)) {
+            final String[] guildIds = session.getAccount().getGuilds().stream().toArray(String[]::new);
+            final Map<String, GuildDetails> guildDetails = WebQuery.INSTANCE.queryGuildDetails(guildIds)
+                    .stream()
+                    .collect(Collectors.toMap(GuildDetails::getGuildId, Function.identity()));
+            Platform.runLater(() -> requestGuild(guildIds, guildDetails));
+            wait();
+            final List<Treasury> guildTreasury = WebQuery.INSTANCE.queryGuildTreasury(session.getAppKey(), selectedGuild.get());
+            final int[] upgradeIds = guildTreasury.stream()
+                    .map(Treasury::getNeededBy)
+                    .map(Set::stream)
+                    .reduce(Stream.empty(), Stream::concat)
+                    .mapToInt(TreasuryUpgrade::getUpgradeId)
+                    .distinct()
+                    .toArray();
+            final Map<Integer, Upgrade> guildUpgrades = WebQuery.INSTANCE.queryGuildUpgrades(upgradeIds)
+                    .stream()
+                    .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
+            final int[] itemIds= guildTreasury.stream()
+                    .mapToInt(Treasury::getItemId)
+                    .toArray();
+            final Map<Integer, Item> items = WebQuery.INSTANCE.queryItems(itemIds)
+                    .stream()
+                    .collect(Collectors.toMap(Item::getId, Function.identity()));
+            // Wrap everything (we still have upgrades & items missing currently so they'll end up being null).
+            result = guildTreasury.stream()
+                    .map(treasury -> {
+                        final Item item = items.get(treasury.getItemId());
+                        final Upgrade[] upgrades = treasury.getNeededBy()
+                                .stream()
+                                .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
+                                .toArray(Upgrade[]::new);
+                        return new TreasuryWrapper(treasury, item, upgrades);
+                    })
+                    .collect(Collectors.toList());
+        }
+        return result;
+    }
+
+    private synchronized void requestGuild(final String[] guildIds, final Map<String, GuildDetails> guildDetails) {
+        final ListView<String> guildList = new ListView();
+        guildList.setCellFactory(listView -> new ListCell<String>() {
+            @Override
+            protected void updateItem(final String item, final boolean empty) {
+                super.updateItem(item, empty);
+                final String text = (empty || item == null) ? null : guildDetails.get(item).getGuildName();
+                setText(text);
+            }
+        });
+        guildList.getItems().setAll(guildIds);
+        final Dialog dialog = new Dialog();
+        dialog.initOwner(stage);
+        dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(guildList);
+        Optional result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            selectedGuild = Optional.ofNullable(guildList.getSelectionModel().getSelectedItem());
+        }
+        notify();
+    }
+
+    private volatile Optional<String> selectedGuild = Optional.empty();
 
     public static void main(String... args) {
         Application.launch(args);
