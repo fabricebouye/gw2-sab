@@ -98,7 +98,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
     private Node createInventorySlot(final TreasuryWrapper value) {
         final StackPane result = new StackPane();
         result.getStyleClass().add("slot"); // NOI18N.
-        final int id = value.getTreasury().getId();
+        final int id = value.getTreasury().getItemId();
         result.setUserData(id);
         final int count = value.getTreasury().getCount();
         final Text countText = new Text();
