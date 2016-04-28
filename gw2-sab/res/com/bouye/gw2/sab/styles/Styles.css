@@ -25,6 +25,10 @@
     -fx-border-color: red;
     -fx-border-width: 1px;
 }
+/* Default modena size is way too small. */
+.tooltip {
+    -fx-font-size: 1.0em;
+}
 #GridPane {
     -fx-hgap: 3px;
     -fx-vgap: 3px;

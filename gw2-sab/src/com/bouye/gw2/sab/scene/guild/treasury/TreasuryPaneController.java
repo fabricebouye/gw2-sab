@@ -11,6 +11,7 @@ import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
 import api.web.gw2.mapping.v2.guild.id.treasury.TreasuryUpgrade;
 import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.TreasuryWrapper;
 import java.net.URL;
@@ -93,7 +94,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         final Text quantityText = new Text();
         quantityText.setId("quantityText"); // NOI18N.
         quantityText.getStyleClass().add("quantity-label"); // NOI18N.
-        quantityText.setText(String.format("%d / %d", count, totalCount));
+        quantityText.setText(String.format(SABConstants.I18N.getString("treasury-pane.quantity.label"), count, totalCount)); // NOI18N.
         result.getChildren().add(quantityText);
         final String costsText = upgrades.stream()
                 .map(upgrade -> {
@@ -102,11 +103,11 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
                             .mapToInt(upgradeCost -> upgradeCost.getCount())
                             .findFirst()
                             .getAsInt();
-                    final String infoText = String.format("%d required by %s", itemQuantity, upgrade.getName());
+                    final String infoText = String.format(SABConstants.I18N.getString("treasury-pane.required-by.label"), itemQuantity, upgrade.getName()); // NOI18N.
                     return infoText;
                 })
-                .collect(Collectors.joining("\n"));// NOI18N.
-        final String infoText = String.format("%d required:\n%s", totalCount, costsText);
+                .collect(Collectors.joining("\n  ", "\n  ", ""));// NOI18N.
+        final String infoText = String.format(SABConstants.I18N.getString("treasury-pane.info.label"), totalCount, costsText); // NOI18N.
         final Tooltip tooltip = new Tooltip(infoText);
         Tooltip.install(quantityText, tooltip);
         return result;

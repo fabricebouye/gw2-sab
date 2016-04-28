@@ -151,7 +151,7 @@ public final class TestTreasuryPane extends Application {
             final Map<Integer, Upgrade> guildUpgrades = WebQuery.INSTANCE.queryGuildUpgrades(upgradeIds)
                     .stream()
                     .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
-            final int[] itemIds= guildTreasury.stream()
+            final int[] itemIds = guildTreasury.stream()
                     .mapToInt(Treasury::getItemId)
                     .toArray();
             final Map<Integer, Item> items = WebQuery.INSTANCE.queryItems(itemIds)

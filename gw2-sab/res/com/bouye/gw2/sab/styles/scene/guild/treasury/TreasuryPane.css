@@ -12,12 +12,6 @@
     -fx-alignment: center;
     -fx-spacing: 6px;
 }
-.treasury-pane .quantity-label {
-    -fx-font-size: 0.9em;
-}
-.treasury-pane #Tooltip {
-    -fx-font-size: 1.0em;
-}
 .treasury-pane .slot {
     -slot-inner: gray;
     -slot-border: derive(-slot-inner, -80%);
