@@ -106,7 +106,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
                     final String infoText = String.format(SABConstants.I18N.getString("treasury-pane.required-by.label"), itemQuantity, upgrade.getName()); // NOI18N.
                     return infoText;
                 })
-                .collect(Collectors.joining("\n  ", "\n  ", ""));// NOI18N.
+                .collect(Collectors.joining("\n", "\n", ""));// NOI18N.
         final String infoText = String.format(SABConstants.I18N.getString("treasury-pane.info.label"), totalCount, costsText); // NOI18N.
         final Tooltip tooltip = new Tooltip(infoText);
         Tooltip.install(quantityText, tooltip);
@@ -124,10 +124,9 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         countText.setText(String.valueOf(count));
         result.getChildren().add(countText);
         if (item != null) {
-            item.getDescription().ifPresent(description -> {
-                final Tooltip tooltip = new Tooltip(description);
-                Tooltip.install(result, tooltip);
-            });
+            // @ todo Insert item tooltip.
+            final Tooltip tooltip = new Tooltip(item.getName());
+            Tooltip.install(result, tooltip);
         }
         return result;
     }
