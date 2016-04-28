@@ -12,6 +12,7 @@ import api.web.gw2.mapping.v2.guild.id.treasury.TreasuryUpgrade;
 import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.query.ImageCache;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.TreasuryWrapper;
 import java.net.URL;
@@ -30,6 +31,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -119,14 +122,19 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         result.getStyleClass().add("slot"); // NOI18N.
         final int id = value.getTreasury().getItemId();
         result.setUserData(id);
-        final int count = value.getTreasury().getCount();
-        final Text countText = new Text();
-        countText.setText(String.valueOf(count));
-        result.getChildren().add(countText);
         if (item != null) {
             // @ todo Insert item tooltip.
             final Tooltip tooltip = new Tooltip(item.getName());
             Tooltip.install(result, tooltip);
+            item.getIcon().ifPresent(url -> {
+                final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
+                final ImageView imageView = new ImageView();
+                // @todo switch to CSS whenever those property become styleable.
+                imageView.fitWidthProperty().bind(result.prefWidthProperty());
+                imageView.fitHeightProperty().bind(result.prefHeightProperty());
+                imageView.setImage(image);
+                result.getChildren().add(imageView);
+            });
         }
         return result;
     }
