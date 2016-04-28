@@ -5,7 +5,7 @@
 .inventory-pane .bag {
 }
 .inventory-pane .bag-content {
-    -fx-padding: 0px;
+    -fx-padding: 6px;
     -fx-hgap: 6px;
     -fx-vgap: 6px;
 }

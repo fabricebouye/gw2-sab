@@ -9,7 +9,6 @@ package com.bouye.gw2.sab.scene.characters.inventory;
 
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.characters.inventory.Inventory;
-import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.skins.Skin;
 import com.bouye.gw2.sab.SABConstants;
@@ -41,8 +40,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -202,10 +201,10 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
     }
 
     private Node createBagContent(final Stream<Node> nodes) {
-        final FlowPane flowPane = new FlowPane();
-        flowPane.getStyleClass().add("bag-content"); // NOI18N.
-        flowPane.getChildren().setAll(nodes.collect(Collectors.toList()));
-        return flowPane;
+        final TilePane container = new TilePane();
+        container.getStyleClass().add("bag-content"); // NOI18N.
+        container.getChildren().setAll(nodes.collect(Collectors.toList()));
+        return container;
     }
 
     private Node createBagView(final String bagName, final Stream<Node> nodes) {

@@ -24,8 +24,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -107,10 +107,10 @@ public final class BankPaneController extends SABControllerBase<BankPane> {
     }
 
     private Node createTabContent(final Stream<Node> nodes) {
-        final FlowPane flowPane = new FlowPane();
-        flowPane.getStyleClass().add("bank-tab-content"); // NOI18N.
-        flowPane.getChildren().setAll(nodes.collect(Collectors.toList()));
-        return flowPane;
+        final TilePane container = new TilePane();
+        container.getStyleClass().add("bank-tab-content"); // NOI18N.
+        container.getChildren().setAll(nodes.collect(Collectors.toList()));
+        return container;
     }
 
     private Node createTabView(final String bagName, final Stream<Node> nodes) {
