@@ -3,7 +3,7 @@
     -fx-spacing: 6px;
 }
 .treasury-pane .treasury-content {
-    -fx-padding: 0px;
+    -fx-padding: 6px;
     -fx-hgap: 6px;
     -fx-vgap: 6px;
 }
@@ -11,10 +11,12 @@
     -fx-fill-width: false;
     -fx-alignment: center;
     -fx-spacing: 6px;
-    -fx-pref-width: 75px;
 }
 .treasury-pane .quantity-label {
     -fx-font-size: 0.9em;
+}
+.treasury-pane #Tooltip {
+    -fx-font-size: 1.0em;
 }
 .treasury-pane .slot {
     -slot-inner: gray;
@@ -26,7 +28,10 @@
     -fx-pref-height: 48px;
 }
 .treasury-pane .top-bar {
+    -fx-border-color: null;
+    -fx-padding: 0px;
     -fx-spacing: 6px;
+    -fx-alignment: center-left;
 }
 .treasury-pane .options-button {
     -fx-content-display: graphic-only;

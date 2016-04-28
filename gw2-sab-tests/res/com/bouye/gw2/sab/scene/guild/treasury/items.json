@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "id": 1,
+        "name": "Test Item #1",
+        "description": "Description of item #1."
+    },
+    {
+        "id": 2,
+        "name": "Test Item #2",
+        "description": "Description of item #2."
+    }
+
+]

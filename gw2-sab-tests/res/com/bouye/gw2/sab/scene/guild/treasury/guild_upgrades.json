@@ -1,1 +1,42 @@
-[]
+[
+    {
+        "id": 1,
+        "name": "Guild Upgrade #1",
+        "description": "Description of guild upgrade #1.",
+        "build_time": 0,
+        "type": "BankBag",
+        "required_level": 20,
+        "experience": 35,
+        "costs": [
+            {
+                "type": "Item",
+                "count": 1000,
+                "name": "Item #1",
+                "item_id": 1
+            },
+            {
+                "type": "Item",
+                "count": 3000,
+                "name": "Item #2",
+                "item_id": 2
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Guild Upgrade #2",
+        "description": "Description of guild upgrade #2.",
+        "build_time": 0,
+        "type": "BankBag",
+        "required_level": 20,
+        "experience": 35,
+        "costs": [
+            {
+                "type": "Item",
+                "count": 3000,
+                "name": "Item #2",
+                "item_id": 2
+            }
+        ]
+    }
+]

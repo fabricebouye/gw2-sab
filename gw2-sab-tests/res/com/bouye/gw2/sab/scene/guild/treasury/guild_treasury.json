@@ -1,24 +1,24 @@
 [
     {
-        "item_id": 12138,
+        "item_id": 1,
         "count": 200,
         "needed_by": [
             {
-                "upgrade_id": 42,
+                "upgrade_id": 1,
                 "count": 1000
             }
         ]
     },
     {
-        "item_id": 19684,
+        "item_id": 2,
         "count": 3493,
         "needed_by": [
             {
-                "upgrade_id": 42,
+                "upgrade_id": 1,
                 "count": 3000
             },
             {
-                "upgrade_id": 43,
+                "upgrade_id": 2,
                 "count": 3000
             }
         ]

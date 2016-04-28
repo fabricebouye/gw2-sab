@@ -28,8 +28,9 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -42,7 +43,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
     @FXML
     private TextField searchField;
     @FXML
-    private FlowPane treasuryContentFlow;
+    private TilePane treasuryContent;
 
     /**
      * Creates a new instance.
@@ -68,22 +69,24 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
 
     @Override
     protected void updateUI() {
-        treasuryContentFlow.getChildren().clear();
+        treasuryContent.getChildren().clear();
         nodes.clear();
         final List<Node> slots = treasury.stream()
                 .map(this::createTreasurySlot)
                 .collect(Collectors.toList());
         nodes.setAll(slots);
-        treasuryContentFlow.getChildren().setAll(filteredNodes);
+        treasuryContent.getChildren().setAll(filteredNodes);
     }
 
     private Node createTreasurySlot(final TreasuryWrapper value) {
+        final Treasury treasury = value.getTreasury();
+        final List<Upgrade> upgrades = value.getUpgrades();
         final VBox result = new VBox();
         result.getStyleClass().add("treasury"); // NOI18N.
         result.setUserData(value);
         result.getChildren().add(createInventorySlot(value));
-        final int count = value.getTreasury().getCount();
-        final int totalCount = value.getTreasury().getNeededBy()
+        final int count = treasury.getCount();
+        final int totalCount = treasury.getNeededBy()
                 .stream()
                 .mapToInt(TreasuryUpgrade::getCount)
                 .sum();
@@ -92,10 +95,25 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         quantityText.getStyleClass().add("quantity-label"); // NOI18N.
         quantityText.setText(String.format("%d / %d", count, totalCount));
         result.getChildren().add(quantityText);
+        final String costsText = upgrades.stream()
+                .map(upgrade -> {
+                    final int itemQuantity = upgrade.getCosts().stream()
+                            .filter(upgradeCost -> upgradeCost.getItemId().isPresent() && (upgradeCost.getItemId().getAsInt() == treasury.getItemId()))
+                            .mapToInt(upgradeCost -> upgradeCost.getCount())
+                            .findFirst()
+                            .getAsInt();
+                    final String infoText = String.format("%d required by %s", itemQuantity, upgrade.getName());
+                    return infoText;
+                })
+                .collect(Collectors.joining("\n"));// NOI18N.
+        final String infoText = String.format("%d required:\n%s", totalCount, costsText);
+        final Tooltip tooltip = new Tooltip(infoText);
+        Tooltip.install(quantityText, tooltip);
         return result;
     }
 
     private Node createInventorySlot(final TreasuryWrapper value) {
+        final Item item = value.getItem();
         final StackPane result = new StackPane();
         result.getStyleClass().add("slot"); // NOI18N.
         final int id = value.getTreasury().getItemId();
@@ -104,6 +122,12 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         final Text countText = new Text();
         countText.setText(String.valueOf(count));
         result.getChildren().add(countText);
+        if (item != null) {
+            item.getDescription().ifPresent(description -> {
+                final Tooltip tooltip = new Tooltip(description);
+                Tooltip.install(result, tooltip);
+            });
+        }
         return result;
     }
 
@@ -148,7 +172,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         }
         filteredNodes.setPredicate(predicate);
         //
-        treasuryContentFlow.getChildren().clear();
-        treasuryContentFlow.getChildren().setAll(filteredNodes);
+        treasuryContent.getChildren().clear();
+        treasuryContent.getChildren().setAll(filteredNodes);
     }
 }
