@@ -256,7 +256,7 @@ public enum WebQuery {
         List<Upgrade> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guild/upgrades?ids=%s", idsToString(ids)); // NOI18N.
+            final String query = String.format("https://api.guildwars2.com/v2/guild/upgrades?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
             result = arrayWebQuery(Upgrade.class, query);
         }
         return result;
@@ -267,7 +267,7 @@ public enum WebQuery {
         List<Item> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/items?ids=%s", idsToString(ids)); // NOI18N.
+            final String query = String.format("https://api.guildwars2.com/v2/items?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
             result = arrayWebQuery(Item.class, query);
         }
         return result;
