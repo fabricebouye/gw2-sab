@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<fx:root id="GridPane" prefWidth="300.0" styleClass="item-renderer" type="GridPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.items.ItemTooltipRendererController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" />
+        <ColumnConstraints fillWidth="true" hgrow="ALWAYS" minWidth="75.0" prefWidth="75.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="75.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="-Infinity" vgrow="ALWAYS" />
+    </rowConstraints>
+   <children>
+      <StackPane fx:id="iconContainer" prefHeight="150.0" prefWidth="200.0" styleClass="icon-container" />
+      <Label fx:id="nameLabel" styleClass="name-label" text="Item Name" GridPane.columnIndex="1" />
+      <TextFlow fx:id="descriptionFlow" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="+1 stat#1&#10;+1 stat#2&#10;+1 stat#3&#10;" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="&#10;" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="description-label" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id arcu at mauris venenatis volutpat a quis purus." />
+         </children>
+      </TextFlow>
+   </children>
+</fx:root>
