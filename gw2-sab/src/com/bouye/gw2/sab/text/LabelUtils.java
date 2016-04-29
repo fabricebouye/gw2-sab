@@ -7,6 +7,7 @@
  */
 package com.bouye.gw2.sab.text;
 
+import api.web.gw2.mapping.core.JsonpUtils;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +53,27 @@ public enum LabelUtils {
 
     private final PseudoClass BOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("strong"); // NOI18N.
     private final PseudoClass FONT_AWESOME_PSEUDO_CLASS = PseudoClass.getPseudoClass(FONT_AWESOME);
+
+    /**
+     * Provides a suitable label from an {@code Enum} instance.
+     * @param value The value, may be {@code null}.
+     * @return A {@code String}, may be {@code null} if {@code value} is {@code null}.
+     */
+    public String toLabel(final Enum value) {
+        return (value == null) ? null : JsonpUtils.INSTANCE.javaEnumToJavaClassName(value);
+    }
+
+    /**
+     * Provides a {@code PseudoClass} from an {@code Enum} instance.
+     * @param value The value.
+     * @return A {@code PseudoClass} instance, never {@code null}
+     * @throws NullPointerException If {@code value} is {@code null}.
+     */
+    public PseudoClass toPseudoClass(final Enum value) throws NullPointerException {
+        Objects.requireNonNull(value);
+        final String pseudoClassName = toLabel(value);
+        return PseudoClass.getPseudoClass(pseudoClassName);
+    }
 
     /**
      * Split rich text content into nodes to display on screen.
@@ -150,6 +173,10 @@ public enum LabelUtils {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Initializes an empty attribute map.
+     * @return A {@code Map<String, Boolean>} instance, never {@code null}.
+     */
     private Map<String, Boolean> initializeAttributeMap() {
         final Map<String, Boolean> result = new HashMap();
         result.put(BOLD, Boolean.FALSE);
@@ -158,14 +185,28 @@ public enum LabelUtils {
         return result;
     }
 
-    public String toStrong(final String value) {
+    /**
+     * Decorator method that makes a label strong.
+     * @param value The source string.
+     * @return A {@code String} instance, never {@code null}.
+     */
+    public String strong(final String value) {
         return String.format("<%s>%s</%s>", BOLD, value, BOLD); // NOI18N.        
     }
 
-    public String toFontAwesome(final String value) {
+    /**
+     * Decorator method that makes a label awesome.
+     * @param value The source string.
+     * @return A {@code String} instance, never {@code null}.
+     */
+    public String fontAwesome(final String value) {
         return String.format("<%s>%s</%s>", FONT_AWESOME, value, FONT_AWESOME); // NOI18N.        
     }
 
+    /**
+     * Creates a line break.
+     * @return A {@code String} instance, never {@code null}.
+     */
     public String lineBreak() {
         return String.format("<%s/>", LINE_BREAK); // NOI18N.      
     }
@@ -180,29 +221,12 @@ public enum LabelUtils {
     private static final int SILVER_VALUE = 100;
 
     /**
-     * Gem amount pseudo class.
-     */
-    private static final PseudoClass GEM_PSEUDO_CLASS = PseudoClass.getPseudoClass("gem"); // NOI18N.
-    /**
-     * Gold amount pseudo class.
-     */
-    private static final PseudoClass GOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("gold"); // NOI18N.
-    /**
-     * Silver amount pseudo class.
-     */
-    private static final PseudoClass SILVER_PSEUDO_CLASS = PseudoClass.getPseudoClass("silver"); // NOI18N.
-    /**
-     * Copper amount pseudo class.
-     */
-    private static final PseudoClass COPPER_PSEUDO_CLASS = PseudoClass.getPseudoClass("copper"); // NOI18N.
-
-    /**
      * Create labels for given gem amount.
      * <br>Value 0 is hidden.
      * @param value The amount in gems.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> labelsForGems(final int value) {
+    public List<Node> fromGems(final int value) {
         final List<Node> result = new ArrayList<>();
         labelsForCurrency(CurrencyType.GEM, value, result);
         return Collections.unmodifiableList(result);
@@ -214,8 +238,8 @@ public enum LabelUtils {
      * @param value The amount in copper coins.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> labelsForCoins(final int value) {
-        return labelsForCoins(value, false);
+    public List<Node> fromCopper(final int value) {
+        return fromCopper(value, false);
     }
 
     /**
@@ -224,7 +248,7 @@ public enum LabelUtils {
      * @param showEmpty If {@code true}, 0 values are shown.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> labelsForCoins(final int value, final boolean showEmpty) {
+    public List<Node> fromCopper(final int value, final boolean showEmpty) {
         final List<Node> result = new ArrayList<>();
         final int gold = value / GOLD_VALUE;
         final int silver = (value - gold * GOLD_VALUE) / SILVER_VALUE;
@@ -244,6 +268,10 @@ public enum LabelUtils {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Various currency types.
+     * @author Fabrice Bouyé
+     */
     private enum CurrencyType {
         GOLD, SILVER, COPPER, GEM;
     }
@@ -253,10 +281,16 @@ public enum LabelUtils {
      */
     private final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
 
+    /**
+     * Generates labels to represent the given currency amount.
+     * @param currencyType The type of currency to use.
+     * @param amount The amount to show.
+     * @param result The result list.
+     */
     private void labelsForCurrency(final CurrencyType currencyType, final int amount, final List<Node> result) {
         final Text amountText = new Text(numberFormat.format(amount));
         amountText.getStyleClass().add("coin-label"); // NOI18N.
-        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(currencyType.name().toLowerCase());
+        final PseudoClass pseudoClass = toPseudoClass(currencyType);
         amountText.pseudoClassStateChanged(pseudoClass, true);
         result.add(amountText);
         result.add(new Text(" ")); // NOI18N.
@@ -264,6 +298,11 @@ public enum LabelUtils {
         result.add(new Text(" ")); // NOI18N.        
     }
 
+    /**
+     * Create proper currency icon.
+     * @param currencyType The type of currency to use.
+     * @return A {@code Node}, never {@code null}.
+     */
     private Node iconForCurrency(final CurrencyType currencyType) {
         final String imageId = (currencyType == CurrencyType.GEM) ? "ui_gem" : String.format("ui_coin_%s", currencyType.name().toLowerCase()); // NOI18N.
         final Image image = ImageCache.INSTANCE.getImage(imageId);

@@ -284,7 +284,7 @@ public final class SpecializationEditor extends Region {
      * @param profession The profession, never {@code null}.
      */
     private void uninstallProfession(final CharacterProfession profession) {
-        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
+        final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
         pseudoClassStateChanged(pseudoClass, false);
     }
 
@@ -293,7 +293,7 @@ public final class SpecializationEditor extends Region {
      * @param profession The profession, never {@code null}.
      */
     private void installProfession(final CharacterProfession profession) {
-        final PseudoClass pseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
+        final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
         pseudoClassStateChanged(pseudoClass, true);
     }
 

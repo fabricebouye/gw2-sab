@@ -264,20 +264,20 @@
     -fx-padding: 6px;
     -fx-translate-y: 5px;
 }
-.coin-label:gem,
+.coin-label:Gem,
 .coin:gem {    
     -coin-color: cornflowerblue;
 }
-.coin-label:gold,
-.coin:gold {    
+.coin-label:Gold,
+.coin:Gold {    
     -coin-color: derive(gold, -20%);
 }
-.coin-label:silver,
-.coin:silver{    
+.coin-label:Silver,
+.coin:Silver{    
     -coin-color: silver;
 }
-.coin-label:copper,
-.coin:copper{    
+.coin-label:Copper,
+.coin:Copper{    
     -coin-color: chocolate;
 }
 /* Welcome view. */

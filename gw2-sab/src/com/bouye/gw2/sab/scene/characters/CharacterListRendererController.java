@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import com.bouye.gw2.sab.scene.SABControllerBase;
+import com.bouye.gw2.sab.text.LabelUtils;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;
 import java.net.URL;
 import java.util.Arrays;
@@ -108,8 +109,8 @@ public final class CharacterListRendererController extends SABControllerBase<Cha
         Arrays.stream(CharacterProfession.values())
                 .filter(profession -> profession != CharacterProfession.UNKNOWN)
                 .forEach(profession -> {
-                    final PseudoClass professionPseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
-                    parent.pseudoClassStateChanged(professionPseudoClass, false);
+                    final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
+                    parent.pseudoClassStateChanged(pseudoClass, false);
                 });
     }
 
@@ -117,8 +118,8 @@ public final class CharacterListRendererController extends SABControllerBase<Cha
         final Optional<Character> character = Optional.ofNullable((characterBindging == null) ? null : characterBindging.get());
         character.ifPresent(c -> {
             final CharacterProfession profession = c.getProfession();
-            final PseudoClass professionPseudoClass = PseudoClass.getPseudoClass(JsonpUtils.INSTANCE.javaEnumToJavaClassName(profession));
-            parent.pseudoClassStateChanged(professionPseudoClass, true);
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
+            parent.pseudoClassStateChanged(pseudoClass, true);
         });
     }
 

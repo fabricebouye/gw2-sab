@@ -56,10 +56,10 @@ public class TestCoinRendering extends Application {
                     final Label label = new Label(String.valueOf(amout));
                     GridPane.setConstraints(label, 0, row);
                     final TextFlow textFlow1 = new TextFlow();
-                    textFlow1.getChildren().setAll(LabelUtils.INSTANCE.labelsForCoins(amout, true));
+                    textFlow1.getChildren().setAll(LabelUtils.INSTANCE.fromCopper(amout, true));
                     GridPane.setConstraints(textFlow1, 1, row);
                     final TextFlow textFlow2 = new TextFlow();
-                    textFlow2.getChildren().setAll(LabelUtils.INSTANCE.labelsForCoins(amout, false));
+                    textFlow2.getChildren().setAll(LabelUtils.INSTANCE.fromCopper(amout, false));
                     GridPane.setConstraints(textFlow2, 2, row);
                     root.getChildren().addAll(label, textFlow1, textFlow2);
                 });
@@ -70,10 +70,10 @@ public class TestCoinRendering extends Application {
             final Label label = new Label(String.valueOf(amout));
             GridPane.setConstraints(label, 0, row);
             final TextFlow textFlow1 = new TextFlow();
-            textFlow1.getChildren().setAll(LabelUtils.INSTANCE.labelsForGems(amout));
+            textFlow1.getChildren().setAll(LabelUtils.INSTANCE.fromGems(amout));
             GridPane.setConstraints(textFlow1, 1, row);
             final TextFlow textFlow2 = new TextFlow();
-            textFlow2.getChildren().setAll(LabelUtils.INSTANCE.labelsForGems(amout));
+            textFlow2.getChildren().setAll(LabelUtils.INSTANCE.fromGems(amout));
             GridPane.setConstraints(textFlow2, 2, row);
             root.getChildren().addAll(label, textFlow1, textFlow2);
         }

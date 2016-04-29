@@ -17,6 +17,7 @@ import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -139,7 +140,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             final TokenInfo tokenInfo = session.getTokenInfo();
             // Name.
             accountNameLabel.setText(account.getName());
-            final String accessText = String.format("[ %s ]", JsonpUtils.INSTANCE.javaEnumToJavaClassName(account.getAccess()));
+            final String accessText = String.format("[ %s ]", LabelUtils.INSTANCE.toLabel(account.getAccess()));
             accessLabel.setText(accessText);
             //
             final int worldId = account.getWorld();
@@ -170,7 +171,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
                         icon.getStyleClass().addAll("awesome-icon", "permission-icon"); // NOI18N.
                         final Label label = new Label();
                         label.getStyleClass().add("permission-label"); // NOI18N.
-                        final String text = JsonpUtils.INSTANCE.javaEnumToJavaClassName(permission);
+                        final String text = LabelUtils.INSTANCE.toLabel(permission);
                         label.setText(text);
                         label.setGraphic(icon);
                         return label;
@@ -188,8 +189,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
      */
     private void clearOldStyle(final AccountInfoPane parent) {
         Arrays.stream(AccountAccessType.values()).forEach(accessType -> {
-            final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
-            final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(accessType);
             parent.pseudoClassStateChanged(pseudoClass, false);
         });
     }
@@ -203,8 +203,7 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         if (session != null && session.isValid()) {
             final Account account = session.getAccount();
             final AccountAccessType accessType = account.getAccess();
-            final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
-            final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(accessType);
             parent.pseudoClassStateChanged(pseudoClass, true);
         }
     }
