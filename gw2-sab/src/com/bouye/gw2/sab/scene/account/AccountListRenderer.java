@@ -7,39 +7,57 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
+import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import com.bouye.gw2.sab.session.Session;
+import java.net.URL;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
-import javafx.scene.control.ListCell;
+import javafx.scene.layout.GridPane;
 
 /**
- * List cell for the session management list.
+ * Renders accounts (sessions) in list views.
  * @author Fabrice Bouyé
  */
-public final class AccountListCell extends ListCell<Session> {
+public final class AccountListRenderer extends GridPane {
 
-    private final AccountListRenderer renderer = new AccountListRenderer();
+    private final Optional<AccountListRendererController> controller;
 
     /**
-     * Creates a new empty instance.
+     * Creates a new instance.
      */
-    public AccountListCell() {
-        renderer.sessionProperty().bind(itemProperty());
-        renderer.deletableProperty().bind(deletableProperty());
-        renderer.onDeleteAccountProperty().bind(onDeleteAccountProperty());
+    public AccountListRenderer() {
+        super();
+        setId("accountListRenderer"); // NOI18N.
+        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/account/AccountListRenderer.fxml", this); // NOI18N.
     }
 
+//    @Override 
+//    public void dispose() {
+//        SABFXMLUtils.INSTANCE.disposeController(controller);
+//    }    
     @Override
-    protected void updateItem(final Session item, final boolean empty) {
-        super.updateItem(item, empty);
-        final String text = null;
-        setText(text);
-        final Node graphic = (empty || item == null) ? null : renderer;
-        setGraphic(graphic);
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/account/AccountListRenderer.css"); // NOI18N.
+        return url.toExternalForm();
+    }
+
+    private final ObjectProperty<Session> session = new SimpleObjectProperty<>(this, "session", null);
+
+    public final void setSession(final Session value) {
+        session.set(value);
+    }
+
+    public final Session getSession() {
+        return session.get();
+    }
+
+    public final ObjectProperty<Session> sessionProperty() {
+        return session;
     }
 
     /**

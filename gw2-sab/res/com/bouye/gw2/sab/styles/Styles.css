@@ -7,7 +7,9 @@
     -fx-font-size: 1.2em;
     -strong-text-color: firebrick;
     -game-gw2-color: firebrick;
-    -game-hot-color: green;
+    -game-hot-color: darkgreen;
+    -game-free-color: lightgray;
+    -game-none-color: ghostwhite;
     -profession-elementalist-color: derive(deeppink, -10%);
     -profession-engineer-color: derive(yellow, -10%);
     -profession-guardian-color: derive(dodgerblue, -10%);
@@ -28,6 +30,16 @@
 /* Default modena size is way too small. */
 .tooltip {
     -fx-font-size: 1.0em;
+}
+.list-cell,
+.list-cell:odd {
+    -fx-padding: 0px 0px 0px 5px;
+    -fx-background-color: -fx-control-inner-background;
+}
+.list-cell:selected,
+.list-cell:odd:selected {
+    -fx-background-color: -fx-focus-color, -fx-control-inner-background;
+    -fx-background-insets: 0px, 0px 0px 0px 5px;
 }
 #GridPane {
     -fx-hgap: 3px;
@@ -174,33 +186,6 @@
 .account-list-cell,
 .account-list-cell:odd {
     -fx-background-color: -fx-control-inner-background;
-}
-.account-list-cell:GuildWars2 {
-    -fx-background-image: url("../images/cell/cell-background-gw2.jpg");
-    -fx-background-position: bottom left;
-    -fx-background-repeat: no-repeat;
-}
-.account-list-cell:GuildWars2,
-.account-info-pane:GuildWars2 {
-    -strong-text-color: -game-gw2-color;
-}
-.account-list-cell:HeartOfThorns {
-    -fx-background-image: url("../images/cell/cell-background-hot.jpg");
-    -fx-background-position: bottom left;
-    -fx-background-repeat: no-repeat;
-}
-.account-list-cell:HeartOfThorns,
-.account-info-pane:HeartOfThorns {
-    -strong-text-color: -game-hot-color;
-}
-.account-list-cell > * > .strong-label {
-    -fx-font-size: 1.2em;
-    -fx-wrap-text: true;
-}
-.account-list-cell > * > .app-key-label {
-    -fx-text-fill: gray;
-    -fx-font-size: 0.75em;
-    -fx-wrap-text: true;
 }
 /* Account info pane. */
 .account-info-pane {

@@ -25,66 +25,77 @@ import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
+import javafx.scene.shape.Rectangle;
 
 /**
  * FXML Controller class
  * @author Fabrice Bouyé
  */
-public final class AccountListCellController extends SABControllerBase<AccountListCell> {
-    
+public final class AccountListRendererController extends SABControllerBase<AccountListRenderer> {
+
     @FXML
-    private GridPane rootPane;
+    private Region avatarContainer;
+    @FXML
+    private Region avatar;
     @FXML
     private Button deleteButton;
     @FXML
     private Label accountNameLabel;
     @FXML
     private Label appKeyLabel;
-    
+
+    /**
+     * Creates a new instance.
+     */
+    public AccountListRendererController() {
+    }
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         accountNameLabel.setText(null);
         appKeyLabel.setText(null);
         //
-        final ColumnConstraints columnConstraits = rootPane.getColumnConstraints().get(1);
-        columnConstraits.setMinWidth(0);
-        columnConstraits.setPrefWidth(0);
-        columnConstraits.setMaxWidth(0);
         deleteButton.setVisible(false);
         deleteButton.setManaged(false);
+        //
+        final Rectangle avatarClip = new Rectangle();
+        avatarClip.widthProperty().bind(avatar.widthProperty());
+        avatarClip.heightProperty().bind(avatar.heightProperty());
+        avatarClip.arcWidthProperty().bind(avatar.widthProperty());
+        avatarClip.arcHeightProperty().bind(avatar.heightProperty());
+        avatar.setClip(avatarClip);
     }
 
     /**
      * Called whenever the session on display changes.
      */
     private final InvalidationListener valueInvalidationListener = observable -> updateUI();
-    
+
     private BooleanBinding validBinding;
-    
+
     @Override
-    protected void uninstallNode(final AccountListCell node) {
-        node.itemProperty().removeListener(valueInvalidationListener);
+    protected void uninstallNode(final AccountListRenderer node) {
+        node.sessionProperty().removeListener(valueInvalidationListener);
         node.deletableProperty().removeListener(deletableChangeListener);
         validBinding.removeListener(valueInvalidationListener);
         validBinding.dispose();
         validBinding = null;
         clearOldStyle(node);
     }
-    
+
     @Override
-    protected void installNode(final AccountListCell node) {
-        node.itemProperty().addListener(valueInvalidationListener);
+    protected void installNode(final AccountListRenderer node) {
+        node.sessionProperty().addListener(valueInvalidationListener);
         node.deletableProperty().addListener(deletableChangeListener);
-        validBinding = Bindings.selectBoolean(node.itemProperty(), "valid"); // NOI18N.
+        validBinding = Bindings.selectBoolean(node.sessionProperty(), "valid"); // NOI18N.
         validBinding.addListener(valueInvalidationListener);
     }
-    
+
     @Override
     protected void updateUI() {
-        final Optional<AccountListCell> parent = parentNode();
-        final Session session = parent.isPresent() ? parent.get().getItem() : null;
+        final Optional<AccountListRenderer> parent = parentNode();
+        final Session session = parent.isPresent() ? parent.get().getSession() : null;
         final boolean sessionValid = validBinding == null ? false : validBinding.get();
         parent.ifPresent(this::clearOldStyle);
         if (session == null || !sessionValid) {
@@ -101,10 +112,6 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
      * Called whenever deletable value changes.
      */
     private final ChangeListener<Boolean> deletableChangeListener = (observable, oldValue, newValue) -> {
-        final ColumnConstraints columnConstraits = rootPane.getColumnConstraints().get(1);
-        columnConstraits.setMinWidth(newValue ? -1 : 0);
-        columnConstraits.setPrefWidth(newValue ? -1 : 0);
-        columnConstraits.setMaxWidth(newValue ? -1 : 0);
         deleteButton.setVisible(newValue);
         deleteButton.setManaged(newValue);
     };
@@ -113,7 +120,7 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
      * Clear old style from given parent.
      * @param parent The parent, never {@code null}.
      */
-    private void clearOldStyle(final AccountListCell parent) {
+    private void clearOldStyle(final AccountListRenderer parent) {
         Arrays.stream(AccountAccessType.values()).forEach(accessType -> {
             final String pseudoClassName = JsonpUtils.INSTANCE.javaEnumToJavaClassName(accessType);
             final PseudoClass pseudoClass = PseudoClass.getPseudoClass(pseudoClassName);
@@ -125,8 +132,8 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
      * Apply new style to given parent.
      * @param parent The parent, never {@code null}.
      */
-    private void installNewStyle(final AccountListCell parent) {
-        final Session session = parent.getItem();
+    private void installNewStyle(final AccountListRenderer parent) {
+        final Session session = parent.getSession();
         if (session != null && session.isValid()) {
             final Account account = session.getAccount();
             final AccountAccessType accessType = account.getAccess();
@@ -135,11 +142,11 @@ public final class AccountListCellController extends SABControllerBase<AccountLi
             parent.pseudoClassStateChanged(pseudoClass, true);
         }
     }
-    
+
     @FXML
     private void handleDeleteButton() {
         parentNode().ifPresent(n -> {
-            final Optional<Session> session = Optional.ofNullable(n.getItem());
+            final Optional<Session> session = Optional.ofNullable(n.getSession());
             session.ifPresent(s -> {
                 final Optional<Consumer<Session>> onDeleteAccount = Optional.of(n.getOnDeleteAccount());
                 onDeleteAccount.ifPresent(consumer -> consumer.accept(s));
