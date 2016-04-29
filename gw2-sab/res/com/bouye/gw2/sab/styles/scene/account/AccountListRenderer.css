@@ -1,12 +1,28 @@
 .account-list-renderer {
+    -avatar-outer-color: gray;
+    -avatar-inner-color: white;
+    -account-name-color: black;    
+    -app-key-color: lightgray;
     -fx-hgap: 6px;
     -fx-vgap: 6px;
 }
+.account-list-renderer:GuildWars2 {    
+    -avatar-outer-color: -game-gw2-color;
+}
+.account-list-renderer:HeartOfThorns {    
+    -avatar-outer-color: -game-hot-color;
+}
+.account-list-renderer:PlayForFree {    
+    -avatar-outer-color: -game-free-color;
+    -avatar-inner-color: -game-free-color;
+}
+.account-list-renderer:None {    
+    -avatar-outer-color: -game-none-color;
+    -avatar-inner-color: -game-none-color;
+}
 .account-list-renderer .avatar-container { 
-    -outer-color: gray;
-    -inner-color: white;
     -fx-padding: 2px;
-    -fx-background-color: -outer-color, -inner-color;
+    -fx-background-color: -avatar-outer-color, -avatar-inner-color;
     -fx-background-insets: 0px, 2px;
     -fx-background-radius: 24px;
     -fx-min-width: 48px;
@@ -15,20 +31,6 @@
     -fx-pref-height: 48px;
     -fx-max-width: 48px;
     -fx-max-height: 48px;
-}
-.account-list-renderer:GuildWars2 .avatar-container {
-    -outer-color: -game-gw2-color;
-}
-.account-list-renderer:HeartOfThorns .avatar-container {
-    -outer-color: -game-hot-color;
-}
-.account-list-renderer:PlayForFree .avatar-container {
-    -outer-color: -game-free-color;
-    -inner-color: -game-free-color;
-}
-.account-list-renderer:None .avatar-container {
-    -outer-color: -game-none-color;
-    -inner-color: -game-none-color;
 }
 .account-list-renderer .avatar {
     -fx-background-size: stretch;
@@ -39,30 +41,14 @@
 .account-list-renderer:HeartOfThorns .avatar {
     -fx-background-image: url("../../../images/logos/hot-small.jpg");
 }
-.account-list-renderer:PlayForFree .avatar {
-}
-.account-list-renderer:None .avatar {
-}
 .account-list-renderer .account-name-label {
-    -fx-text-fill: -game-free-color;
+    -fx-text-fill: -account-name-color;
     -fx-font-size: 1.0em;
     -fx-font-weight: bold;
     -fx-wrap-text: true;
 }
-.account-list-renderer:GuildWars2 .account-name-label {
-    -fx-text-fill: -game-gw2-color;
-}
-.account-list-renderer:HeartOfThorns .account-name-label {
-    -fx-text-fill: -game-hot-color;
-}
-.account-list-renderer:PlayForFree .account-name-label {
-    -fx-text-fill: -game-free-color;
-}
-.account-list-renderer:None .account-name-label {
-    -fx-text-fill: -game-none-color;
-}
 .account-list-renderer .app-key-label {
-    -fx-text-fill: gray;
+    -fx-text-fill: -app-key-color;
     -fx-font-size: 0.65em;
     -fx-wrap-text: true;
 }
