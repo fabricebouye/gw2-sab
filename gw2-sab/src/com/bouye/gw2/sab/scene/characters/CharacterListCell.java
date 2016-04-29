@@ -7,11 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.characters;
 
-import com.bouye.gw2.sab.SAB;
-import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;
-import java.net.URL;
-import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -24,39 +20,22 @@ import javafx.scene.control.ListCell;
  */
 public final class CharacterListCell extends ListCell<CharacterWrapper> {
 
-    private final Optional<CharacterListCellController> controller;
-    private final Node node;
+    private final CharacterListRenderer renderer = new CharacterListRenderer();
 
     /**
      * Creates a new empty instance.
      */
     public CharacterListCell() {
-        super();
-        setId("characterListCell"); // NOI18N.
-        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/characters/CharacterListCell.fxml", this); // NOI18N.
-        node = getGraphic();
-    }
-
-//    @Override 
-//    public void dispose() {
-//        SABFXMLUtils.INSTANCE.disposeController(controller);
-//    }    
-    
-    @Override
-    public String getUserAgentStylesheet() {
-        final URL url = SAB.class.getResource("styles/scene/characters/CharacterListCell.css"); // NOI18N.
-        return url.toExternalForm();
+        renderer.characterProperty().bind(itemProperty());
+        renderer.onSelectProperty().bind(onSelectProperty());
     }
 
     @Override
-    protected void updateItem(CharacterWrapper item, boolean empty) {
+    protected void updateItem(final CharacterWrapper item, final boolean empty) {
         super.updateItem(item, empty);
         final String text = null;
-        Node graphic = null;
-        if (!empty && item != null) {
-            graphic = node;
-        }
         setText(text);
+        final Node graphic = (empty || item == null) ? null : renderer;
         setGraphic(graphic);
     }
 

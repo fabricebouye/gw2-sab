@@ -1,0 +1,80 @@
+.character-list-renderer {    
+    -avatar-outer-color: gray;
+    -avatar-inner-color: white;
+    -character-name-color: black;
+    -character-profession-color: lightgray;
+    -character-level-color: gray;
+    -character-race-color: lightgray;
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.character-list-renderer:Elementalist {
+    -avatar-outer-color: -profession-elementalist-color;
+    -character-name-color: -profession-elementalist-color;
+}
+.character-list-renderer:Engineer {
+    -avatar-outer-color: -profession-engineer-color;
+    -character-name-color: -profession-engineer-color;
+}
+.character-list-renderer:Guardian {
+    -avatar-outer-color: -profession-guardian-color;
+    -character-name-color: -profession-guardian-color;
+}
+.character-list-renderer:Mesmer {
+    -avatar-outer-color: -profession-mesmer-color;
+    -character-name-color: -profession-mesmer-color;
+}
+.character-list-renderer:Necromancer {
+    -avatar-outer-color: -profession-necromancer-color;
+    -character-name-color: -profession-necromancer-color;
+}
+.character-list-renderer:Ranger {
+    -avatar-outer-color: -profession-ranger-color;
+    -character-name-color: -profession-ranger-color;
+}
+.character-list-renderer:Revenant {
+    -avatar-outer-color: -profession-revenant-color;
+    -character-name-color: -profession-revenant-color;
+}
+.character-list-renderer:Thief {
+    -avatar-outer-color: -profession-thief-color;
+    -character-name-color: -profession-thief-color;
+}
+.character-list-renderer:Warrior {
+    -avatar-outer-color: -profession-warrior-color;
+    -character-name-color: -profession-warrior-color;
+}
+.character-list-renderer .avatar-container { 
+    -fx-padding: 2px;
+    -fx-background-color: -avatar-outer-color, -avatar-inner-color;
+    -fx-background-insets: 0px, 2px;
+    -fx-background-radius: 24px;
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
+}
+.character-list-renderer .name-label {
+    -fx-text-fill: -character-name-color;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+} 
+.character-list-renderer .profession-label {
+    -fx-text-fill: -character-profession-color;
+    -fx-font-size: 0.65em;    
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+.character-list-renderer .race-label {
+    -fx-text-fill: -character-race-color;
+    -fx-font-size: 0.65em;
+    -fx-wrap-text: true;
+} 
+.character-list-renderer .level-label {
+    -fx-text-fill: -character-level-color;
+    -fx-font-size: 0.8em;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+} 

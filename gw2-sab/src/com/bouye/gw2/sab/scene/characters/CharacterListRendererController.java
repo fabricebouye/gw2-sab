@@ -28,7 +28,7 @@ import javafx.scene.control.Label;
  * FXML Controller class
  * @author Fabrice Bouyé
  */
-public final class CharacterListCellController extends SABControllerBase<CharacterListCell> {
+public final class CharacterListRendererController extends SABControllerBase<CharacterListRenderer> {
 
     @FXML
     private Label nameLabel;
@@ -36,17 +36,21 @@ public final class CharacterListCellController extends SABControllerBase<Charact
     private Label levelLabel;
     @FXML
     private Label professionLabel;
+    @FXML
+    private Label raceLabel;
 
     /**
      * Creates a new instance.
      */
-    public CharacterListCellController() {
+    public CharacterListRendererController() {
     }
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         nameLabel.setText(null);
+        levelLabel.setText(null);
         professionLabel.setText(null);
+        raceLabel.setText(null);
     }
 
     /**
@@ -57,46 +61,50 @@ public final class CharacterListCellController extends SABControllerBase<Charact
     private ObjectBinding<Character> characterBindging;
 
     @Override
-    protected void uninstallNode(final CharacterListCell node) {
-        node.itemProperty().removeListener(valueInvalidationListener);
+    protected void uninstallNode(final CharacterListRenderer node) {
+        node.characterProperty().removeListener(valueInvalidationListener);
         characterBindging.removeListener(valueInvalidationListener);
         characterBindging.dispose();
         characterBindging = null;
     }
 
     @Override
-    protected void installNode(final CharacterListCell node) {
-        node.itemProperty().addListener(valueInvalidationListener);
-        characterBindging = Bindings.select(node.itemProperty(), "character");
+    protected void installNode(final CharacterListRenderer node) {
+        node.characterProperty().addListener(valueInvalidationListener);
+        characterBindging = Bindings.select(node.characterProperty(), "character");
         characterBindging.addListener(valueInvalidationListener);
     }
 
     @Override
     protected void updateUI() {
-        final Optional<CharacterListCell> parent = parentNode();
+        final Optional<CharacterListRenderer> parent = parentNode();
         parent.ifPresent(this::clearOldStyle);
-        final CharacterWrapper wrapper = parent.isPresent() ? parent.get().getItem() : null;
+        final CharacterWrapper wrapper = parent.isPresent() ? parent.get().getCharacter() : null;
         final Character character = (characterBindging == null) ? null : characterBindging.get();
         if (wrapper == null) {
             nameLabel.setText(null);
-            professionLabel.setText(null);
             levelLabel.setText(null);
+            professionLabel.setText(null);
+            raceLabel.setText(null);
         } else {
             final String name = wrapper.getName();
             nameLabel.setText(name);
             String level = null;
             String profession = null;
+            String race = null;
             if (character != null) {
                 level = String.valueOf(character.getLevel());
                 profession = character.getProfession().name();
+                race = character.getRace().name();
             }
             levelLabel.setText(level);
             professionLabel.setText(profession);
+            raceLabel.setText(race);
             parent.ifPresent(this::installNewStyle);
         }
     }
 
-    private void clearOldStyle(final CharacterListCell parent) {
+    private void clearOldStyle(final CharacterListRenderer parent) {
         Arrays.stream(CharacterProfession.values())
                 .filter(profession -> profession != CharacterProfession.UNKNOWN)
                 .forEach(profession -> {
@@ -105,7 +113,7 @@ public final class CharacterListCellController extends SABControllerBase<Charact
                 });
     }
 
-    private void installNewStyle(final CharacterListCell parent) {
+    private void installNewStyle(final CharacterListRenderer parent) {
         final Optional<Character> character = Optional.ofNullable((characterBindging == null) ? null : characterBindging.get());
         character.ifPresent(c -> {
             final CharacterProfession profession = c.getProfession();
@@ -116,9 +124,9 @@ public final class CharacterListCellController extends SABControllerBase<Charact
 
     @FXML
     private void handleActionButton() {
-        final Optional<CharacterListCell> parent = parentNode();
+        final Optional<CharacterListRenderer> parent = parentNode();
         parent.ifPresent(n -> {
-            final Optional<CharacterWrapper> item = Optional.ofNullable(n.getItem());
+            final Optional<CharacterWrapper> item = Optional.ofNullable(n.getCharacter());
             final Optional<Consumer<CharacterWrapper>> onSelect = Optional.ofNullable(n.getOnSelect());
             if (item.isPresent() && onSelect.isPresent()) {
                 onSelect.get().accept(item.get());
