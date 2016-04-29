@@ -28,6 +28,9 @@ public final class AccountListCell extends ListCell<Session> {
      * Creates a new empty instance.
      */
     public AccountListCell() {
+        super();
+        setId("accountListCell"); // NOI18N.
+        getStyleClass().add("material-list-cell"); // NOI18N.
         renderer.sessionProperty().bind(itemProperty());
         renderer.deletableProperty().bind(deletableProperty());
         renderer.onDeleteAccountProperty().bind(onDeleteAccountProperty());

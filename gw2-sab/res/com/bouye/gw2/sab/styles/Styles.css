@@ -31,16 +31,11 @@
 .tooltip {
     -fx-font-size: 1.0em;
 }
-.list-cell,
 .list-cell:odd {
-    -fx-padding: 0px 0px 0px 5px;
-    -fx-background-color: -fx-control-inner-background;
+    -fx-background: -fx-control-inner-background;
 }
-.list-cell:selected,
 .list-cell:odd:selected {
-    -fx-text-fill: black;
-    -fx-background-color: -fx-focus-color, -fx-control-inner-background;
-    -fx-background-insets: 0px, 0px 0px 0px 5px;
+    -fx-background: -fx-selection-bar;
 }
 #GridPane {
     -fx-hgap: 3px;
@@ -67,6 +62,16 @@
 .table-view {
     -fx-background-color: null;
     -fx-border-color: gray;
+}
+/* Material design. */
+.material-list-cell,
+.material-list-cell:odd {
+    -fx-padding: 0px 0px 0px 3px;
+    -fx-background-color: -fx-control-inner-background;
+}
+.material-list-cell:selected {
+    -fx-background-color: -fx-selection-bar, -fx-control-inner-background;
+    -fx-background-insets: 0px, 0px 0px 0px 3px;
 }
 /* UI. */
 .strong-label {

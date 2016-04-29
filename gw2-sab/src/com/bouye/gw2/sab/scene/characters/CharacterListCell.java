@@ -26,6 +26,9 @@ public final class CharacterListCell extends ListCell<CharacterWrapper> {
      * Creates a new empty instance.
      */
     public CharacterListCell() {
+        super();
+        setId("characterListCell"); // NOI18N.
+        getStyleClass().add("material-list-cell"); // NOI18N.
         renderer.characterProperty().bind(itemProperty());
         renderer.onSelectProperty().bind(onSelectProperty());
     }
