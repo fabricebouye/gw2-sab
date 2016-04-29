@@ -3,22 +3,27 @@
     -avatar-inner-color: white;
     -account-name-color: black;    
     -app-key-color: lightgray;
+    -fx-padding: 6px;
     -fx-hgap: 6px;
     -fx-vgap: 6px;
 }
 .account-list-renderer:GuildWars2 {    
     -avatar-outer-color: -game-gw2-color;
+    -account-name-color: -game-gw2-color;
 }
 .account-list-renderer:HeartOfThorns {    
     -avatar-outer-color: -game-hot-color;
+    -account-name-color: -game-hot-color;
 }
 .account-list-renderer:PlayForFree {    
     -avatar-outer-color: -game-free-color;
     -avatar-inner-color: -game-free-color;
+    -account-name-color: -game-free-color;
 }
 .account-list-renderer:None {    
     -avatar-outer-color: -game-none-color;
     -avatar-inner-color: -game-none-color;
+    -account-name-color: -game-none-color;
 }
 .account-list-renderer .avatar-container { 
     -fx-padding: 2px;

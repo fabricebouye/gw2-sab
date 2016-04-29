@@ -5,6 +5,7 @@
     -character-profession-color: lightgray;
     -character-level-color: gray;
     -character-race-color: lightgray;
+    -fx-padding: 6px;
     -fx-hgap: 6px;
     -fx-vgap: 6px;
 }
