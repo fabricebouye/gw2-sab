@@ -11,6 +11,7 @@ import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
+import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.SABTestUtils;
@@ -35,6 +36,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.scenicview.ScenicView;
 
 /**
  * Test.
@@ -49,6 +51,8 @@ public final class TestWalletPane extends Application {
         root.setBackground(Background.EMPTY);
         root.getChildren().add(walletPane);
         final Scene scene = new Scene(root);
+        final Optional<URL> cssURL = Optional.ofNullable(SAB.class.getResource("styles/Styles.css")); // NOI18N.
+        cssURL.ifPresent(url -> scene.getStylesheets().add(url.toExternalForm()));
         primaryStage.setTitle("TestWalletPane"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -56,6 +60,10 @@ public final class TestWalletPane extends Application {
         loadTestAsync(walletPane);
     }
 
+    /**
+    * Loads the test in a background service.
+    * @param walletPane The target pane.
+    */
     private void loadTestAsync(final WalletPane walletPane) {
         final ScheduledService<Void> service = new ScheduledService<Void>() {
             @Override

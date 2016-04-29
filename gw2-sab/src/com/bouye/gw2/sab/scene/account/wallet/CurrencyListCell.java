@@ -7,11 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import com.bouye.gw2.sab.SAB;
-import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
-import java.net.URL;
-import java.util.Optional;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 
@@ -21,8 +17,7 @@ import javafx.scene.control.ListCell;
  */
 public final class CurrencyListCell extends ListCell<CurrencyWrapper> {
 
-    private final Optional<CurrencyListCellController> controller;
-    private final Node node;
+    private final CurrencyListRenderer renderer = new CurrencyListRenderer();
 
     /**
      * Creates a new instance.
@@ -30,29 +25,15 @@ public final class CurrencyListCell extends ListCell<CurrencyWrapper> {
     public CurrencyListCell() throws NullPointerException {
         super();
         setId("currencyListCell"); // NOI18N.
-        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/account/wallet/CurrencyListCell.fxml", this); // NOI18N.
-        node = getGraphic();
-    }
-
-//    @Override 
-//    public void dispose() {
-//        SABFXMLUtils.INSTANCE.disposeController(controller);
-//    }    
-    @Override
-    public String getUserAgentStylesheet() {
-        final URL url = SAB.class.getResource("styles/scene/account/wallet/CurrencyListCell.css"); // NOI18N.
-        return url.toExternalForm();
+        renderer.currencyProperty().bind(itemProperty());
     }
 
     @Override
-    protected void updateItem(CurrencyWrapper item, boolean empty) {
+    protected void updateItem(final CurrencyWrapper item, final boolean empty) {
         super.updateItem(item, empty);
         final String text = null;
-        Node graphic = null;
-        if (!empty && item != null) {
-            graphic = node;
-        }
         setText(text);
+        final Node graphic = (empty || item == null) ? null : renderer;
         setGraphic(graphic);
     }
 }

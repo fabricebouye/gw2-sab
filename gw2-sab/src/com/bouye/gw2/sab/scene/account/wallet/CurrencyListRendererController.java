@@ -26,7 +26,7 @@ import javafx.scene.image.ImageView;
  * FXML Controller class
  * @author Fabrice Bouyé
  */
-public final class CurrencyListCellController extends SABControllerBase<CurrencyListCell> {
+public final class CurrencyListRendererController extends SABControllerBase<CurrencyListRenderer> {
 
     @FXML
     private Label nameLabel;
@@ -40,7 +40,7 @@ public final class CurrencyListCellController extends SABControllerBase<Currency
     /**
      * Creates a new instance.
      */
-    public CurrencyListCellController() {
+    public CurrencyListRendererController() {
     }
 
     @Override
@@ -53,19 +53,19 @@ public final class CurrencyListCellController extends SABControllerBase<Currency
     private final InvalidationListener valueInvalidationListener = observable -> updateUI();
 
     @Override
-    protected void uninstallNode(final CurrencyListCell parent) {
-        parent.itemProperty().removeListener(valueInvalidationListener);
+    protected void uninstallNode(final CurrencyListRenderer parent) {
+        parent.currencyProperty().removeListener(valueInvalidationListener);
     }
 
     @Override
-    protected void installNode(final CurrencyListCell parent) {
-        parent.itemProperty().addListener(valueInvalidationListener);
+    protected void installNode(final CurrencyListRenderer parent) {
+        parent.currencyProperty().addListener(valueInvalidationListener);
     }
 
     @Override
     protected void updateUI() {
-        final Optional<CurrencyListCell> parent = parentNode();
-        final CurrencyWrapper wrapper = parent.isPresent() ? parent.get().getItem() : null;
+        final Optional<CurrencyListRenderer> parent = parentNode();
+        final CurrencyWrapper wrapper = parent.isPresent() ? parent.get().getCurrency() : null;
         if (wrapper == null) {
             nameLabel.setText(null);
             amountLabel.setText(null);
