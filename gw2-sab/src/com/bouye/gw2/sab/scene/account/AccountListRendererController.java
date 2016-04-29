@@ -148,7 +148,7 @@ public final class AccountListRendererController extends SABControllerBase<Accou
         parentNode().ifPresent(n -> {
             final Optional<Session> session = Optional.ofNullable(n.getSession());
             session.ifPresent(s -> {
-                final Optional<Consumer<Session>> onDeleteAccount = Optional.of(n.getOnDeleteAccount());
+                final Optional<Consumer<Session>> onDeleteAccount = Optional.ofNullable(n.getOnDeleteAccount());
                 onDeleteAccount.ifPresent(consumer -> consumer.accept(s));
             });
         });
