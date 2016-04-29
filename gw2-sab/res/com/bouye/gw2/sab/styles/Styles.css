@@ -38,6 +38,7 @@
 }
 .list-cell:selected,
 .list-cell:odd:selected {
+    -fx-text-fill: black;
     -fx-background-color: -fx-focus-color, -fx-control-inner-background;
     -fx-background-insets: 0px, 0px 0px 0px 5px;
 }
@@ -198,37 +199,6 @@
     -fx-vgap: 3px;
 }
 /* Guild info pane. */
-/* Character list cells. */
-.character-list-cell > * > .strong-label {
-    -fx-text-fill: black;
-} 
-.character-list-cell:Elementalist {
-    -base-color: derive(-profession-elementalist-color, 80%);
-}
-.character-list-cell:Engineer {
-    -base-color: derive(-profession-engineer-color, 80%);
-}
-.character-list-cell:Guardian {
-    -base-color: derive(-profession-guardian-color, 80%);
-}
-.character-list-cell:Mesmer {
-    -base-color: derive(-profession-mesmer-color, 80%);
-}
-.character-list-cell:Necromancer {
-    -base-color: derive(-profession-necromancer-color, 80%);
-}
-.character-list-cell:Ranger {
-    -base-color: derive(-profession-ranger-color, 80%);
-}
-.character-list-cell:Revenant {
-    -base-color: derive(-profession-revenant-color, 80%);
-}
-.character-list-cell:Thief {
-    -base-color: derive(-profession-thief-color, 80%);
-}
-.character-list-cell:Warrior {
-    -base-color: derive(-profession-warrior-color, 80%);
-}
 /* Specialization editor. */
 .specialization-editor:Elementalist {
     -base-color: -profession-elementalist-color;
