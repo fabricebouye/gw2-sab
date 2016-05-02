@@ -3,10 +3,14 @@
     -icon-outer-color: gray;
     -icon-inner-color: lightgray;
     -item-name-color: black;
-    -item-description-color: cornflowerblue;
+    -item-description-color: black;
+    -item-quote-color: dodgerblue;
+}
+.item-renderer:Junk {
+    -item-name-color: gray;        
 }
 .item-renderer:Fine {
-    -item-name-color: cyan;    
+    -item-name-color: cornflowerblue;    
 }
 .item-renderer:Masterwork {
     -item-name-color: green;    
@@ -18,28 +22,42 @@
     -item-name-color: orange;    
 }
 .item-renderer:Ascended {
-    -item-name-color: fushcia;    
+    -item-name-color: magenta;    
 }
 .item-renderer:Legendary {
-    -item-name-color: purple;    
+    -item-name-color: mediumpurple;    
 }
 .item-renderer .icon-container {
     -fx-background-color: -icon-outer-color, -icon-inner-color;
     -fx-background-insets: 0px, 2px;
-    -fx-min-width: 48px;
-    -fx-min-height: 48px;
-    -fx-pref-width: 48px;
-    -fx-pref-height: 48px;
-    -fx-max-width: 48px;
-    -fx-max-height: 48px;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
 }
 .item-renderer .name-label {
     -fx-text-fill: -item-name-color;
-    
+    -fx-font-size: 1.2em;
+    -fx-wrap-text: true;
 }
 .item-renderer #descriptionFlow {
     -fx-text-alignment: justify;
 }
-.item-renderer .description-label {
+.item-renderer #descriptionFlow #Text {
     -fx-fill: -item-description-color;
+}
+.item-renderer #descriptionFlow #Text:quote {
+    -fx-fill: -item-quote-color;
+}
+/* When in tooltip mode. */
+.tooltip .item-renderer {
+    -item-description-color: white;
+}
+.tooltip .item-renderer:Basic {
+    -item-name-color: white;
+}
+.tooltip .item-renderer .name-label {
+    -fx-effect: dropshadow(one-pass-box, black, 0, 1, 1, 0);
 }
