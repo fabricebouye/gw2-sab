@@ -7,20 +7,30 @@
  */
 package com.bouye.gw2.sab.scene.items;
 
-import api.web.gw2.mapping.v2.items.ItemRarity;
+import api.web.gw2.mapping.core.JsonpContext;
+import api.web.gw2.mapping.v2.items.Item;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.wrappers.ItemWrapper;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Application;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.scenicview.ScenicView;
 
 /**
  * Test.
@@ -28,22 +38,13 @@ import javafx.stage.Stage;
  */
 public final class TestItemTooltipRenderer extends Application {
 
+    private VBox vbox;
+
     @Override
     public void start(final Stage primaryStage) {
-        // Initialize all the sessions.
-        final List<?> items = Arrays.stream(ItemRarity.values())
-                .filter(rarity -> rarity != ItemRarity.UNKNOWN)
-                .collect(Collectors.toList());
         // Left pane: all renderers.
-        final VBox vbox = new VBox();
+        vbox = new VBox();
         vbox.setFillWidth(true);
-        vbox.getChildren().setAll(items
-                .stream()
-                .map(item -> {
-                    final ItemTooltipRenderer renderer = new ItemTooltipRenderer();
-                    return renderer;
-                })
-                .collect(Collectors.toList()));
         final ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
@@ -60,7 +61,55 @@ public final class TestItemTooltipRenderer extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 //        Platform.runLater(() -> splitPane.setDividerPositions(0.33, 0.66));
-//        ScenicView.show(root);
+        ScenicView.show(root);
+        loadTestAsync();
+    }
+
+    private void loadTestAsync() {
+        Service<List<ItemWrapper>> service = new Service<List<ItemWrapper>>() {
+            @Override
+            protected Task<List<ItemWrapper>> createTask() {
+                return new Task<List<ItemWrapper>>() {
+                    @Override
+                    protected List<ItemWrapper> call() throws Exception {
+                        List<ItemWrapper> result = Collections.EMPTY_LIST;
+                        result = loadLocalTest();
+                        return result;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded(workerStateEvent -> {
+            final List<ItemWrapper> items = (List<ItemWrapper>) workerStateEvent.getSource().getValue();
+            vbox.getChildren().setAll(items
+                    .stream()
+                    .map(item -> {
+                        final ItemTooltipRenderer renderer1 = new ItemTooltipRenderer();
+                        renderer1.setItem(item);
+                        final Tooltip tooltip = ItemTooltipRenderer.asTooltip(item);
+                        Tooltip.install(renderer1, tooltip);
+                        return renderer1;
+                    })
+                    .collect(Collectors.toList()));
+
+        });
+        service.setOnFailed(workerStateEvent -> {
+            final Throwable ex = workerStateEvent.getSource().getException();
+            Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
+        });
+        service.start();
+    }
+
+    private List<ItemWrapper> loadLocalTest() throws IOException {
+        List<ItemWrapper> result = Collections.EMPTY_LIST;
+        URL url = getClass().getResource("items.json");
+        if (url != null) {
+            result = JsonpContext.SAX.loadObjectArray(Item.class, url)
+                    .stream()
+                    .map(item -> new ItemWrapper(item, null))
+                    .collect(Collectors.toList());
+        }
+        return result;
     }
 
     /**
