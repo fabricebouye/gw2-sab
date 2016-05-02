@@ -48,10 +48,12 @@ public enum LabelUtils {
     private static final String LINE_BREAK = "br"; // NOI18N.
     private static final String PARAGRAPH = "p"; // NOI18N.
     private static final String BOLD = "b"; // NOI18N.
+    private static final String QUOTE = "quote"; // NOI18N.
     private static final String FONT_AWESOME = "font-awesome"; // NOI18N.
     private static final String LINK = "link"; // NOI18N.
 
     private final PseudoClass BOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("strong"); // NOI18N.
+    private final PseudoClass QUOTE_PSEUDO_CLASS = PseudoClass.getPseudoClass(QUOTE); // NOI18N.
     private final PseudoClass FONT_AWESOME_PSEUDO_CLASS = PseudoClass.getPseudoClass(FONT_AWESOME);
 
     /**
@@ -108,6 +110,7 @@ public enum LabelUtils {
                         public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
                             switch (qName) {
                                 case BOLD:
+                                case QUOTE:
                                 case FONT_AWESOME:
                                 case LINK:
                                     styleAttributes.put(qName, Boolean.TRUE);
@@ -141,6 +144,7 @@ public enum LabelUtils {
                                 node = text;
                             }
                             node.pseudoClassStateChanged(BOLD_PSEUDO_CLASS, styleAttributes.get(BOLD));
+                            node.pseudoClassStateChanged(QUOTE_PSEUDO_CLASS, styleAttributes.get(QUOTE));
                             node.pseudoClassStateChanged(FONT_AWESOME_PSEUDO_CLASS, styleAttributes.get(FONT_AWESOME));
                             nodeList.add(node);
                         }
@@ -149,6 +153,7 @@ public enum LabelUtils {
                         public void endElement(String uri, String localName, String qName) throws SAXException {
                             switch (qName) {
                                 case BOLD:
+                                case QUOTE:
                                 case FONT_AWESOME:
                                 case LINK:
                                     styleAttributes.put(qName, Boolean.FALSE);
@@ -180,9 +185,19 @@ public enum LabelUtils {
     private Map<String, Boolean> initializeAttributeMap() {
         final Map<String, Boolean> result = new HashMap();
         result.put(BOLD, Boolean.FALSE);
+        result.put(QUOTE, Boolean.FALSE);
         result.put(FONT_AWESOME, Boolean.FALSE);
         result.put(LINK, Boolean.FALSE);
         return result;
+    }
+
+    /**
+     * Decorator method that makes a label a quote.
+     * @param value The source string.
+     * @return A {@code String} instance, never {@code null}.
+     */
+    public String toQuote(final String value) {
+        return String.format("<%s>%s</%s>", QUOTE, value, QUOTE); // NOI18N.        
     }
 
     /**
@@ -190,7 +205,7 @@ public enum LabelUtils {
      * @param value The source string.
      * @return A {@code String} instance, never {@code null}.
      */
-    public String strong(final String value) {
+    public String toStrong(final String value) {
         return String.format("<%s>%s</%s>", BOLD, value, BOLD); // NOI18N.        
     }
 
@@ -199,7 +214,7 @@ public enum LabelUtils {
      * @param value The source string.
      * @return A {@code String} instance, never {@code null}.
      */
-    public String fontAwesome(final String value) {
+    public String toFontAwesome(final String value) {
         return String.format("<%s>%s</%s>", FONT_AWESOME, value, FONT_AWESOME); // NOI18N.        
     }
 
@@ -226,7 +241,7 @@ public enum LabelUtils {
      * @param value The amount in gems.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> fromGems(final int value) {
+    public List<Node> fromGems(final long value) {
         final List<Node> result = new ArrayList<>();
         labelsForCurrency(CurrencyType.GEM, value, result);
         return Collections.unmodifiableList(result);
@@ -238,7 +253,7 @@ public enum LabelUtils {
      * @param value The amount in copper coins.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> fromCopper(final int value) {
+    public List<Node> fromCopper(final long value) {
         return fromCopper(value, false);
     }
 
@@ -248,11 +263,11 @@ public enum LabelUtils {
      * @param showEmpty If {@code true}, 0 values are shown.
      * @return A non-modifiable {@code List<Node>} instance, never {@code null}.
      */
-    public List<Node> fromCopper(final int value, final boolean showEmpty) {
+    public List<Node> fromCopper(final long value, final boolean showEmpty) {
         final List<Node> result = new ArrayList<>();
-        final int gold = value / GOLD_VALUE;
-        final int silver = (value - gold * GOLD_VALUE) / SILVER_VALUE;
-        final int copper = (value - gold * GOLD_VALUE - silver * SILVER_VALUE);
+        final long gold = value / GOLD_VALUE;
+        final long silver = (value - gold * GOLD_VALUE) / SILVER_VALUE;
+        final long copper = (value - gold * GOLD_VALUE - silver * SILVER_VALUE);
         if (showEmpty || gold > 0) {
             labelsForCurrency(CurrencyType.GOLD, gold, result);
         }
@@ -287,7 +302,7 @@ public enum LabelUtils {
      * @param amount The amount to show.
      * @param result The result list.
      */
-    private void labelsForCurrency(final CurrencyType currencyType, final int amount, final List<Node> result) {
+    private void labelsForCurrency(final CurrencyType currencyType, final long amount, final List<Node> result) {
         final Text amountText = new Text(numberFormat.format(amount));
         amountText.getStyleClass().add("coin-label"); // NOI18N.
         final PseudoClass pseudoClass = toPseudoClass(currencyType);
@@ -312,7 +327,7 @@ public enum LabelUtils {
             result = imageView;
         } else {
             final Region coin = new Region();
-            final PseudoClass pseudoClass = PseudoClass.getPseudoClass(currencyType.name().toLowerCase());
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(currencyType);
             coin.pseudoClassStateChanged(pseudoClass, true);
             result = coin;
         }
