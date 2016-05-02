@@ -7,6 +7,7 @@
  */
 package com.bouye.gw2.sab.text;
 
+import api.web.gw2.mapping.core.CoinAmount;
 import api.web.gw2.mapping.core.JsonpUtils;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.io.ByteArrayInputStream;
@@ -50,6 +51,7 @@ public enum LabelUtils {
     private static final String BOLD = "b"; // NOI18N.
     private static final String QUOTE = "quote"; // NOI18N.
     private static final String FONT_AWESOME = "font-awesome"; // NOI18N.
+    private static final String COINS = "coins"; // NOI18N.
     private static final String LINK = "link"; // NOI18N.
 
     private final PseudoClass BOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("strong"); // NOI18N.
@@ -216,6 +218,11 @@ public enum LabelUtils {
      */
     public String toFontAwesome(final String value) {
         return String.format("<%s>%s</%s>", FONT_AWESOME, value, FONT_AWESOME); // NOI18N.        
+    }
+
+    public String toCoins(final CoinAmount value) {
+        final long amount = (value == null) ? 0 : value.toCopper();
+        return String.format("<%s>%s</%s>", COINS, String.valueOf(amount), COINS); // NOI18N.        
     }
 
     /**

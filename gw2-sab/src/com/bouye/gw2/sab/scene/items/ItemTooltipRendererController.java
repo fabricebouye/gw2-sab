@@ -89,7 +89,7 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
             });
             nameLabel.setText(item.getName());
             final ItemType type = item.getType();
-            List<Node> description = Collections.EMPTY_LIST;
+            String description = "";
             switch (type) {
                 case ARMOR:
                     description = asArmor(item);
@@ -139,7 +139,7 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
                 case UNKNOWN:
                 default:
             }
-            descriptionFlow.getChildren().setAll(description);
+            descriptionFlow.getChildren().setAll(LabelUtils.INSTANCE.split(description));
             item.getIcon().ifPresent(url -> {
                 final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
                 final ImageView imageView = new ImageView();
@@ -152,110 +152,128 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
         }
     }
 
-    private List<Node> asArmor(final Item item) {
-        List<Node> result = addDescription(item, null);
+    private String asArmor(final Item item) {
+        StringBuilder result = addDescription(item, null);
         result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asBag(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asBack(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asConsumable(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asContainer(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asCraftingMaterial(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asGathering(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asGizmo(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asMinipet(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asTool(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asTrait(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asTrinket(final Item item) {
+        StringBuilder result = addStats(item, null);
+        result = addDescription(item, result);
+        result = addLevelRequirement(item, result);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asTrophy(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asUpgradeComponent(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private String asWeapon(final Item item) {
+        StringBuilder result = addDescription(item, null);
+        result = addMerchantValue(item, result);
+        return result.toString();
+    }
+
+    private StringBuilder addStats(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
         return result;
     }
 
-    private List<Node> asBag(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asBack(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asConsumable(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asContainer(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asCraftingMaterial(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asGathering(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asGizmo(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asMinipet(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asTool(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asTrait(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asTrinket(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asTrophy(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asUpgradeComponent(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> asWeapon(final Item item) {
-        List<Node> result = addDescription(item, null);
-        result = addMerchantValue(item, result);
-        return result;
-    }
-
-    private List<Node> addDescription(final Item item, final List<Node> list) {
-        final List<Node> result = (list == null) ? new LinkedList<>() : list;
+    private StringBuilder addDescription(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
         item.getDescription().ifPresent(description -> {
             final String text = normalizeDescription(description);
-            result.addAll(LabelUtils.INSTANCE.split(text));
+            result.append(text);
         });
         return result;
     }
 
-    private List<Node> addMerchantValue(final Item item, final List<Node> list) {
-        final List<Node> result = (list == null) ? new LinkedList<>() : list;
+    private StringBuilder addLevelRequirement(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
+        final int level = item.getLevel();
+        if (level > 0) {
+            // @todo Localize.
+            result.append("Required Level: ");
+            result.append(level);
+        }
+        return result;
+    }
+
+    private StringBuilder addMerchantValue(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
         final CoinAmount vendorValue = item.getVendorValue();
         if (!vendorValue.equals(CoinAmount.ZERO)) {
-            result.addAll(LabelUtils.INSTANCE.fromCopper(vendorValue.toCopper()));
+            result.append(LabelUtils.INSTANCE.toCoins(vendorValue));
         }
         return result;
     }
