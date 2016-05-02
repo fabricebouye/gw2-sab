@@ -18,8 +18,8 @@
     -fx-background-color: -slot-inner, derive(-slot-inner, 80%), -slot-inner;
     -fx-background-insets: 0px, 2px, 3px;
     -fx-border-color: -slot-border;
-    -fx-pref-width: 48px;
-    -fx-pref-height: 48px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
 }
 .treasury-pane .top-bar {
     -fx-border-color: null;
