@@ -264,6 +264,9 @@
     -fx-background-radius: 7px, 6px, 5px;
     -fx-background-insets: 0px, 1px, 2px;
     -fx-padding: 6px;
+    -fx-translate-y: 2px;    
+}
+.coin:icon {
     -fx-translate-y: 5px;
 }
 .coin-label:Gem,

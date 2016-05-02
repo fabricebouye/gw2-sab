@@ -324,6 +324,7 @@ public enum LabelUtils {
         Node result = null;
         if (image != null) {
             final ImageView imageView = new ImageView(image);
+            imageView.pseudoClassStateChanged(PseudoClass.getPseudoClass("icon"), true); // NOI18N.
             result = imageView;
         } else {
             final Region coin = new Region();
