@@ -26,16 +26,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -53,9 +55,9 @@ public final class TestCharacterListRenderer extends Application {
                 .map(this::createFakeCharacterWrapper)
                 .collect(Collectors.toList());
         // Left pane: all renderers.
-        final VBox vbox = new VBox();
-        vbox.setFillWidth(true);
-        vbox.getChildren().setAll(characters
+        final VBox renderersVBox = new VBox();
+        renderersVBox.setFillWidth(true);
+        renderersVBox.getChildren().setAll(characters
                 .stream()
                 .map(character -> {
                     final CharacterListRenderer renderer = new CharacterListRenderer();
@@ -63,10 +65,10 @@ public final class TestCharacterListRenderer extends Application {
                     return renderer;
                 })
                 .collect(Collectors.toList()));
-        final ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setContent(vbox);
+        final ScrollPane renderersScrollPane = new ScrollPane();
+        renderersScrollPane.setFitToWidth(true);
+        renderersScrollPane.setFitToHeight(true);
+        renderersScrollPane.setContent(renderersVBox);
         // Middle pane: bare list.
         final ListView<CharacterWrapper> listView1 = new ListView();
         listView1.getItems().setAll(characters);
@@ -78,8 +80,25 @@ public final class TestCharacterListRenderer extends Application {
         });
         listView2.getItems().setAll(characters);
         //
+        final ComboBox<CharacterWrapper> comboBox = new ComboBox<>();
+        comboBox.setButtonCell(new ListCell<CharacterWrapper>() {
+            @Override
+            protected void updateItem(final CharacterWrapper item, final boolean empty) {
+                super.updateItem(item, empty);
+                final Character character = (empty || item == null) ? null : item.getCharacter();
+                final String text = (empty || character == null) ? null : String.format("%s - %s - %s (%d)", character.getName(), character.getRace(), character.getProfession(), character.getLevel());
+                setText(text);
+            }
+        });
+        comboBox.setCellFactory(listView -> {
+            final CharacterListCell listCell = new CharacterListCell();
+            return listCell;
+        });
+        comboBox.getItems().setAll(characters);
+        final VBox comboVBox = new VBox(comboBox);
+        //
         final SplitPane splitPane = new SplitPane();
-        splitPane.getItems().setAll(scrollPane, listView1, listView2);
+        splitPane.getItems().setAll(renderersScrollPane, listView1, listView2, comboVBox);
         final BorderPane root = new BorderPane();
         root.setCenter(splitPane);
         final Scene scene = new Scene(root, 800, 600);
@@ -88,7 +107,7 @@ public final class TestCharacterListRenderer extends Application {
         primaryStage.setTitle("TestCharacterListRenderer"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
-        Platform.runLater(() -> splitPane.setDividerPositions(0.33, 0.66));
+        Platform.runLater(() -> splitPane.setDividerPositions(0.25, 0.5, 0.75));
 //        ScenicView.show(root);
     }
 
