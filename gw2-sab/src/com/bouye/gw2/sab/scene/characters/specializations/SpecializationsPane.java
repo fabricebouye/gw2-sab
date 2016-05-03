@@ -5,12 +5,11 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab.scene.specializations;
+package com.bouye.gw2.sab.scene.characters.specializations;
 
 import api.web.gw2.mapping.v2.characters.CharacterSpecialization;
 import api.web.gw2.mapping.v2.specializations.Specialization;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;

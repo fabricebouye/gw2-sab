@@ -5,9 +5,8 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab.scene.specializations;
+package com.bouye.gw2.sab.scene.characters.specializations;
 
-import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.core.URLReference;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.specializations.Specialization;
@@ -250,7 +249,7 @@ public final class SpecializationEditor extends Region {
 
     @Override
     public String getUserAgentStylesheet() {
-        final URL url = SAB.class.getResource("styles/scene/specializations/SpecializationEditor.css"); // NOI18N.
+        final URL url = SAB.class.getResource("styles/scene/characters/specializations/SpecializationEditor.css"); // NOI18N.
         return url.toExternalForm();
     }
 
