@@ -365,6 +365,7 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
             }
             infusionSlots.stream()
                     .forEach(infusionSlot -> {
+                        // 2016-05-04 FB - From the wiki: when the flag list is empty it's an agony resistance slot.
                         final ItemInfusionSlotFlag flag = infusionSlot.getFlags().isEmpty() ? ItemInfusionSlotFlag.AGONY : infusionSlot.getFlags().iterator().next();
                         result.append(LabelUtils.INSTANCE.fromItemInfusionSlotFlag(flag));
                         result.append(LabelUtils.INSTANCE.lineBreak());
