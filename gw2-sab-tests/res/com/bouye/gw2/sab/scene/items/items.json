@@ -1,48 +1,126 @@
-[
-    {
+[{
+        "name": "Masque de chercheur solide",
+        "type": "Armor",
+        "level": 35,
+        "rarity": "Rare",
+        "vendor_value": 500,
+        "default_skin": 373,
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": ["SoulbindOnAcquire", "SoulBindOnUse"],
+        "restrictions": ["Human"],
+        "id": 3700,
+        "chat_link": "[&AgF0DgAA]",
+        "icon": "https://render.guildwars2.com/file/12FF92732CD3F6E62BE79E6F053778C8B545D638/414950.png",
+        "details": {
+            "type": "Helm",
+            "weight_class": "Light",
+            "defense": 24,
+            "infusion_slots": [],
+            "infix_upgrade": {
+                "id": 142,
+                "attributes": [{
+                        "attribute": "Power",
+                        "modifier": 17
+                    }, {
+                        "attribute": "Precision",
+                        "modifier": 12
+                    }]
+            },
+            "secondary_suffix_item_id": ""
+        }
+    }, {
+        "name": "Boîte de pièces d'armure de gladiateur saccageuse",
+        "description": "Double-cliquez pour déballer un ensemble d'armure de niveau 80.",
+        "type": "Container",
+        "level": 0,
+        "rarity": "Rare",
+        "vendor_value": 192,
+        "game_types": ["Wvw", "Dungeon", "Pve"],
+        "flags": [],
+        "restrictions": [],
+        "id": 9051,
+        "chat_link": "[&AgFbIwAA]",
+        "icon": "https://render.guildwars2.com/file/70CA307D3B2B740C71D19CDB20030C51EBE8F6E8/63222.png",
+        "details": {
+            "type": "Default"
+        }
+    }, {
         "name": "Barre aux baies d'Omnom",
         "type": "Consumable",
         "level": 80,
         "rarity": "Fine",
         "vendor_value": 33,
-        "game_types": ["Dungeon", "Pve", "Wvw"],
+        "game_types": ["Wvw", "Dungeon", "Pve"],
         "flags": ["NoSell"],
         "restrictions": [],
         "id": 12452,
+        "chat_link": "[&AgGkMAAA]",
         "icon": "https://render.guildwars2.com/file/6BD5B65FBC6ED450219EC86DD570E59F4DA3791F/433643.png",
         "details": {
             "type": "Food",
             "duration_ms": 1800000,
+            "apply_count": 1,
+            "name": "Produit consommable",
+            "icon": "https://render.guildwars2.com/file/779D3F0ABE5B46C09CFC57374DA8CC3A495F291C/436367.png",
             "description": "Découverte de magie +30%\nOr trouvé sur les monstres +40%\nExpérience à chaque ennemi tué +10%"
         }
-    },
-    {
+    }, {
         "name": "Os effrité",
         "description": "",
         "type": "Trophy",
         "level": 0,
         "rarity": "Junk",
         "vendor_value": 9,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["SoulbindOnAcquire", "SoulBindOnUse"],
         "restrictions": [],
         "id": 19530,
+        "chat_link": "[&AgFKTAAA]",
         "icon": "https://render.guildwars2.com/file/3CB12314233A471FFB9DFC5765B8D10A071725F0/866789.png"
-    },
-    {
+    }, {
         "name": "Mini-chacalope",
         "description": "Double-cliquez pour invoquer cette miniature qui vous suivra partout. Vous ne pouvez utiliser qu'une seule miniature à la fois.",
         "type": "MiniPet",
         "level": 0,
         "rarity": "Exotic",
         "vendor_value": 5000,
-        "game_types": ["Activity", "Dungeon", "Pve", "PvpLobby", "Wvw"],
+        "game_types": ["PvpLobby", "Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["NoSell"],
         "restrictions": [],
         "id": 20159,
-        "icon": "https://render.guildwars2.com/file/04FF79CB9C292DC4C89C6A1B0A00A2F309E4F270/220503.png"
-    },
-    {
+        "chat_link": "[&AgG/TgAA]",
+        "icon": "https://render.guildwars2.com/file/04FF79CB9C292DC4C89C6A1B0A00A2F309E4F270/220503.png",
+        "details": {
+            "minipet_id": 48
+        }
+    }, {
+        "name": "Cachet d'agonie supérieur",
+        "description": "Double-cliquez pour l'appliquer à une arme.",
+        "type": "UpgradeComponent",
+        "level": 60,
+        "rarity": "Exotic",
+        "vendor_value": 216,
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": [],
+        "restrictions": [],
+        "id": 24612,
+        "chat_link": "[&AgEkYAAA]",
+        "icon": "https://render.guildwars2.com/file/BAF34EB051D118F8A7C1645E0D940ED0660E6269/220658.png",
+        "details": {
+            "type": "Sigil",
+            "flags": ["ShortBow", "Dagger", "Focus", "Greatsword", "Hammer", "Harpoon", "Mace", "Pistol", "Rifle", "Scepter", "Shield", "Speargun", "Axe", "Staff", "Sword", "Torch", "Trident", "Warhorn", "LongBow"],
+            "infusion_upgrade_flags": [],
+            "infix_upgrade": {
+                "id": 258,
+                "buff": {
+                    "skill_id": 9313,
+                    "description": "Augmente de 20% la durée des Saignements infligés"
+                },
+                "attributes": []
+            },
+            "suffix": "d'agonie"
+        }
+    }, {
         "name": "Arc long en bois tendre solide de feu",
         "description": "",
         "type": "Weapon",
@@ -50,10 +128,11 @@
         "rarity": "Masterwork",
         "vendor_value": 120,
         "default_skin": 3942,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["SoulBindOnUse"],
         "restrictions": [],
-        "id": 24612,
+        "id": 28445,
+        "chat_link": "[&AgEdbwAA]",
         "icon": "https://render.guildwars2.com/file/C6110F52DF5AFE0F00A56F9E143E9732176DDDE9/65015.png",
         "details": {
             "type": "LongBow",
@@ -63,55 +142,30 @@
             "defense": 0,
             "infusion_slots": [],
             "infix_upgrade": {
+                "id": 142,
                 "attributes": [{
                         "attribute": "Power",
-                        "modifier": 62
+                        "modifier": 85
                     }, {
                         "attribute": "Precision",
-                        "modifier": 44
+                        "modifier": 61
                     }]
             },
             "suffix_item_id": 24547,
             "secondary_suffix_item_id": ""
         }
-    },
-    {
-        "name": "Cachet d'agonie supérieur",
-        "description": "Double-cliquez pour l'appliquer à une arme.",
-        "type": "UpgradeComponent",
-        "level": 60,
-        "rarity": "Exotic",
-        "vendor_value": 216,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": [],
-        "restrictions": [],
-        "id": 28445,
-        "icon": "https://render.guildwars2.com/file/BAF34EB051D118F8A7C1645E0D940ED0660E6269/220658.png",
-        "details": {
-            "type": "Sigil",
-            "flags": ["Axe", "LongBow", "ShortBow", "Dagger", "Focus", "Greatsword", "Hammer", "Harpoon", "Mace", "Pistol", "Rifle", "Scepter", "Shield", "Speargun", "Staff", "Sword", "Torch", "Trident", "Warhorn"],
-            "infusion_upgrade_flags": [],
-            "infix_upgrade": {
-                "buff": {
-                    "skill_id": 9313,
-                    "description": "Augmente de 20% la durée des Saignements infligés"
-                },
-                "attributes": []
-            },
-            "suffix": "d'agonie"
-        }
-    },
-    {
-        "name": "Bifrost",
+    }, {
+        "name": "Le Bifrost",
         "type": "Weapon",
         "level": 80,
         "rarity": "Legendary",
         "vendor_value": 100000,
         "default_skin": 4683,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["HideSuffix", "NoSalvage", "NoSell", "AccountBindOnUse"],
         "restrictions": [],
         "id": 30698,
+        "chat_link": "[&AgHqdwAA]",
         "icon": "https://render.guildwars2.com/file/FD221A90427ADBD29B7E2DF8BDAF98BB16391162/456025.png",
         "details": {
             "type": "Staff",
@@ -127,54 +181,24 @@
             "suffix_item_id": 24572,
             "secondary_suffix_item_id": ""
         }
-    },
-    {
+    }, {
         "name": "Boîte en carapace de karka ancestral",
         "description": "20 emplacements",
         "type": "Bag",
         "level": 0,
         "rarity": "Exotic",
         "vendor_value": 256,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["AccountBound", "NoMysticForge", "NoSalvage", "NoSell", "AccountBindOnUse"],
         "restrictions": [],
         "id": 36729,
+        "chat_link": "[&AgF5jwAA]",
         "icon": "https://render.guildwars2.com/file/CFFC295D57E0423CA5360AD4E669D2DAFCD9E580/511766.png",
         "details": {
             "no_sell_or_sort": false,
             "size": 20
         }
-    },
-    {
-        "name": "Masque de chercheur solide",
-        "type": "Armor",
-        "level": 35,
-        "rarity": "Rare",
-        "vendor_value": 500,
-        "default_skin": 373,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": ["SoulbindOnAcquire", "SoulBindOnUse"],
-        "restrictions": ["Human"],
-        "id": 3700,
-        "icon": "https://render.guildwars2.com/file/12FF92732CD3F6E62BE79E6F053778C8B545D638/414950.png",
-        "details": {
-            "type": "Helm",
-            "weight_class": "Light",
-            "defense": 24,
-            "infusion_slots": [],
-            "infix_upgrade": {
-                "attributes": [{
-                        "attribute": "Power",
-                        "modifier": 13
-                    }, {
-                        "attribute": "Precision",
-                        "modifier": 9
-                    }]
-            },
-            "secondary_suffix_item_id": ""
-        }
-    },
-    {
+    }, {
         "name": "Condensateur de fractale (infusé)",
         "description": "",
         "type": "Back",
@@ -182,61 +206,63 @@
         "rarity": "Ascended",
         "vendor_value": 330,
         "default_skin": 2379,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": ["AccountBound", "HideSuffix", "NoSalvage", "NoSell", "NotUpgradeable", "AccountBindOnUse", "Unique"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": ["HideSuffix", "AccountBound", "NoSell", "NotUpgradeable", "Unique", "AccountBindOnUse"],
         "restrictions": [],
         "id": 37045,
+        "chat_link": "[&AgG1kAAA]",
         "icon": "https://render.guildwars2.com/file/97F9726E527DD5D24F434AD679F15C3CDAF238EA/511808.png",
         "details": {
             "infusion_slots": [{
                     "flags": ["Offense"]
                 }, {
-                    "flags": [],
+                    "flags": ["Agony"],
                     "item_id": 49428
                 }],
             "infix_upgrade": {
+                "id": 601,
                 "buff": {
                     "skill_id": 15757,
                     "description": "Puissance +32<br>Robustesse +18<br>Vitalité +18<br>Résistance à l'agonie +5 "
                 },
                 "attributes": [{
                         "attribute": "Power",
-                        "modifier": 24
+                        "modifier": 31
                     }, {
                         "attribute": "Toughness",
-                        "modifier": 17
+                        "modifier": 22
                     }, {
                         "attribute": "Vitality",
-                        "modifier": 17
+                        "modifier": 22
                     }]
             },
             "secondary_suffix_item_id": ""
         }
-    },
-    {
+    }, {
         "name": "Chaussette en laine hideuse",
         "description": "Les chaussettes en laine hideuses peuvent s'échanger contre d'autres récompenses auprès d'un des émissaires spécialisés en échange de cadeaux.",
         "type": "Trophy",
         "level": 0,
         "rarity": "Basic",
         "vendor_value": 3,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["NoSell"],
         "restrictions": [],
         "id": 38448,
+        "chat_link": "[&AgEwlgAA]",
         "icon": "https://render.guildwars2.com/file/A314E6A94A6AF4A8EB245F4E5C9DD6CEF62F5958/526314.png"
-    },
-    {
+    }, {
         "name": "Pendentif de Triforge",
         "description": "\"La véritable grandeur, c'est avoir la sagesse d'agir, le courage de se lancer dans l'aventure et la volonté de voir ses rêves se réaliser.\" -Logan Thackeray",
         "type": "Trinket",
         "level": 80,
         "rarity": "Ascended",
         "vendor_value": 660,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": ["AccountBound", "HideSuffix", "NoSalvage", "NotUpgradeable", "AccountBindOnUse"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": ["HideSuffix", "AccountBound", "NotUpgradeable", "AccountBindOnUse"],
         "restrictions": [],
         "id": 39341,
+        "chat_link": "[&AgGtmQAA]",
         "icon": "https://render.guildwars2.com/file/64020C4ACFF155B7EFEE6B1EA9747FF567AEE3FD/66773.png",
         "details": {
             "type": "Amulet",
@@ -244,37 +270,37 @@
                     "flags": ["Utility"]
                 }],
             "infix_upgrade": {
+                "id": 588,
                 "buff": {
                     "skill_id": 15750,
                     "description": "Dégâts par altération +13\nPrécision +13\nRobustesse +13\nPuissance +13\nVitalité +13\nGuérison +13<br>\nFérocité +13"
                 },
                 "attributes": [{
                         "attribute": "Power",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "Precision",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "Toughness",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "Vitality",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "Healing",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "ConditionDamage",
-                        "modifier": 44
+                        "modifier": 59
                     }, {
                         "attribute": "CritDamage",
-                        "modifier": 44
+                        "modifier": 59
                     }]
             },
             "secondary_suffix_item_id": ""
         }
-    },
-    {
+    }, {
         "name": "Pioche de mineur de l'Alliance de la Fusion",
         "description": "Permet d'extraire tout type de minerai. Usage illimité.",
         "type": "Gathering",
@@ -282,62 +308,62 @@
         "rarity": "Rare",
         "vendor_value": 192,
         "default_skin": 2399,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
+        "game_types": ["PvpLobby", "Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["AccountBound", "NoSalvage", "NoSell", "SoulBindOnUse"],
         "restrictions": [],
         "id": 41807,
+        "chat_link": "[&AgFPowAA]",
         "icon": "https://render.guildwars2.com/file/ACF90CA6BCD9CEEFD4D0DCEF2AA87C97B50BDC56/561815.png",
         "details": {
             "type": "Mining"
         }
-    },
-    {
-        "name": "Recyclomatique alimenté au cuivre",
+    }, {
+        "name": "Recycl-o-matic alimenté au cuivre",
         "description": "Double-cliquez pour convertir en matériaux d'artisanat un objet de votre inventaire. 10% de chance d'avoir des matériaux plus rares. 20% de chance de récupérer des améliorations. Nécessite 3 pièces de cuivre par utilisation.",
         "type": "Tool",
         "level": 0,
         "rarity": "Basic",
         "vendor_value": 0,
-        "game_types": ["Activity", "Dungeon", "Pve", "Pvp", "PvpLobby", "Wvw"],
+        "game_types": ["Pvp", "PvpLobby", "Activity", "Wvw", "Dungeon", "Pve"],
         "flags": ["AccountBound", "NoMysticForge", "NoSalvage", "NoSell", "AccountBindOnUse"],
         "restrictions": [],
         "id": 44602,
+        "chat_link": "[&AgE6rgAA]",
         "icon": "https://render.guildwars2.com/file/CC2004000FFDFCEF346AAE296FD0E858C0990548/619581.png",
         "details": {
             "type": "Salvage",
             "charges": 1
         }
-    },
-    {
-        "name": "Lingot d'acier de Deldrimor",
-        "description": "Raffiné à partir de minerai de fer, d'acier, d'acier sombre et de mithrillium.",
-        "type": "CraftingMaterial",
-        "level": 0,
-        "rarity": "Ascended",
-        "vendor_value": 80,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": [],
-        "restrictions": [],
-        "id": 46738,
-        "icon": "https://render.guildwars2.com/file/94DCAE59215C0096449906A81F202B0201FBA85B/631486.png"
-    },
-    {
+    }, {
         "name": "Tonique de fractale inépuisable",
         "description": "Ça sent un peu la cire à bois. Utilisez cet objet pour vous transformer en... quelque chose. Vous ne le saurez pas avant d'avoir essayé.",
         "type": "Gizmo",
         "level": 0,
         "rarity": "Exotic",
         "vendor_value": 0,
-        "game_types": ["Dungeon", "Pve", "PvpLobby", "Wvw"],
+        "game_types": ["PvpLobby", "Wvw", "Dungeon", "Pve"],
         "flags": ["AccountBound", "NoSell", "AccountBindOnUse"],
         "restrictions": [],
         "id": 49277,
+        "chat_link": "[&AgF9wAAA]",
         "icon": "https://render.guildwars2.com/file/AE4C703E2B78E5777123132C47B3F0E311ACD35E/681018.png",
         "details": {
             "type": "Default"
         }
-    },
-    {
+    }, {
+        "name": "Lingot d'acier de Deldrimor",
+        "description": "Transformé à partir de minerai de fer, d'acier, d'acier sombre et de mithrillium.",
+        "type": "CraftingMaterial",
+        "level": 0,
+        "rarity": "Ascended",
+        "vendor_value": 80,
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": [],
+        "restrictions": [],
+        "id": 46738,
+        "chat_link": "[&AgGStgAA]",
+        "icon": "https://render.guildwars2.com/file/94DCAE59215C0096449906A81F202B0201FBA85B/631486.png"
+    }, {
         "name": "Lames dorsales trempées dynamiques",
         "description": "<c=@flavor>Nous avons affronté Scarlet devant nos portes, et ce jour-là, nous l'avons combattue.\n\nNe peut pas être utilisé à la Forge mystique s'il est transmuté.",
         "type": "Back",
@@ -345,10 +371,11 @@
         "rarity": "Ascended",
         "vendor_value": 0,
         "default_skin": 2334,
-        "game_types": ["Activity", "Dungeon", "Pve", "Wvw"],
-        "flags": ["AccountBound", "NoSalvage", "NoSell", "NotUpgradeable", "AccountBindOnUse"],
+        "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+        "flags": ["AccountBound", "NoSell", "NotUpgradeable", "AccountBindOnUse"],
         "restrictions": [],
         "id": 50051,
+        "chat_link": "[&AgGDwwAA]",
         "icon": "https://render.guildwars2.com/file/CADED6EF33A971BFD2403706361F9F4BABC8DC0A/740251.png",
         "details": {
             "infusion_slots": [{
@@ -356,21 +383,4 @@
                 }],
             "secondary_suffix_item_id": ""
         }
-    },
-    {
-        "name": "Boîte de pièces d'armure de gladiateur maraudeuse",
-        "description": "Double-cliquez pour déballer un ensemble d'armure de niveau 80.",
-        "type": "Container",
-        "level": 0,
-        "rarity": "Rare",
-        "vendor_value": 192,
-        "game_types": ["Dungeon", "Pve", "Wvw"],
-        "flags": [],
-        "restrictions": [],
-        "id": 9051,
-        "icon": "https://render.guildwars2.com/file/70CA307D3B2B740C71D19CDB20030C51EBE8F6E8/63222.png",
-        "details": {
-            "type": "Default"
-        }
-    }
-]
+    }]
