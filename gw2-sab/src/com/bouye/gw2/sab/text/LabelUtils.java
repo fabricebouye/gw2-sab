@@ -9,6 +9,15 @@ package com.bouye.gw2.sab.text;
 
 import api.web.gw2.mapping.core.CoinAmount;
 import api.web.gw2.mapping.core.JsonpUtils;
+import api.web.gw2.mapping.v2.items.ItemArmorType;
+import api.web.gw2.mapping.v2.items.ItemInfixUpgradeAttribute;
+import api.web.gw2.mapping.v2.items.ItemInfusionSlotFlag;
+import api.web.gw2.mapping.v2.items.ItemRarity;
+import api.web.gw2.mapping.v2.items.ItemTrinketType;
+import api.web.gw2.mapping.v2.items.ItemType;
+import api.web.gw2.mapping.v2.items.ItemWeaponDamageType;
+import api.web.gw2.mapping.v2.items.ItemWeaponType;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,18 +54,27 @@ import org.xml.sax.helpers.DefaultHandler;
 public enum LabelUtils {
     INSTANCE;
 
-    private static final String CONTENT = "content"; // NOI18N.
-    private static final String LINE_BREAK = "br"; // NOI18N.
-    private static final String PARAGRAPH = "p"; // NOI18N.
-    private static final String BOLD = "b"; // NOI18N.
-    private static final String QUOTE = "quote"; // NOI18N.
-    private static final String FONT_AWESOME = "font-awesome"; // NOI18N.
-    private static final String COINS = "coins"; // NOI18N.
-    private static final String LINK = "link"; // NOI18N.
+    private static final String CONTENT_TAG = "content"; // NOI18N.
+    private static final String LINE_BREAK_TAG = "br"; // NOI18N.
+    private static final String PARAGRAPH_TAG = "p"; // NOI18N.
+    private static final String BOLD_TAG = "b"; // NOI18N.
+    private static final String QUOTE_TAG = "quote"; // NOI18N.
+    private static final String FONT_AWESOME_TAG = "font-awesome"; // NOI18N.
+    private static final String COINS_TAG = "coins"; // NOI18N.
+    private static final String STATS_UP_TAG = "stats-up"; // NOI18N.
+    private static final String STATS_DOWN_TAG = "stats-down"; // NOI18N.
+    private static final String NOTE_TAG = "note"; // NOI18N.
+    private static final String LINK_TAG = "link"; // NOI18N.
+
+    private static final String HREF_ATTR = "href"; // NOI18N.
+    private static final String AMOUNT_ATTR = "amount"; // NOI18N.
 
     private final PseudoClass BOLD_PSEUDO_CLASS = PseudoClass.getPseudoClass("strong"); // NOI18N.
-    private final PseudoClass QUOTE_PSEUDO_CLASS = PseudoClass.getPseudoClass(QUOTE); // NOI18N.
-    private final PseudoClass FONT_AWESOME_PSEUDO_CLASS = PseudoClass.getPseudoClass(FONT_AWESOME);
+    private final PseudoClass QUOTE_PSEUDO_CLASS = PseudoClass.getPseudoClass(QUOTE_TAG); // NOI18N.
+    private final PseudoClass FONT_AWESOME_PSEUDO_CLASS = PseudoClass.getPseudoClass(FONT_AWESOME_TAG);
+    private final PseudoClass STATS_UP_PSEUDO_CLASS = PseudoClass.getPseudoClass(STATS_UP_TAG); // NOI18N.
+    private final PseudoClass STATS_DOWN_PSEUDO_CLASS = PseudoClass.getPseudoClass(STATS_DOWN_TAG); // NOI18N.
+    private final PseudoClass NOTE_PSEUDO_CLASS = PseudoClass.getPseudoClass(NOTE_TAG); // NOI18N.
 
     /**
      * Provides a suitable label from an {@code Enum} instance.
@@ -104,25 +122,52 @@ public enum LabelUtils {
                 spf.setValidating(false);
                 final SAXParser saxParser = spf.newSAXParser();
                 String escapedContent = string.replaceAll("&", "&amp;"); // NOI18N.
-                final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT, escapedContent, CONTENT); // NOI18N.
+                final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT_TAG, escapedContent, CONTENT_TAG); // NOI18N.
                 final Map<String, Boolean> styleAttributes = initializeAttributeMap();
                 try (final InputStream source = new ByteArrayInputStream(xmlString.getBytes("UTF-8"))) { // NOI18N.
                     saxParser.parse(source, new DefaultHandler() {
+                        private Node node;
+
                         @Override
                         public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
+                            node = null;
                             switch (qName) {
-                                case BOLD:
-                                case QUOTE:
-                                case FONT_AWESOME:
-                                case LINK:
+                                case BOLD_TAG:
+                                case QUOTE_TAG:
+                                case FONT_AWESOME_TAG:
+                                case STATS_UP_TAG:
+                                case STATS_DOWN_TAG:
+                                case NOTE_TAG: {
                                     styleAttributes.put(qName, Boolean.TRUE);
-                                    break;
-                                case PARAGRAPH:
+                                }
+                                break;
+                                case LINK_TAG: {
+                                    styleAttributes.put(LINK_TAG, Boolean.TRUE);
+                                    final String href = attributes.getValue(HREF_ATTR);
+                                    final Hyperlink hyperlink = new Hyperlink(string);
+                                    hyperlink.setId("Hyperlink"); // NOI18N.
+                                    hyperlink.setUserData(href);
+                                    hyperlink.setOnAction(actionEvent -> {
+                                        if (linkActivator != null) {
+                                            linkActivator.accept(href);
+                                        }
+                                    });
+                                    node = hyperlink;
+                                }
+                                break;
+                                case PARAGRAPH_TAG: {
                                     final Node paragraphBreak = new Text("\n\n"); // NOI18N.
                                     paragraphBreak.setId("Text"); // NOI18N.
                                     nodeList.add(paragraphBreak);
-                                    break;
-                                case CONTENT:
+                                }
+                                break;
+                                case COINS_TAG: {
+                                    final String amountStr = attributes.getValue(AMOUNT_ATTR);
+                                    final int amount = Integer.parseInt(amountStr);
+                                    nodeList.addAll(fromCopper(amount));
+                                }
+                                break;
+                                case CONTENT_TAG:
                                 default:
                             }
                         }
@@ -130,42 +175,41 @@ public enum LabelUtils {
                         @Override
                         public void characters(char[] ch, int start, int length) throws SAXException {
                             final String string = new String(ch, start, length);
-                            Node node = null;
-                            if (styleAttributes.get(LINK)) {
-                                final Hyperlink hyperlink = new Hyperlink(string);
-                                hyperlink.setId("Hyperlink"); // NOI18N.
-                                hyperlink.setOnAction(actionEvent -> {
-                                    if (linkActivator != null) {
-                                        linkActivator.accept(string);
-                                    }
-                                });
-                                node = hyperlink;
+                            if (styleAttributes.get(LINK_TAG)) {
+                                final Hyperlink hyperlink = (Hyperlink) node;
+                                hyperlink.setText(string);
                             } else {
                                 final Text text = new Text(string);
                                 text.setId("Text"); // NOI18N.
                                 node = text;
                             }
-                            node.pseudoClassStateChanged(BOLD_PSEUDO_CLASS, styleAttributes.get(BOLD));
-                            node.pseudoClassStateChanged(QUOTE_PSEUDO_CLASS, styleAttributes.get(QUOTE));
-                            node.pseudoClassStateChanged(FONT_AWESOME_PSEUDO_CLASS, styleAttributes.get(FONT_AWESOME));
+                            node.pseudoClassStateChanged(BOLD_PSEUDO_CLASS, styleAttributes.get(BOLD_TAG));
+                            node.pseudoClassStateChanged(QUOTE_PSEUDO_CLASS, styleAttributes.get(QUOTE_TAG));
+                            node.pseudoClassStateChanged(FONT_AWESOME_PSEUDO_CLASS, styleAttributes.get(FONT_AWESOME_TAG));
+                            node.pseudoClassStateChanged(STATS_UP_PSEUDO_CLASS, styleAttributes.get(STATS_UP_TAG));
+                            node.pseudoClassStateChanged(STATS_DOWN_PSEUDO_CLASS, styleAttributes.get(STATS_DOWN_TAG));
+                            node.pseudoClassStateChanged(NOTE_PSEUDO_CLASS, styleAttributes.get(NOTE_TAG));
                             nodeList.add(node);
                         }
 
                         @Override
                         public void endElement(String uri, String localName, String qName) throws SAXException {
                             switch (qName) {
-                                case BOLD:
-                                case QUOTE:
-                                case FONT_AWESOME:
-                                case LINK:
+                                case BOLD_TAG:
+                                case QUOTE_TAG:
+                                case FONT_AWESOME_TAG:
+                                case STATS_UP_TAG:
+                                case STATS_DOWN_TAG:
+                                case NOTE_TAG:
+                                case LINK_TAG:
                                     styleAttributes.put(qName, Boolean.FALSE);
                                     break;
-                                case LINE_BREAK:
+                                case LINE_BREAK_TAG:
                                     final Node lineBreak = new Text("\n"); // NOI18N.
                                     lineBreak.setId("Text"); // NOI18N.
                                     nodeList.add(lineBreak);
                                     break;
-                                case CONTENT:
+                                case CONTENT_TAG:
                                 default:
                             }
                         }
@@ -186,10 +230,13 @@ public enum LabelUtils {
      */
     private Map<String, Boolean> initializeAttributeMap() {
         final Map<String, Boolean> result = new HashMap();
-        result.put(BOLD, Boolean.FALSE);
-        result.put(QUOTE, Boolean.FALSE);
-        result.put(FONT_AWESOME, Boolean.FALSE);
-        result.put(LINK, Boolean.FALSE);
+        result.put(BOLD_TAG, Boolean.FALSE);
+        result.put(QUOTE_TAG, Boolean.FALSE);
+        result.put(FONT_AWESOME_TAG, Boolean.FALSE);
+        result.put(STATS_UP_TAG, Boolean.FALSE);
+        result.put(STATS_DOWN_TAG, Boolean.FALSE);
+        result.put(NOTE_TAG, Boolean.FALSE);
+        result.put(LINK_TAG, Boolean.FALSE);
         return result;
     }
 
@@ -199,7 +246,7 @@ public enum LabelUtils {
      * @return A {@code String} instance, never {@code null}.
      */
     public String toQuote(final String value) {
-        return String.format("<%s>%s</%s>", QUOTE, value, QUOTE); // NOI18N.        
+        return String.format("<%s>%s</%1$s>", QUOTE_TAG, value); // NOI18N.        
     }
 
     /**
@@ -208,7 +255,7 @@ public enum LabelUtils {
      * @return A {@code String} instance, never {@code null}.
      */
     public String toStrong(final String value) {
-        return String.format("<%s>%s</%s>", BOLD, value, BOLD); // NOI18N.        
+        return String.format("<%s>%s</%1$s>", BOLD_TAG, value); // NOI18N.        
     }
 
     /**
@@ -217,12 +264,34 @@ public enum LabelUtils {
      * @return A {@code String} instance, never {@code null}.
      */
     public String toFontAwesome(final String value) {
-        return String.format("<%s>%s</%s>", FONT_AWESOME, value, FONT_AWESOME); // NOI18N.        
+        return String.format("<%s>%s</%1$s>", FONT_AWESOME_TAG, value); // NOI18N.        
     }
 
     public String toCoins(final CoinAmount value) {
         final long amount = (value == null) ? 0 : value.toCopper();
-        return String.format("<%s>%s</%s>", COINS, String.valueOf(amount), COINS); // NOI18N.        
+        return String.format("<%s %s=\"%d\"/>", COINS_TAG, AMOUNT_ATTR, amount); // NOI18N.        
+    }
+
+    public String toStatsUp(final String value) {
+        return String.format("<%s>%s</%1$s>", STATS_UP_TAG, value); // NOI18N.        
+    }
+
+    public String toStatsDown(final String value) {
+        return String.format("<%s>%s</%1$s>", STATS_DOWN_TAG, value); // NOI18N.        
+    }
+
+    public String toNote(final String value) {
+        return String.format("<%s>%s</%1$s>", NOTE_TAG, value); // NOI18N.        
+    }
+
+    public String toLink(final String text) {
+        return toLink(text, text);
+    }
+
+    public String toLink(final String text, final String url) {
+        final String t = (text == null) ? "" : text; // NOI18N.       
+        final String u = (url == null) ? t : url;
+        return String.format("<%s %s=\"%s\"/>%s</%1$s>", LINK_TAG, HREF_ATTR, u, t); // NOI18N.        
     }
 
     /**
@@ -230,7 +299,7 @@ public enum LabelUtils {
      * @return A {@code String} instance, never {@code null}.
      */
     public String lineBreak() {
-        return String.format("<%s/>", LINE_BREAK); // NOI18N.      
+        return String.format("<%s/>", LINE_BREAK_TAG); // NOI18N.      
     }
 
     /**
@@ -384,4 +453,43 @@ public enum LabelUtils {
         return result;
     }
 
+    public String fromItemRarity(final ItemRarity rarity) {
+        final String key = String.format("rarity.%s.label", toLabel(rarity).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemInfixUpgradeAttribute(final ItemInfixUpgradeAttribute attribute) {
+        final String key = String.format("attribute.%s.label", toLabel(attribute).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemInfusionSlotFlag(final ItemInfusionSlotFlag flag) {
+        final String key = String.format("infusion-slot.%s.label", toLabel(flag).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemType(final ItemType type) {
+        final String key = String.format("item.%s.label", toLabel(type).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemArmorType(final ItemArmorType type) {
+        final String key = String.format("armor.%s.label", toLabel(type).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemWeaponType(final ItemWeaponType type) {
+        final String key = String.format("weapon.%s.label", toLabel(type).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemTrinketType(final ItemTrinketType type) {
+        final String key = String.format("trinket.%s.label", toLabel(type).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
+
+    public String fromItemWeaponDamageType(final ItemWeaponDamageType type) {
+        final String key = String.format("damage.%s.label", toLabel(type).toLowerCase()); // NOI18.
+        return SABConstants.I18N.getString(key);
+    }
 }

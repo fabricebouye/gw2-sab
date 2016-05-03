@@ -9,23 +9,36 @@ package com.bouye.gw2.sab.scene.items;
 
 import api.web.gw2.mapping.core.CoinAmount;
 import api.web.gw2.mapping.v2.items.Item;
+import api.web.gw2.mapping.v2.items.ItemArmorDetails;
+import api.web.gw2.mapping.v2.items.ItemArmorType;
+import api.web.gw2.mapping.v2.items.ItemBackDetails;
+import api.web.gw2.mapping.v2.items.ItemFlag;
+import api.web.gw2.mapping.v2.items.ItemInfixUpgrade;
+import api.web.gw2.mapping.v2.items.ItemInfixUpgradeAttribute;
+import api.web.gw2.mapping.v2.items.ItemInfusionSlot;
+import api.web.gw2.mapping.v2.items.ItemInfusionSlotFlag;
 import api.web.gw2.mapping.v2.items.ItemRarity;
+import api.web.gw2.mapping.v2.items.ItemTrinketDetails;
+import api.web.gw2.mapping.v2.items.ItemTrinketType;
 import api.web.gw2.mapping.v2.items.ItemType;
+import api.web.gw2.mapping.v2.items.ItemWeaponDamageType;
+import api.web.gw2.mapping.v2.items.ItemWeaponDetails;
+import api.web.gw2.mapping.v2.items.ItemWeaponType;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.ImageCache;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.text.LabelUtils;
 import com.bouye.gw2.sab.wrappers.ItemWrapper;
 import java.net.URL;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -153,67 +166,93 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
     }
 
     private String asArmor(final Item item) {
-        StringBuilder result = addDescription(item, null);
+        StringBuilder result = addStats(item, null);
+        result = addDescription(item, result);
+        result = addRarity(item, result);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asBag(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asBack(final Item item) {
-        StringBuilder result = addDescription(item, null);
+        StringBuilder result = addStats(item, null);
+        result = addDescription(item, result);
+        result = addRarity(item, result);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asConsumable(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asContainer(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asCraftingMaterial(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asGathering(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asGizmo(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asMinipet(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asTool(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asTrait(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
@@ -221,6 +260,8 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
     private String asTrinket(final Item item) {
         StringBuilder result = addStats(item, null);
         result = addDescription(item, result);
+        result = addRarity(item, result);
+        result = addItemType(item, result);
         result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
@@ -228,24 +269,107 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
 
     private String asTrophy(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asUpgradeComponent(final Item item) {
         StringBuilder result = addDescription(item, null);
+        result = addItemType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private String asWeapon(final Item item) {
-        StringBuilder result = addDescription(item, null);
+        StringBuilder result = addStats(item, null);
+        result = addDescription(item, result);
+        result = addRarity(item, result);
+        result = addItemType(item, result);
+        result = addDamageType(item, result);
+        result = addLevelRequirement(item, result);
         result = addMerchantValue(item, result);
         return result.toString();
     }
 
     private StringBuilder addStats(final Item item, final StringBuilder builder) {
         final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
+        item.getDetails().ifPresent(details -> {
+            Optional<ItemInfixUpgrade> infixUpgrade = Optional.empty();
+            final ItemType itemType = item.getType();
+            List<ItemInfusionSlot> infusionSlots = Collections.EMPTY_LIST;
+            switch (itemType) {
+                case ARMOR: {
+                    final ItemArmorDetails armorDetails = (ItemArmorDetails) details;
+                    final int defense = armorDetails.getDefense();
+                    String defenseStr = LabelUtils.INSTANCE.toStatsUp(String.valueOf(defense));
+                    defenseStr = String.format(SABConstants.I18N.getString("item-tip.armor-defense.label"), defenseStr); // NOI18N.
+                    result.append(defenseStr);
+                    result.append(LabelUtils.INSTANCE.lineBreak());
+                    infixUpgrade = armorDetails.getInfixUpgrade();
+                    infusionSlots = armorDetails.getInfusionSlots();
+                }
+                break;
+                case BACK: {
+                    final ItemBackDetails backDetails = (ItemBackDetails) details;
+                    infixUpgrade = backDetails.getInfixUpgrade();
+                    infusionSlots = backDetails.getInfusionSlots();
+                }
+                break;
+                case TRINKET: {
+                    final ItemTrinketDetails trinketDetails = (ItemTrinketDetails) details;
+                    infixUpgrade = trinketDetails.getInfixUpgrade();
+                    infusionSlots = trinketDetails.getInfusionSlots();
+                }
+                break;
+                case WEAPON: {
+                    final ItemWeaponDetails weaponDetails = (ItemWeaponDetails) details;
+                    final int minPower = weaponDetails.getMinPower();
+                    final int maxPower = weaponDetails.getMaxPower();
+                    String strengthStr = String.format(SABConstants.I18N.getString("item-tip.weapon-strength.format"), minPower, maxPower); // NOI18N.
+                    strengthStr = LabelUtils.INSTANCE.toStatsUp(strengthStr);
+                    strengthStr = String.format(SABConstants.I18N.getString("item-tip.weapon-strength.label"), strengthStr);  // NOI18N.
+                    result.append(strengthStr);
+                    result.append(LabelUtils.INSTANCE.lineBreak());
+                    infixUpgrade = weaponDetails.getInfixUpgrade();
+                    infusionSlots = weaponDetails.getInfusionSlots();
+                }
+            }
+            infixUpgrade.ifPresent(upgrade -> {
+                final String text = upgrade.getAttributes()
+                        .stream()
+                        .map(value -> {
+                            final int modifier = value.getModifier();
+                            final ItemInfixUpgradeAttribute attribute = value.getAttribute();
+                            String statsStr = LabelUtils.INSTANCE.fromItemInfixUpgradeAttribute(attribute);
+                            statsStr = String.format(SABConstants.I18N.getString("item-tip.stats-up.format"), modifier, statsStr); // NOI18N.
+                            statsStr = LabelUtils.INSTANCE.toStatsUp(statsStr);
+                            return statsStr;
+                        })
+                        .collect(Collectors.joining(LabelUtils.INSTANCE.lineBreak()));
+                result.append(text);
+                result.append(LabelUtils.INSTANCE.lineBreak());
+            });
+            if (!infixUpgrade.isPresent()) {
+                switch (itemType) {
+                    case ARMOR:
+                    case BACK:
+                    case TRINKET:
+                    case WEAPON:
+                        result.append(SABConstants.I18N.getString("item-tip.select-stats.label")); // NOI18N.
+                        result.append(LabelUtils.INSTANCE.lineBreak());
+                        break;
+                }
+            }
+            infusionSlots.stream()
+                    .forEach(infusionSlot -> {
+                        final ItemInfusionSlotFlag flag = infusionSlot.getFlags().isEmpty() ? ItemInfusionSlotFlag.AGONY : infusionSlot.getFlags().iterator().next();
+                        result.append(LabelUtils.INSTANCE.fromItemInfusionSlotFlag(flag));
+                        result.append(LabelUtils.INSTANCE.lineBreak());
+                    });
+        });
         return result;
     }
 
@@ -262,9 +386,9 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
         final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
         final int level = item.getLevel();
         if (level > 0) {
-            // @todo Localize.
-            result.append("Required Level: ");
-            result.append(level);
+            final String requiredLevelStr = String.format(SABConstants.I18N.getString("item-tip.required-level.label"), level); // NOI18N.
+            result.append(requiredLevelStr);
+            result.append(LabelUtils.INSTANCE.lineBreak());
         }
         return result;
     }
@@ -272,9 +396,89 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
     private StringBuilder addMerchantValue(final Item item, final StringBuilder builder) {
         final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
         final CoinAmount vendorValue = item.getVendorValue();
-        if (!vendorValue.equals(CoinAmount.ZERO)) {
+        if (!vendorValue.equals(CoinAmount.ZERO) && !item.getFlags().contains(ItemFlag.NO_SELL)) {
             result.append(LabelUtils.INSTANCE.toCoins(vendorValue));
+            result.append(LabelUtils.INSTANCE.lineBreak());
         }
+        return result;
+    }
+
+    private StringBuilder addRarity(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
+        final ItemRarity rarity = item.getRarity();
+        result.append(LabelUtils.INSTANCE.fromItemRarity(rarity));
+        result.append(LabelUtils.INSTANCE.lineBreak());
+        return result;
+    }
+
+    private StringBuilder addItemType(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
+        final ItemType type = item.getType();
+        switch (type) {
+            case ARMOR:
+            case TRINKET:
+            case WEAPON: {
+                item.getDetails().ifPresent(details -> {
+                    switch (type) {
+                        case ARMOR: {
+                            final ItemArmorDetails armorDetails = (ItemArmorDetails) details;
+                            final ItemArmorType armorType = armorDetails.getType();
+                            result.append(LabelUtils.INSTANCE.fromItemArmorType(armorType));
+                        }
+                        break;
+                        case TRINKET: {
+                            final ItemTrinketDetails trinketDetails = (ItemTrinketDetails) details;
+                            final ItemTrinketType trinketType = trinketDetails.getType();
+                            result.append(LabelUtils.INSTANCE.fromItemTrinketType(trinketType));
+                        }
+                        break;
+                        case WEAPON: {
+                            final ItemWeaponDetails weaponDetails = (ItemWeaponDetails) details;
+                            final ItemWeaponType weaponType = weaponDetails.getType();
+                            result.append(LabelUtils.INSTANCE.fromItemWeaponType(weaponType));
+                            switch (weaponType) {
+                                case GREATSWORD:
+                                case HAMMER:
+                                case LONG_BOW:
+                                case RIFLE:
+                                case SHORT_BOW:
+                                case SPEARGUN:
+                                case STAFF:
+                                case TRIDENT: {
+                                    result.append(LabelUtils.INSTANCE.lineBreak());
+                                    final String text = SABConstants.I18N.getString("item-tip.two-handed.label"); // NOI18N.
+                                    result.append(LabelUtils.INSTANCE.toNote(text));
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                });
+            }
+            break;
+            default:
+                result.append(LabelUtils.INSTANCE.fromItemType(type));
+        }
+        result.append(LabelUtils.INSTANCE.lineBreak());
+        return result;
+    }
+
+    private StringBuilder addDamageType(final Item item, final StringBuilder builder) {
+        final StringBuilder result = (builder == null) ? new StringBuilder() : builder;
+        final ItemType type = item.getType();
+        item.getDetails().ifPresent(details -> {
+            switch (type) {
+                case WEAPON: {
+                    final ItemWeaponDetails weaponDetails = (ItemWeaponDetails) details;
+                    final ItemWeaponDamageType damageType = weaponDetails.getDamageType();
+                    String damageStr = LabelUtils.INSTANCE.fromItemWeaponDamageType(damageType);
+                    damageStr = String.format(SABConstants.I18N.getString("item-tip.damage-type.label"), damageStr); // NOI18N.
+                    result.append(LabelUtils.INSTANCE.toNote(damageStr));
+                    result.append(LabelUtils.INSTANCE.lineBreak());
+                }
+            }
+        });
         return result;
     }
 

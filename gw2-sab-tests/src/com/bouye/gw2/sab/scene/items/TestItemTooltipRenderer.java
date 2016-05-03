@@ -61,7 +61,7 @@ public final class TestItemTooltipRenderer extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 //        Platform.runLater(() -> splitPane.setDividerPositions(0.33, 0.66));
-        ScenicView.show(root);
+//        ScenicView.show(root);
         loadTestAsync();
     }
 

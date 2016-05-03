@@ -5,6 +5,9 @@
     -item-name-color: black;
     -item-description-color: black;
     -item-quote-color: dodgerblue;
+    -item-stats-up-color: green;
+    -item-stats-down-color: red;
+    -item-note-color: gray;
 }
 .item-renderer:Junk {
     -item-name-color: gray;        
@@ -51,13 +54,20 @@
 .item-renderer #descriptionFlow #Text:quote {
     -fx-fill: -item-quote-color;
 }
+.item-renderer #descriptionFlow #Text:stats-up {
+    -fx-fill: -item-stats-up-color;
+}
+.item-renderer #descriptionFlow #Text:stats-down {
+    -fx-fill: -item-stats-down-color;
+}
+.item-renderer #descriptionFlow #Text:note {
+    -fx-fill: -item-note-color;
+}
 /* When in tooltip mode. */
 .tooltip .item-renderer {
     -item-description-color: white;
+    -fx-effect: dropshadow(one-pass-box, black, 0, 1, 1, 1);
 }
 .tooltip .item-renderer:Basic {
     -item-name-color: white;
-}
-.tooltip .item-renderer .name-label {
-    -fx-effect: dropshadow(one-pass-box, black, 0, 1, 1, 1);
 }
