@@ -10,6 +10,8 @@ package com.bouye.gw2.sab.scene.items;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.items.Item;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.wrappers.ItemWrapper;
 import java.io.IOException;
 import java.net.URL;
@@ -72,8 +74,7 @@ public final class TestItemTooltipRenderer extends Application {
                 return new Task<List<ItemWrapper>>() {
                     @Override
                     protected List<ItemWrapper> call() throws Exception {
-                        List<ItemWrapper> result = Collections.EMPTY_LIST;
-                        result = loadLocalTest();
+                        List<ItemWrapper> result = SABConstants.INSTANCE.isOffline() ? loadLocalTest() : loadRemoteTest();
                         return result;
                     }
                 };
@@ -98,6 +99,24 @@ public final class TestItemTooltipRenderer extends Application {
             Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
         });
         service.start();
+    }
+
+    private List<ItemWrapper> loadRemoteTest() throws IOException {
+        List<ItemWrapper> result = Collections.EMPTY_LIST;
+        URL url = getClass().getResource("items.json");
+        if (url != null) {
+            // Get ids from local objects.
+            int[] ids = JsonpContext.SAX.loadObjectArray(Item.class, url)
+                    .stream()
+                    .mapToInt(Item::getId)
+                    .toArray();
+            result = WebQuery.INSTANCE.queryItems(ids)
+                    .stream()
+                    .map(item -> new ItemWrapper(item, null))
+                    .collect(Collectors.toList());
+        }
+        return result;
+
     }
 
     private List<ItemWrapper> loadLocalTest() throws IOException {
