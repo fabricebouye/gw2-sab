@@ -390,7 +390,7 @@ public final class SpecializationEditor extends Region {
 
     ////////////////////////////////////////////////////////////////////////////    
     /**
-     * Sets wether this control is editable.
+     * Sets whether this control is editable.
      */
     public final BooleanProperty editable = new SimpleBooleanProperty(this, "editable", true); // NOI18N.
 
