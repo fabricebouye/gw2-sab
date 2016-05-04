@@ -92,10 +92,13 @@ public final class SpecializationEditor extends Region {
         setId("SpecializationEditor"); // NOI18N.
         getStyleClass().add("specialization-editor"); // NOI18N.
         //
+        background.setId("background"); // NOI18N.
         background.setPreserveRatio(false);
         //
+        eliteMarker.setId("eliteMarker"); // NOI18N.
         eliteMarker.getStyleClass().add("elite-marker"); // NOI18N.
         //
+        button.setId("button"); // NOI18N.
         button.getStyleClass().add("button"); // NOI18N.
         button.visibleProperty().bind(editableProperty());
         //
@@ -558,6 +561,7 @@ public final class SpecializationEditor extends Region {
 
         public Minor(final int index) {
             super();
+            setId("minor" + index); // NOI18N.
             //
             getStyleClass().addAll("trait", "minor", "minor" + index); // NOI18N.
             // Label.
@@ -585,6 +589,7 @@ public final class SpecializationEditor extends Region {
          */
         public Major(final int index, final String type) {
             super();
+            setId(type + index);
             this.index = index;
             //
             final int offset = ((index - 1) % 3) + 1;
