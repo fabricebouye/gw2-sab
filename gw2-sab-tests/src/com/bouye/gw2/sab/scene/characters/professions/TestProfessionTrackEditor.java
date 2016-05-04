@@ -12,12 +12,14 @@ import api.web.gw2.mapping.v2.professions.Profession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -30,31 +32,35 @@ public final class TestProfessionTrackEditor extends Application {
     @Override
     public void start(Stage primaryStage) {
         final ProfessionTrackEditor professionEditor = new ProfessionTrackEditor();
+        final ComboBox<Profession> professionCombo = new ComboBox<>();
+        professionCombo.setButtonCell(new SimpleProfessionListCell());
+        professionCombo.setCellFactory(listView -> new SimpleProfessionListCell());
+        professionCombo.valueProperty().addListener((observable, oldValue, newValue) -> professionEditor.setProfession(newValue));
         final StackPane root = new StackPane();
         root.getChildren().add(professionEditor);
         final Scene scene = new Scene(root, 600, 600);
         primaryStage.setTitle("TestProfessionTrackEditor"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
-        loadTestAsync(professionEditor);
+        loadTestAsync(professionCombo);
     }
 
-    private void loadTestAsync(final ProfessionTrackEditor editor) {
-        Service<Profession> service = new Service<Profession>() {
+    private void loadTestAsync(final ComboBox<Profession> professionCombo) {
+        Service<Collection<Profession>> service = new Service<Collection<Profession>>() {
             @Override
-            protected Task<Profession> createTask() {
-                return new Task<Profession>() {
+            protected Task<Collection<Profession>> createTask() {
+                return new Task<Collection<Profession>>() {
                     @Override
-                    protected Profession call() throws Exception {
-                        final Profession profession = loadLocalTest();
-                        return profession;
+                    protected Collection<Profession> call() throws Exception {
+                        final Collection<Profession> professions = loadLocalTest();
+                        return professions;
                     }
                 };
             }
         };
         service.setOnSucceeded(workerStateEvent -> {
-            final Profession profession = (Profession) workerStateEvent.getSource().getValue();
-            editor.setProfession(profession);
+            final Collection<Profession> profession = (Collection<Profession>) workerStateEvent.getSource().getValue();
+            professionCombo.getItems().setAll(profession);
         });
         service.setOnFailed(workerStateEvent -> {
             final Throwable ex = workerStateEvent.getSource().getException();
@@ -63,12 +69,11 @@ public final class TestProfessionTrackEditor extends Application {
         service.start();
     }
 
-    private Profession loadLocalTest() throws IOException {
+    private Collection<Profession> loadLocalTest() throws IOException {
         final URL url = getClass().getResource("professions.json");
-        Profession result = null;
+        Collection<Profession> result = Collections.EMPTY_LIST;
         if (url != null) {
-            final Collection<Profession> professions = JsonpContext.SAX.loadObjectArray(Profession.class, url);
-            result = professions.isEmpty() ? null : professions.iterator().next();
+            result = JsonpContext.SAX.loadObjectArray(Profession.class, url);
         }
         return result;
     }
