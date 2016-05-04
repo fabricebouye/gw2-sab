@@ -109,6 +109,8 @@ public final class ProfessionTrainingPane extends HBox {
         pseudoClassStateChanged(pseudoClass, false);
         trackEditor.setProfession(null);
         categoryVBox.getChildren().clear();
+        categoryToggleGroup.getToggles().clear();
+        setTrack(null);
     }
 
     /**
