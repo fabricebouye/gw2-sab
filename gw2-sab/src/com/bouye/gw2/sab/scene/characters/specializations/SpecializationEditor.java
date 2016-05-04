@@ -412,7 +412,7 @@ public final class SpecializationEditor extends Region {
         return profession.get();
     }
 
-    public void setProfession(final CharacterProfession value) {
+    void setProfession(final CharacterProfession value) {
         profession.set(value);
     }
 
@@ -474,8 +474,8 @@ public final class SpecializationEditor extends Region {
     private static Properties CROP_DEFS;
 
     /**
-    * Load the crop definitions from the stored property file.
-    */
+     * Load the crop definitions from the stored property file.
+     */
     private static void loadCropDefs() {
         if (CROP_DEFS == null) {
             CROP_DEFS = new Properties();
