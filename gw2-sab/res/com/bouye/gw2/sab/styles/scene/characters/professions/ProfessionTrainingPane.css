@@ -6,3 +6,13 @@
     -fx-border-color: black;
     -fx-padding: 3px;
 }
+.profession-training-pane .track-vbox {
+    -fx-padding: 0px;
+}
+.profession-training-pane .track-label {
+    -fx-padding: 6px;
+}
+.profession-training-pane .track-label:selected {
+    -fx-border-color: -fx-focus-color;
+    -fx-padding: 5px;
+}

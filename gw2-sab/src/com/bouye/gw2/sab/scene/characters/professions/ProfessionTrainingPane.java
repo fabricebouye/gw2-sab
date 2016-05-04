@@ -13,22 +13,27 @@ import api.web.gw2.mapping.v2.professions.Profession;
 import api.web.gw2.mapping.v2.professions.ProfessionTrack;
 import api.web.gw2.mapping.v2.professions.ProfessionTrackCategory;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -80,12 +85,12 @@ public final class ProfessionTrainingPane extends HBox {
         //
         profession.addListener(professionChangeListener);
     }
-    
+
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/professions/ProfessionTrainingPane.css"); // NOI18N.
         return url.toExternalForm();
-    }    
+    }
 
     ////////////////////////////////////////////////////////////////////////////    
     /**
@@ -126,22 +131,24 @@ public final class ProfessionTrainingPane extends HBox {
                 Arrays.stream(ProfessionTrackCategory.values())
                 .filter(category -> category != ProfessionTrackCategory.UNKNOWN)
                 .map(category -> {
-                    final VBox contentBox = new VBox();
-                    contentBox.getChildren().setAll(
+                    final VBox trackVBox = new VBox();
+                    trackVBox.setId(String.format("%sVBox", category.name())); // NOI18N.
+                    trackVBox.getStyleClass().add("track-vbox"); // NOI18N.
+                    trackVBox.getChildren().setAll(
                             profession.getTraining()
                             .stream()
                             .filter(track -> track.getCategory() == category)
                             .map(track -> {
-                                final RadioButton button = new RadioButton(track.getName());
-                                button.setUserData(track);
+                                final ProfessionTrackLabel button = new ProfessionTrackLabel(track);
                                 button.setToggleGroup(categoryToggleGroup);
                                 return button;
                             })
                             .collect(Collectors.toList()));
                     final TitledPane categoryPane = new TitledPane();
                     // @todo Localize.
-                    categoryPane.setText(category.name());
-                    categoryPane.setContent(contentBox);
+                    final String titleKey = String.format("profession-track.%s.label", LabelUtils.INSTANCE.toLabel(category).toLowerCase()); // NOI18N.
+                    categoryPane.setText(SABConstants.I18N.getString(titleKey));
+                    categoryPane.setContent(trackVBox);
                     return categoryPane;
                 })
                 .collect(Collectors.toList()));
@@ -194,5 +201,100 @@ public final class ProfessionTrainingPane extends HBox {
 
     public ReadOnlyObjectProperty<ProfessionTrack> trackProperty() {
         return track.getReadOnlyProperty();
+    }
+
+    /**
+     * The profession track label.
+     * <br>A {@code Toggle} that allows to select a profession track.
+     * @author Fabrice Bouyé
+     */
+    private static final class ProfessionTrackLabel extends Label implements Toggle {
+
+        /**
+         * Creates a new instance.
+         * @param index The index of the trait.
+         */
+        public ProfessionTrackLabel(final ProfessionTrack track) {
+            super();
+            setId(String.format("%sLabel", track.getName())); // NOI18N.
+            getStyleClass().add("track-label"); // NOI18N.
+            setUserData(track);
+            setText(track.getName());
+            setMaxWidth(Double.MAX_VALUE);
+            // Listeners.
+            toggleGroupProperty().addListener(toggleGroupChangeListener);
+            selectedProperty().addListener(selectedChangeListener);
+            setOnMouseClicked(mouseEventHandler);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////
+        /**
+         * Called whenever the toggle group changes.
+         */
+        private final ChangeListener<ToggleGroup> toggleGroupChangeListener = (observable, oldValue, newValue) -> {
+            final Optional<ToggleGroup> oldToggleGroup = Optional.ofNullable(oldValue);
+            oldToggleGroup.ifPresent(tg -> tg.getToggles().remove(ProfessionTrackLabel.this));
+            final Optional<ToggleGroup> newToggleGroup = Optional.ofNullable(newValue);
+            newToggleGroup.ifPresent(tg -> tg.getToggles().add(ProfessionTrackLabel.this));
+        };
+
+        /**
+         * Called whenever the selected state of this trait changes.
+         */
+        private final ChangeListener<Boolean> selectedChangeListener = (observable, oldValue, newValue) -> {
+            final Optional<ToggleGroup> toggleGroup = Optional.ofNullable(getToggleGroup());
+            // Selection.
+            toggleGroup.ifPresent(tg -> tg.selectToggle(newValue ? ProfessionTrackLabel.this : null));
+            // Style.
+            ProfessionTrackLabel.this.pseudoClassStateChanged(PseudoClass.getPseudoClass("selected"), newValue); // NOI18N.
+        };
+
+        /**
+         * Called whenever the user clicks on this trait.
+         */
+        private final EventHandler<MouseEvent> mouseEventHandler = mouseEvent -> {
+            setSelected(true);
+        };
+
+        ////////////////////////////////////////////////////////////////////////////        
+        /**
+         * Toggle group as defined in {@code Toggle}.
+         */
+        private final ObjectProperty<ToggleGroup> toggleGroup = new SimpleObjectProperty<>(this, "toggleGroup", null); // NOI18N.
+
+        @Override
+        public ToggleGroup getToggleGroup() {
+            return toggleGroup.get();
+        }
+
+        @Override
+        public void setToggleGroup(final ToggleGroup value) {
+            toggleGroup.set(value);
+        }
+
+        @Override
+        public ObjectProperty<ToggleGroup> toggleGroupProperty() {
+            return toggleGroup;
+        }
+
+        /**
+         * Selected state as defined in {@code Toggle}.
+         */
+        private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false); // NOI18N.
+
+        @Override
+        public boolean isSelected() {
+            return selected.get();
+        }
+
+        @Override
+        public void setSelected(final boolean value) {
+            selected.set(value);
+        }
+
+        @Override
+        public BooleanProperty selectedProperty() {
+            return selected;
+        }
     }
 }

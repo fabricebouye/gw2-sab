@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.scenicview.ScenicView;
 
 /**
  * Test.
@@ -42,6 +43,7 @@ public final class TestProfessionTrackEditor extends Application {
         primaryStage.setTitle("TestProfessionTrackEditor"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
+        ScenicView.show(root);
         loadTestAsync(professionCombo);
     }
 

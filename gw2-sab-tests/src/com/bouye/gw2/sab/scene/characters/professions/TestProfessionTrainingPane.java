@@ -20,7 +20,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
