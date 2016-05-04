@@ -67,6 +67,7 @@ public final class ProfessionTrackEditor extends Region {
         arc.setLength(-340);
         arc.setFill(null);
         arc.setStroke(Color.BLACK);
+        arc.setVisible(false);
         //
         getChildren().setAll(background,
                 arc);
