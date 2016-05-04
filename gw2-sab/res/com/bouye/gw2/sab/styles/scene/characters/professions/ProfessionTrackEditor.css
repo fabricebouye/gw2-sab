@@ -1,0 +1,11 @@
+.profession-track-editor {    
+    -base-color: gray;
+    -fx-background-color: black, -base-color;
+    -fx-background-insets: 0px, 1px;
+    -fx-min-width: 450px;
+    -fx-min-height: 525px;
+    -fx-pref-width: 450px;
+    -fx-pref-height: 525px;
+    -fx-max-width: 450px;
+    -fx-max-height: 525px;
+}

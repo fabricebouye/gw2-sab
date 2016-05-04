@@ -1,0 +1,8 @@
+.profession-training-pane {
+    -fx-padding: 6px;
+    -fx-spacing: 6px;
+}
+.profession-training-pane #editorLabel {
+    -fx-border-color: black;
+    -fx-padding: 3px;
+}
