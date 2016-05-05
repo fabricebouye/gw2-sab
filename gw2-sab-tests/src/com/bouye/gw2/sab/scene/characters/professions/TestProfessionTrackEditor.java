@@ -10,6 +10,8 @@ package com.bouye.gw2.sab.scene.characters.professions;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.professions.Profession;
 import api.web.gw2.mapping.v2.professions.ProfessionTrack;
+import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.query.WebQuery;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -73,7 +75,7 @@ public final class TestProfessionTrackEditor extends Application {
                 return new Task<Collection<Profession>>() {
                     @Override
                     protected Collection<Profession> call() throws Exception {
-                        final Collection<Profession> professions = loadLocalTest();
+                        final Collection<Profession> professions = SABConstants.INSTANCE.isOffline() ? loadLocalTest() : loadRemoteTest();
                         return professions;
                     }
                 };
@@ -90,6 +92,10 @@ public final class TestProfessionTrackEditor extends Application {
         service.start();
     }
 
+    private Collection<Profession> loadRemoteTest() {
+        return WebQuery.INSTANCE.queryProfessions();
+    }    
+    
     private Collection<Profession> loadLocalTest() throws IOException {
         final URL url = getClass().getResource("professions.json");
         Collection<Profession> result = Collections.EMPTY_LIST;

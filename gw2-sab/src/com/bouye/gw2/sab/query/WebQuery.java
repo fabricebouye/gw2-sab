@@ -20,6 +20,7 @@ import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
 import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
+import api.web.gw2.mapping.v2.professions.Profession;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
@@ -373,6 +374,17 @@ public enum WebQuery {
         } else {
             final String query = String.format("https://api.guildwars2.com/v2/account/wallet?access_token=%s", appKey); // NOI18N.
             result = arrayWebQuery(CurrencyAmount.class, query);
+        }
+        return result;
+    }
+
+    public List<Profession> queryProfessions(String... ids) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        List<Profession> result = Collections.EMPTY_LIST;
+        if (isOffline) {
+        } else {
+            final String query = String.format("https://api.guildwars2.com/v2/professions?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
+            result = arrayWebQuery(Profession.class, query);
         }
         return result;
     }
