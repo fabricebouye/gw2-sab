@@ -15,6 +15,8 @@ import api.web.gw2.mapping.v2.professions.ProfessionTrackCost;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,16 +30,20 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.css.CssMetaData;
 import javafx.css.PseudoClass;
+import javafx.css.SimpleStyleableDoubleProperty;
+import javafx.css.StyleConverter;
+import javafx.css.Styleable;
+import javafx.css.StyleableDoubleProperty;
+import javafx.css.StyleableProperty;
 import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 /**
@@ -72,6 +78,8 @@ public final class ProfessionTrackEditor extends Region {
         //
         trackProperty().addListener(trackChangeListener);
         profession.addListener(professionChangeListener);
+        tickLengthProperty().addListener(observable -> requestLayout());
+        tickLabelGapProperty().addListener(observable -> requestLayout());
     }
 
     @Override
@@ -102,8 +110,10 @@ public final class ProfessionTrackEditor extends Region {
             final int costsNumber = ticks.size();
             final double startAngle = arc.getStartAngle();
             final double length = arc.getLength();
-            final int tickLength = 30;
-            final int tickLabelGap = 20;
+            final double tickLength = getTickLength();
+            final double tickLabelGap = getTickLabelGap();
+            System.out.printf("Tick length %f%n", tickLength);
+            System.out.printf("Tick label gap %f%n", tickLabelGap);
             final double delta = length / Math.max(1, costsNumber - 1);
             IntStream.range(0, costsNumber)
                     .forEach(index -> {
@@ -117,10 +127,10 @@ public final class ProfessionTrackEditor extends Region {
                         tick.setStartY(startY);
                         tick.setEndX(endX);
                         tick.setEndY(endY);
-                        final double iconX = centerX + (radius + tickLength + tickLabelGap) * Math.cos(angle);
-                        final double iconY = centerY - (radius + tickLength + tickLabelGap) * Math.sin(angle);
-                        final StackPane icon = icons.get(index);
-                        icon.relocate(iconX - 10 / 2d, iconY - 10 / 2d);
+                        final double unlockX = centerX + (radius + tickLength + tickLabelGap) * Math.cos(angle);
+                        final double unlockY = centerY - (radius + tickLength + tickLabelGap) * Math.sin(angle);
+                        final StackPane unlockStack = unlocks.get(index);
+                        unlockStack.relocate(unlockX - unlockStack.getPrefWidth() / 2d, unlockY - unlockStack.getPrefHeight() / 2d);
                     });
         }
     }
@@ -174,7 +184,7 @@ public final class ProfessionTrackEditor extends Region {
     }
 
     private final List<Line> ticks = new LinkedList();
-    private final List<StackPane> icons = new LinkedList();
+    private final List<StackPane> unlocks = new LinkedList();
 
     /**
      * Uninstall a profession track.
@@ -184,8 +194,8 @@ public final class ProfessionTrackEditor extends Region {
         arc.setVisible(false);
         getChildren().removeAll(ticks);
         ticks.clear();
-        getChildren().removeAll(icons);
-        icons.clear();
+        getChildren().removeAll(unlocks);
+        unlocks.clear();
     }
 
     /**
@@ -202,20 +212,16 @@ public final class ProfessionTrackEditor extends Region {
                     final ProfessionTrackCost cost = costIterator.next();
                     final Line tick = new Line();
                     ticks.add(tick);
-                    final StackPane icon = new StackPane() {
-                        @Override
-                        public boolean isResizable() {
-                            return false;
-                        }
-                    };
-                    icon.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-                    icon.setMinSize(10, 10);
-                    icon.setMaxSize(10, 10);
-                    icon.setPrefSize(10, 10);
-                    icons.add(icon);
+                    final StackPane unlockStack = new StackPane();
+                    unlockStack.setId("unlockStack"); // NOI18N.
+                    unlockStack.getStyleClass().add("unlock-stack"); // NOI18N.
+                    unlocks.add(unlockStack);
+                    final Circle circle = new Circle();
+                    circle.setRadius(5);
+                    circle.setFill(Color.RED);
                 });
         getChildren().addAll(ticks);
-        getChildren().addAll(icons);
+        getChildren().addAll(unlocks);
     }
 
     ////////////////////////////////////////////////////////////////////////////    
@@ -262,5 +268,91 @@ public final class ProfessionTrackEditor extends Region {
 
     public final ObjectProperty<ProfessionTrack> trackProperty() {
         return track;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    /** 
+     * Default tick length.
+     */
+    private static final double DEFAULT_TICK_LENGTH = 30;
+    /**
+     * Tick length CSS meta data.
+     */
+    private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LENGTH_CSS_META = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-lenght", StyleConverter.getSizeConverter(), DEFAULT_TICK_LENGTH) { // NOI18N.
+        @Override
+        public boolean isSettable(final ProfessionTrackEditor styleable) {
+            return (styleable.tickLength == null) || !(styleable.tickLength.isBound());
+        }
+
+        @Override
+        public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
+            return styleable.tickLengthProperty();
+        }
+    };
+
+    private StyleableDoubleProperty tickLength;
+
+    public final double getTickLength() {
+        return (tickLength == null) ? DEFAULT_TICK_LENGTH : tickLength.get();
+    }
+
+    public final void setTickLength(final double value) {
+        tickLengthProperty().set(value);
+    }
+
+    public final StyleableDoubleProperty tickLengthProperty() {
+        if (tickLength == null) {
+            tickLength = new SimpleStyleableDoubleProperty(TICK_LENGTH_CSS_META, this, "tickLength", DEFAULT_TICK_LENGTH); // NOI18N.
+        }
+        return tickLength;
+    }
+
+    /** 
+     * Default tick label gap.
+     */
+    private static final double DEFAULT_TICK_LABEL_GAP = 60;
+    /**
+     * Tick label gap CSS meta data.
+     */
+    private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LABEL_GAP_CSS_META = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-label-gap", StyleConverter.getSizeConverter(), DEFAULT_TICK_LABEL_GAP) { // NOI18N.
+        @Override
+        public boolean isSettable(final ProfessionTrackEditor styleable) {
+            return (styleable.tickLength == null) || !(styleable.tickLength.isBound());
+        }
+
+        @Override
+        public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
+            return styleable.tickLengthProperty();
+        }
+    };
+
+    private StyleableDoubleProperty tickLabelGap;
+
+    public final double getTickLabelGap() {
+        return (tickLabelGap == null) ? DEFAULT_TICK_LABEL_GAP : tickLabelGap.get();
+    }
+
+    public final void setTickLabelGap(final double value) {
+        tickLabelGapProperty().set(value);
+    }
+
+    public final StyleableDoubleProperty tickLabelGapProperty() {
+        if (tickLabelGap == null) {
+            tickLabelGap = new SimpleStyleableDoubleProperty(TICK_LABEL_GAP_CSS_META, this, "tickLabelGap", DEFAULT_TICK_LABEL_GAP); // NOI18N.
+        }
+        return tickLabelGap;
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+ 
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return STYLEABLES;
+    }    
+    
+    private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+    static {
+        final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Region.getClassCssMetaData());
+        Collections.addAll(styleables, TICK_LENGTH_CSS_META, TICK_LABEL_GAP_CSS_META);
+        STYLEABLES = Collections.unmodifiableList(styleables);
     }
 }

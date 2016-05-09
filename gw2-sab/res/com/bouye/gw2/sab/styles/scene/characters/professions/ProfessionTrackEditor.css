@@ -8,4 +8,16 @@
     -fx-pref-height: 525px;
     -fx-max-width: 450px;
     -fx-max-height: 525px;
+    -fx-tick-length: 40.5px;
+    -fx-tick-label-gap: 10.5px;
+}
+.profession-track-editor .unlock-stack {
+    -fx-background-color: gray;
+    -fx-border-color: black;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
 }

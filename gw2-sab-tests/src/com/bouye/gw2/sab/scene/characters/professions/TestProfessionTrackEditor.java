@@ -94,8 +94,8 @@ public final class TestProfessionTrackEditor extends Application {
 
     private Collection<Profession> loadRemoteTest() {
         return WebQuery.INSTANCE.queryProfessions();
-    }    
-    
+    }
+
     private Collection<Profession> loadLocalTest() throws IOException {
         final URL url = getClass().getResource("professions.json");
         Collection<Profession> result = Collections.EMPTY_LIST;
