@@ -64,7 +64,7 @@ public final class TestProfessionTrackEditor extends Application {
         primaryStage.setTitle("TestProfessionTrackEditor"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
-        ScenicView.show(root);
+//        ScenicView.show(root);
         loadTestAsync(professionCombo);
     }
 

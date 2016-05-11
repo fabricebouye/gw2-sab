@@ -112,8 +112,6 @@ public final class ProfessionTrackEditor extends Region {
             final double length = arc.getLength();
             final double tickLength = getTickLength();
             final double tickLabelGap = getTickLabelGap();
-            System.out.printf("Tick length %f%n", tickLength);
-            System.out.printf("Tick label gap %f%n", tickLabelGap);
             final double delta = length / Math.max(1, costsNumber - 1);
             IntStream.range(0, costsNumber)
                     .forEach(index -> {
@@ -272,23 +270,9 @@ public final class ProfessionTrackEditor extends Region {
 
     ////////////////////////////////////////////////////////////////////////////
     /** 
-     * Default tick length.
+     * Default tick length (in pixels).
      */
     private static final double DEFAULT_TICK_LENGTH = 30;
-    /**
-     * Tick length CSS meta data.
-     */
-    private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LENGTH_CSS_META = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-lenght", StyleConverter.getSizeConverter(), DEFAULT_TICK_LENGTH) { // NOI18N.
-        @Override
-        public boolean isSettable(final ProfessionTrackEditor styleable) {
-            return (styleable.tickLength == null) || !(styleable.tickLength.isBound());
-        }
-
-        @Override
-        public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
-            return styleable.tickLengthProperty();
-        }
-    };
 
     private StyleableDoubleProperty tickLength;
 
@@ -302,29 +286,15 @@ public final class ProfessionTrackEditor extends Region {
 
     public final StyleableDoubleProperty tickLengthProperty() {
         if (tickLength == null) {
-            tickLength = new SimpleStyleableDoubleProperty(TICK_LENGTH_CSS_META, this, "tickLength", DEFAULT_TICK_LENGTH); // NOI18N.
+            tickLength = new SimpleStyleableDoubleProperty(StyleableProperties.TICK_LENGTH_CSS_META_DATA, this, "tickLength", DEFAULT_TICK_LENGTH); // NOI18N.
         }
         return tickLength;
     }
 
     /** 
-     * Default tick label gap.
+     * Default tick label gap (in pixels).
      */
-    private static final double DEFAULT_TICK_LABEL_GAP = 60;
-    /**
-     * Tick label gap CSS meta data.
-     */
-    private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LABEL_GAP_CSS_META = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-label-gap", StyleConverter.getSizeConverter(), DEFAULT_TICK_LABEL_GAP) { // NOI18N.
-        @Override
-        public boolean isSettable(final ProfessionTrackEditor styleable) {
-            return (styleable.tickLength == null) || !(styleable.tickLength.isBound());
-        }
-
-        @Override
-        public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
-            return styleable.tickLengthProperty();
-        }
-    };
+    private static final double DEFAULT_TICK_LABEL_GAP = 45;
 
     private StyleableDoubleProperty tickLabelGap;
 
@@ -338,21 +308,64 @@ public final class ProfessionTrackEditor extends Region {
 
     public final StyleableDoubleProperty tickLabelGapProperty() {
         if (tickLabelGap == null) {
-            tickLabelGap = new SimpleStyleableDoubleProperty(TICK_LABEL_GAP_CSS_META, this, "tickLabelGap", DEFAULT_TICK_LABEL_GAP); // NOI18N.
+            tickLabelGap = new SimpleStyleableDoubleProperty(StyleableProperties.TICK_LABEL_GAP_CSS_META_DATA, this, "tickLabelGap", DEFAULT_TICK_LABEL_GAP); // NOI18N.
         }
         return tickLabelGap;
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
- 
+    /** 
+     * Styleable properties support.
+     * @author Fabrice Bouyé
+     */
+    private static final class StyleableProperties {
+
+        /**
+         * Tick length CSS meta data.
+         */
+        private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LENGTH_CSS_META_DATA = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-length", StyleConverter.getSizeConverter(), DEFAULT_TICK_LENGTH) { // NOI18N.
+            @Override
+            public boolean isSettable(final ProfessionTrackEditor styleable) {
+                return (styleable.tickLength == null) || !styleable.tickLength.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
+                return styleable.tickLengthProperty();
+            }
+        };
+
+        /**
+         * Tick label gap CSS meta data.
+         */
+        private static final CssMetaData<ProfessionTrackEditor, Number> TICK_LABEL_GAP_CSS_META_DATA = new CssMetaData<ProfessionTrackEditor, Number>("-fx-tick-label-gap", StyleConverter.getSizeConverter(), DEFAULT_TICK_LABEL_GAP) { // NOI18N.
+            @Override
+            public boolean isSettable(final ProfessionTrackEditor styleable) {
+                return (styleable.tickLabelGap == null) || !styleable.tickLabelGap.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Number> getStyleableProperty(final ProfessionTrackEditor styleable) {
+                return styleable.tickLabelGapProperty();
+            }
+        };
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Region.getClassCssMetaData());
+            styleables.add(TICK_LENGTH_CSS_META_DATA);
+            styleables.add(TICK_LABEL_GAP_CSS_META_DATA);
+            STYLEABLES = Collections.unmodifiableList(styleables);
+        }
+
+    }
+
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return STYLEABLES;
-    }    
-    
-    private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
-    static {
-        final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Region.getClassCssMetaData());
-        Collections.addAll(styleables, TICK_LENGTH_CSS_META, TICK_LABEL_GAP_CSS_META);
-        STYLEABLES = Collections.unmodifiableList(styleables);
+        return StyleableProperties.STYLEABLES;
+    }
+
+    @Override
+    public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
+        return getClassCssMetaData();
     }
 }
