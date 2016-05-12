@@ -67,7 +67,7 @@ enum QueryCache {
             if (resultRef != null) {
                 result = (!resultRef.get().json.equals(json)) ? null : (T) resultRef.get().value;
             }
-            if (result == null && !cache.containsKey(url)) {
+            if (result == null) {
                 final Result<T> cacheEntry = new Result();
                 cacheEntry.json = json;
                 try {
