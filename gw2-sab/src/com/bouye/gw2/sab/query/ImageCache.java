@@ -9,10 +9,10 @@ package com.bouye.gw2.sab.query;
 
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.db.DBStorage;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.lang.ref.SoftReference;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
@@ -29,15 +29,16 @@ public enum ImageCache {
     INSTANCE;
 
     /**
-     * The cache.
+     * The icon cache.
+     * <br>The cache uses soft references that may be garbaged when the VM runs out of memory.
      */
-    private final Map<String, Image> cache = new WeakHashMap();
+    private final Map<String, SoftReference<Image>> cache = Collections.synchronizedMap(new HashMap());
 
     /**
      * Retrieves an image from the cache.
      * <br>If the image is not in the cache, an empty image is returned and the data of the image is loaded in the background.
      * @param url The URL of the image.
-     * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null} or empty or invalid.
+     * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null}, empty or invalid.
      */
     public Image getImage(final String url) {
         return getImage(url, true);
@@ -47,26 +48,32 @@ public enum ImageCache {
      * Retrieves an image from the cache.
      * @param url The URL of the image.
      * @param backgroundLoading If {@code true}, the image is loaded in background.
-     * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null} or empty or invalid.
+     * @return An {@code Image} instance, may be {@code null} if {@code url} is {@code null}, empty or invalid.
      */
     public Image getImage(final String url, final boolean backgroundLoading) {
         Image result = null;
         if (url != null && !url.trim().isEmpty()) {
-            result = cache.get(url);
-            if (result == null && !cache.containsKey(url)) {
-                try {
-                    // For local images, access the data base and ignore the background loading parameter.
-                    if (!url.startsWith("https://")) { // NOI18N.
-                        result = DBStorage.INSTANCE.getImageFromCache(url);
-                    } // @todo Return a non-null image when in offline mode.
-                    else if (!SABConstants.INSTANCE.isOffline()) {
-                        // Remote image.
-                        result = new Image(url, backgroundLoading);
+            synchronized (cache) {
+                SoftReference<Image> imageRef = cache.get(url);
+                result = (imageRef == null) ? null : imageRef.get();
+                if (result == null && !cache.containsKey(url)) {
+                    try {
+                        // For local images, access the data base and ignore the background loading parameter.
+                        if (!url.startsWith("https://")) { // NOI18N.
+                            result = DBStorage.INSTANCE.getImageFromCache(url);
+                        } // Remote image.
+                        else if (!SABConstants.INSTANCE.isOffline()) {
+                            result = new Image(url, backgroundLoading);
+                        } else {
+                            // @todo Return a local (as embededed within the app) default non-null image when in offline mode.   
+                        }
+                        imageRef = new SoftReference<>(result);
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+                        cache.put(url, null);
                     }
-                    cache.put(url, result);
-                } catch (Exception ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-                    cache.put(url, null);
+                    // Storing the key upon failure should prevent from further retrieval attempts.
+                    cache.put(url, imageRef);
                 }
             }
         }
