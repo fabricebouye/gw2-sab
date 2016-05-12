@@ -105,11 +105,34 @@ public final class ProfessionTrackEditor extends Region {
         arc.setCenterY(centerY);
         arc.setRadiusX(radius);
         arc.setRadiusY(radius);
+        final int costsNumber = ticks.size();
+        double angle1 = 80;
+        double angle2 = 100;
+        switch (costsNumber) {
+            case 4:
+                angle1 = -5;
+                break;
+            case 5:
+            case 6:
+            case 7:
+                angle1 = 15;
+                break;
+            case 12:
+                angle1 = 60;
+                angle2 = 90;
+                break;
+            case 16:
+            case 18:
+            case 19:
+            default:
+                System.out.println(costsNumber);
+        }
+        final double startAngle = angle1;
+        final double length = angle2 - angle1 - 360;
+        arc.setStartAngle(startAngle);
+        arc.setLength(length);
         //
         if (!ticks.isEmpty()) {
-            final int costsNumber = ticks.size();
-            final double startAngle = arc.getStartAngle();
-            final double length = arc.getLength();
             final double tickLength = getTickLength();
             final double tickLabelGap = getTickLabelGap();
             final double delta = length / Math.max(1, costsNumber - 1);
