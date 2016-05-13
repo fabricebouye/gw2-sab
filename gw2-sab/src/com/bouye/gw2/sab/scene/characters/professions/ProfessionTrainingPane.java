@@ -10,25 +10,16 @@ package com.bouye.gw2.sab.scene.characters.professions;
 import api.web.gw2.mapping.core.EnumValueFactory;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.professions.Profession;
-import api.web.gw2.mapping.v2.professions.ProfessionElementalistAttunement;
 import api.web.gw2.mapping.v2.professions.ProfessionTrack;
 import api.web.gw2.mapping.v2.professions.ProfessionTrackCategory;
-import api.web.gw2.mapping.v2.professions.ProfessionWeaponSkill;
-import api.web.gw2.mapping.v2.professions.ProfessionWeaponSkillSet;
-import api.web.gw2.mapping.v2.professions.ProfessionWeaponSlot;
-import api.web.gw2.mapping.v2.professions.ProfessionWeaponType;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -41,22 +32,13 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 /**
  * Profession details.
@@ -64,18 +46,13 @@ import javafx.scene.text.Text;
  */
 public final class ProfessionTrainingPane extends HBox {
 
-    private final Tab skillsTab = new Tab("Skils");
-    private final VBox weaponsVBox = new VBox();
-    private final ScrollPane weaponsScroll = new ScrollPane(weaponsVBox);
-    private final Tab weaponsTab = new Tab("Weapons", weaponsScroll);
     private final VBox tracksVBox = new VBox();
     private final ScrollPane tracksScroll = new ScrollPane(tracksVBox);
-    private final Tab tracksTab = new Tab("Traits", tracksScroll);
-    private final TabPane sideTabPane = new TabPane(skillsTab, weaponsTab, tracksTab);
-    private final Label editorLabel = new Label();
-    private final ProfessionTrackEditor trackEditor = new ProfessionTrackEditor();
-    private final VBox editorVBox = new VBox(editorLabel, trackEditor);
+    //
     private final ToggleGroup trackToggleGroup = new ToggleGroup();
+    private final Label trackEditorLabel = new Label();
+    private final ProfessionTrackEditor trackEditor = new ProfessionTrackEditor();
+    private final VBox trackEditorVBox = new VBox(trackEditorLabel, trackEditor);
 
     /**
      * Creates a new instance.
@@ -85,41 +62,31 @@ public final class ProfessionTrainingPane extends HBox {
         setId("professionTrainingPane"); // NOI18N.
         getStyleClass().add("profession-training-pane"); // NOI18N.
         //
-        weaponsVBox.setId("weaponsVBox"); // NOI18N.
-        //
-        weaponsScroll.setId("weaponsScroll"); // NOI18N.
-        weaponsScroll.setFitToWidth(true);
-        weaponsScroll.setFitToHeight(true);
-        //
         tracksVBox.setId("tracksVBox"); // NOI18N.
         //
         tracksScroll.setId("traitsScroll"); // NOI18N.
         tracksScroll.setFitToWidth(true);
         tracksScroll.setFitToHeight(true);
+        HBox.setHgrow(tracksScroll, Priority.ALWAYS);
         //
         trackEditor.setId("trackEditor"); // NOI18N.
         trackEditor.trackProperty().bind(trackProperty());
         //
-        editorLabel.setId("editorLabel");
-        editorLabel.setMaxWidth(Double.MAX_VALUE);
+        trackEditorLabel.setId("editorLabel");
+        trackEditorLabel.setMaxWidth(Double.MAX_VALUE);
         //
-        editorVBox.setId("editorVBox");
-        HBox.setHgrow(editorVBox, Priority.NEVER);
-        //
-        skillsTab.setClosable(false);
-        weaponsTab.setClosable(false);
-        tracksTab.setClosable(false);
-        HBox.setHgrow(sideTabPane, Priority.ALWAYS);
-        //
-        getChildren().addAll(sideTabPane, editorVBox);
+        trackEditorVBox.setId("editorVBox");
+        HBox.setHgrow(trackEditorVBox, Priority.NEVER);
+        //        
+        getChildren().addAll(tracksScroll, trackEditorVBox);
         //
         trackToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             final ProfessionTrack track = (newValue == null) ? null : (ProfessionTrack) newValue.getUserData();
-            editorLabel.setText(track == null ? null : track.getName() + " - " + track.getTrack().size());
+            trackEditorLabel.setText(track == null ? null : track.getName() + " - " + track.getTrack().size());
             setTrack(track);
         });
         //
-        profession.addListener(professionChangeListener);
+        professionProperty().addListener(professionChangeListener);
     }
 
     @Override
@@ -149,9 +116,6 @@ public final class ProfessionTrainingPane extends HBox {
         final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(cProfession);
         pseudoClassStateChanged(pseudoClass, false);
         trackEditor.setProfession(null);
-        // Clear skills.
-        // Clear weapons.
-        weaponsVBox.getChildren().clear();
         // Clear tracks.
         tracksVBox.getChildren().clear();
         trackToggleGroup.getToggles().clear();
@@ -168,100 +132,11 @@ public final class ProfessionTrainingPane extends HBox {
         final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(cProfession);
         pseudoClassStateChanged(pseudoClass, true);
         trackEditor.setProfession(profession);
-        // Populate skills.
-        // Populate weapons.
-        weaponsVBox.getChildren().setAll(createWeaponsContent(profession));
         // Populate tracks.
         tracksVBox.getChildren().setAll(createTracksContent(profession));
         if (!trackToggleGroup.getToggles().isEmpty()) {
             trackToggleGroup.selectToggle(trackToggleGroup.getToggles().get(0));
         }
-    }
-
-    private List<Node> createWeaponsContent(final Profession profession) {
-        final List<Node> result = profession.getWeapons()
-                .entrySet()
-                .stream()
-                .map(entry -> createWeaponPane(profession, entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-        return result;
-    }
-
-    private Node createWeaponPane(final Profession profession, final ProfessionWeaponType weaponType, final ProfessionWeaponSkillSet skillSet) {
-        final VBox contentVBox = new VBox();
-        final CharacterProfession cProfession = EnumValueFactory.INSTANCE.mapEnumValue(CharacterProfession.class, profession.getId());
-        System.out.println(profession + "\t" + weaponType);
-        final Map<ProfessionWeaponSlot, List<ProfessionWeaponSkill>> map = Arrays.stream(ProfessionWeaponSlot.values())
-                .filter(slot -> slot != ProfessionWeaponSlot.UNKNOWN)
-                .collect(Collectors.toMap(Function.identity(), slot -> skillSet.getSkills()
-                        .stream()
-                        .filter(skill -> slot == skill.getSlot())
-                        .collect(Collectors.toList())));
-        contentVBox.getChildren().add(createWeaponSkillsPane(weaponType, map));
-        final TitledPane result = new TitledPane();
-        final String titleKey = String.format("weapon.%s.label", LabelUtils.INSTANCE.toLabel(weaponType).toLowerCase()); // NOI18N.
-        result.setText(SABConstants.I18N.getString(titleKey));
-        result.setContent(contentVBox);
-        return result;
-    }
-
-    private Node createWeaponSkillsPane(final ProfessionWeaponType weaponType, final Map<ProfessionWeaponSlot, List<ProfessionWeaponSkill>> map) {
-        final int maxRows = map.values()
-                .stream()
-                .mapToInt(List::size)
-                .max()
-                .getAsInt();
-        GridPane gridPane = new GridPane();
-        IntStream.range(0, maxRows)
-                .forEach(row -> {
-                    RowConstraints rowContraints = new RowConstraints();
-                    gridPane.getRowConstraints().add(rowContraints);
-                });
-        Arrays.stream(ProfessionWeaponSlot.values())
-                .filter(slot -> slot != ProfessionWeaponSlot.UNKNOWN)
-                .forEach(slot -> {
-                    final int column = slot.ordinal();
-                    final List<ProfessionWeaponSkill> skillList = map.get(slot);
-                    final int skillNumbersForSlot = skillList.size();
-                    IntStream.range(0, maxRows)
-                            .forEach(row -> {
-                                ProfessionWeaponSkill skill = row < skillNumbersForSlot ? skillList.get(row) : null;
-                                final Node node = createWeaponSkillNode(weaponType, skill);
-                                GridPane.setConstraints(node, column, row);
-                                gridPane.getChildren().add(node);
-                            });
-                });
-        return gridPane;
-    }
-
-    /**
-     * Creates the visual representation for a given weapon skill.
-     * @param skill The skill, may be {@code null}.
-     * @return A {@code Node}, never {@code null}.
-     */
-    private Node createWeaponSkillNode(final ProfessionWeaponType weaponType, final ProfessionWeaponSkill skill) {
-        final Rectangle rectangle = new Rectangle(32, 32);
-        rectangle.setFill(Color.LIGHTGRAY);
-        rectangle.setStroke(Color.BLACK);
-        StackPane result = new StackPane();
-        result.getChildren().add(rectangle);
-        if (skill != null) {
-            final Text text = new Text(String.valueOf(skill.getId()));
-            result.getChildren().add(text);
-            final Tooltip tooltip = new Tooltip();
-            String tip = String.valueOf(skill.getId());
-            tip += "\n" + weaponType;
-            if (skill.getOffhand().isPresent()) {
-                tip += "\n" + skill.getOffhand().get();
-            }
-            if (skill.getAttunement().isPresent()) {
-                tip += "\n" + skill.getAttunement().get();
-            }
-            tip += "\n" + skill.getSlot();
-            tooltip.setText(tip);
-            Tooltip.install(result, tooltip);
-        }
-        return result;
     }
 
     private List<Node> createTracksContent(final Profession profession) {
@@ -312,7 +187,7 @@ public final class ProfessionTrainingPane extends HBox {
         return editable;
     }
 
-    private final ReadOnlyObjectWrapper<Profession> profession = new ReadOnlyObjectWrapper<>(this, "profession", null); // NOI18N.
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession", null); // NOI18N.
 
     public final Profession getProfession() {
         return profession.get();
@@ -322,8 +197,8 @@ public final class ProfessionTrainingPane extends HBox {
         profession.set(value);
     }
 
-    public final ReadOnlyObjectProperty<Profession> professionProperty() {
-        return profession.getReadOnlyProperty();
+    public final ObjectProperty<Profession> professionProperty() {
+        return profession;
     }
 
     private final ReadOnlyObjectWrapper<ProfessionTrack> track = new ReadOnlyObjectWrapper<>(this, "track", null); // NOI18N.

@@ -14,7 +14,7 @@ import javafx.scene.control.ListCell;
  * Test.
  * @author Fabrice Bouyé
  */
-final class SimpleProfessionTackListCell extends ListCell<ProfessionTrack> {
+public final class SimpleProfessionTackListCell extends ListCell<ProfessionTrack> {
 
     /**
      * Creates a new instance.

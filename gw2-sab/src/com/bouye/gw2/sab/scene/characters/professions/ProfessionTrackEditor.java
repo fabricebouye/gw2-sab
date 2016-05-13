@@ -77,7 +77,7 @@ public final class ProfessionTrackEditor extends Region {
                 arc);
         //
         trackProperty().addListener(trackChangeListener);
-        profession.addListener(professionChangeListener);
+        professionProperty().addListener(professionChangeListener);
         tickLengthProperty().addListener(observable -> requestLayout());
         tickLabelGapProperty().addListener(observable -> requestLayout());
     }
@@ -262,7 +262,7 @@ public final class ProfessionTrackEditor extends Region {
         return editable;
     }
 
-    private final ReadOnlyObjectWrapper<Profession> profession = new ReadOnlyObjectWrapper<>(this, "profession", null); // NOI18N.
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession", null); // NOI18N.
 
     public final Profession getProfession() {
         return profession.get();
@@ -272,11 +272,11 @@ public final class ProfessionTrackEditor extends Region {
         profession.set(value);
     }
 
-    public final ReadOnlyObjectProperty<Profession> professionProperty() {
-        return profession.getReadOnlyProperty();
+    public final ObjectProperty<Profession> professionProperty() {
+        return profession;
     }
 
-    private final ObjectProperty<ProfessionTrack> track = new SimpleObjectProperty<>(this, "track", null);
+    private final ObjectProperty<ProfessionTrack> track = new SimpleObjectProperty<>(this, "track", null); // NOI18N.
 
     public final ProfessionTrack getTrack() {
         return track.get();
