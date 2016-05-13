@@ -125,7 +125,6 @@ public final class ProfessionTrackEditor extends Region {
             case 18:
             case 19:
             default:
-                System.out.println(costsNumber);
         }
         final double startAngle = angle1;
         final double length = angle2 - angle1 - 360;
