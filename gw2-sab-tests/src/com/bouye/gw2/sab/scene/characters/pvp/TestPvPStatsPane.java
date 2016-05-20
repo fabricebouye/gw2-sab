@@ -10,6 +10,10 @@ package com.bouye.gw2.sab.scene.characters.pvp;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import com.bouye.gw2.sab.SAB;
+import com.bouye.gw2.sab.SABConstants;
+import com.bouye.gw2.sab.query.WebQuery;
+import com.bouye.gw2.sab.scene.SABTestUtils;
+import com.bouye.gw2.sab.session.Session;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -51,13 +55,13 @@ public class TestPvPStatsPane extends Application {
                 return new Task<Stat>() {
                     @Override
                     protected Stat call() throws Exception {
-                        return loadLocalTest();
+                        return (SABConstants.INSTANCE.isOffline()) ? loadLocalTest() : loadRemoteTest();
                     }
                 };
             }
         };
         service.setOnSucceeded(workerStateEvent -> {
-            final Stat stat = (Stat)workerStateEvent.getSource().getValue();
+            final Stat stat = (Stat) workerStateEvent.getSource().getValue();
             statsPane.setStat(stat);
         });
         service.setOnFailed(workerStateEvent -> {
@@ -65,6 +69,12 @@ public class TestPvPStatsPane extends Application {
             Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
         });
         service.start();
+    }
+
+    private Stat loadRemoteTest() {
+        final Session session = SABTestUtils.INSTANCE.getTestSession();
+        final Optional<Stat> result = WebQuery.INSTANCE.queryPvPStats(session.getAppKey());
+        return result.orElse(null);
     }
 
     private Stat loadLocalTest() throws NullPointerException, IOException {
