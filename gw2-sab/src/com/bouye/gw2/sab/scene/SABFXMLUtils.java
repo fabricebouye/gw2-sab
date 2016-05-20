@@ -51,6 +51,8 @@ public enum SABFXMLUtils {
             } catch (Exception ex) {
                 Logger.getLogger(SABFXMLUtils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
+        } else {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, fxml + " missing.");
         }
         return result;
     }
