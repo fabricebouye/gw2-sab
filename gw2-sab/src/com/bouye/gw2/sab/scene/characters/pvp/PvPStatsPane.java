@@ -13,6 +13,8 @@ import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import java.net.URL;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.VBox;
 
@@ -26,6 +28,14 @@ public final class PvPStatsPane extends VBox {
      * This node's controller.
      */
     private final Optional<PvPStatsPaneController> controller;
+
+    /**
+     * Display options.
+     * @author Fabrice Bouyé
+     */
+    public enum ResultType {
+        WINS, LOSSES, DESERTIONS, BYES, FORFEITS;
+    }
 
     /**
      * Creates a new instance.
@@ -59,5 +69,19 @@ public final class PvPStatsPane extends VBox {
 
     public ObjectProperty<Stat> statProperty() {
         return stat;
+    }
+
+    private final ReadOnlyObjectWrapper<ResultType> display = new ReadOnlyObjectWrapper<>(this, "display", ResultType.WINS);
+
+    public final void setDisplay(final ResultType value) {
+        display.set(value == null ? ResultType.WINS : value);
+    }
+
+    public final ResultType getDisplay() {
+        return display.get();
+    }
+
+    public final ReadOnlyObjectProperty<ResultType> displayProperty() {
+        return display.getReadOnlyProperty();
     }
 }

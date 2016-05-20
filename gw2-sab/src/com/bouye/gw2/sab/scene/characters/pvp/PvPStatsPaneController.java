@@ -22,6 +22,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
 /**
@@ -32,6 +33,8 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
 
     @FXML
     private Label rankLabel;
+    @FXML
+    private ComboBox<PvPStatsPane.ResultType> displayCombo;
     @FXML
     private PieChart professionPieChart;
 
@@ -45,6 +48,8 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
+        displayCombo.getItems().setAll(PvPStatsPane.ResultType.values());
+        displayCombo.valueProperty().addListener(comboDisplayChangeListener);
         // Pre-allocate pie data.
         Arrays.stream(CharacterProfession.values())
                 .filter(profession -> profession != CharacterProfession.UNKNOWN)
@@ -65,12 +70,26 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
 
     @Override
     protected void uninstallNode(final PvPStatsPane node) {
-        node.statProperty().removeListener(statChangeListener);
+        valueEditing = true;
+        try {
+            node.statProperty().removeListener(statChangeListener);
+            node.displayProperty().removeListener(displayChangeListener);
+            displayCombo.getSelectionModel().select(null);
+        } finally {
+            valueEditing = false;
+        }
     }
 
     @Override
     protected void installNode(final PvPStatsPane node) {
-        node.statProperty().addListener(statChangeListener);
+        valueEditing = true;
+        try {
+            node.statProperty().addListener(statChangeListener);
+            node.displayProperty().addListener(displayChangeListener);
+            displayCombo.getSelectionModel().select(node.getDisplay());
+        } finally {
+            valueEditing = false;
+        }
     }
 
     @Override
@@ -86,18 +105,50 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
         } else {
             rankLabel.setText(String.valueOf(stat.getPvpRank()));
             final Map<CharacterProfession, StatResult> professionResult = stat.getProfessions();
+            final PvPStatsPane.ResultType resultType = node.get().getDisplay();
             Arrays.stream(CharacterProfession.values())
                     .filter(profession -> profession != CharacterProfession.UNKNOWN)
                     .forEach(profession -> {
                         final StatResult result = professionResult.get(profession);
                         if (result != null) {
                             final PieChart.Data data = dataMap.get(profession);
-                            System.out.println(profession + "\t" + result.getWins() + "\t" + data);
-                            data.setPieValue(result.getWins());
+                            double value = 0;
+                            switch (resultType) {
+                                case BYES:
+                                    value = result.getByes();
+                                    break;
+                                case DESERTIONS:
+                                    value = result.getDesertions();
+                                    break;
+                                case FORFEITS:
+                                    value = result.getForfeits();
+                                    break;
+                                case LOSSES:
+                                    value = result.getLosses();
+                                    break;
+                                case WINS:
+                                default:
+                                    value = result.getWins();
+                            }
+                            data.setPieValue(value);
                         }
                     });
         }
     }
 
     private final ChangeListener<Stat> statChangeListener = (observable, oldValue, newValue) -> updateUI();
+    private final ChangeListener<PvPStatsPane.ResultType> displayChangeListener = (observable, oldValue, newValue) -> updateUI();
+
+    private boolean valueEditing = false;
+
+    /**
+     * Called whenever the display changes in the combo box.
+     */
+    private final ChangeListener<PvPStatsPane.ResultType> comboDisplayChangeListener = (observable, oldValue, newValue) -> {
+        if (valueEditing) {
+            return;
+        }
+        final Optional<PvPStatsPane> node = parentNode();
+        parentNode().ifPresent(n -> n.setDisplay(newValue));
+    };
 }
