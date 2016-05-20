@@ -43,7 +43,7 @@ public final class AccountListRenderer extends GridPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/account/AccountListRenderer.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<Session> session = new SimpleObjectProperty<>(this, "session", null);
