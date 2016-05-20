@@ -1,0 +1,41 @@
+.pvp-stats-pane {    
+}
+.pvp-stats-pane .chart-pie {    
+}
+/* Pseudo class might be difficult to put on legend graphic. */
+.pvp-stats-pane .chart-pie:Elementalist, 
+.pvp-stats-pane .data0 {    
+    -fx-background-color: -profession-elementalist-color;
+}
+.pvp-stats-pane .chart-pie:Engineer, 
+.pvp-stats-pane .data1  {    
+    -fx-background-color: -profession-engineer-color;
+}
+.pvp-stats-pane .chart-pie:Guardian, 
+.pvp-stats-pane .data2  {    
+    -fx-background-color: -profession-guardian-color;
+}
+.pvp-stats-pane .chart-pie:Mesmer, 
+.pvp-stats-pane .data3  {    
+    -fx-background-color: -profession-mesmer-color;
+}
+.pvp-stats-pane .chart-pie:Necromancer, 
+.pvp-stats-pane .data4  {    
+    -fx-background-color: -profession-necromancer-color;
+}
+.pvp-stats-pane .chart-pie:Ranger, 
+.pvp-stats-pane .data5  {    
+    -fx-background-color: -profession-ranger-color;
+}
+.pvp-stats-pane .chart-pie:Revenant, 
+.pvp-stats-pane .data6  {    
+    -fx-background-color: -profession-revenant-color;
+}
+.pvp-stats-pane .chart-pie:Thief, 
+.pvp-stats-pane .data7  {    
+    -fx-background-color: -profession-thief-color;
+}
+.pvp-stats-pane .chart-pie:Warrrior, 
+.pvp-stats-pane .data8  {    
+    -fx-background-color: -profession-warrior-color;
+}

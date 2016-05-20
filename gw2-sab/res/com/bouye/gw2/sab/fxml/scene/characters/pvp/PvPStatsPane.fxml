@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root id="VBox" fx:id="rootPane" prefHeight="600.0" prefWidth="400.0" styleClass="pvp-stats-pane" type="VBox" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.characters.pvp.PvPStatsPaneController">
+   <children>
+      <Label fx:id="rankLabel" text="Label" />
+      <PieChart fx:id="professionPieChart" labelsVisible="false" legendSide="RIGHT" VBox.vgrow="ALWAYS" />
+   </children>
+</fx:root>
