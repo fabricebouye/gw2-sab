@@ -253,7 +253,7 @@ public final class SpecializationEditor extends Region {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/specializations/SpecializationEditor.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     ////////////////////////////////////////////////////////////////////////////    

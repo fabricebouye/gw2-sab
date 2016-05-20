@@ -41,7 +41,7 @@ public final class WalletPane extends VBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/account/wallet/WalletPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObservableList<CurrencyWrapper> currencies = FXCollections.observableArrayList();

@@ -92,7 +92,7 @@ public final class ProfessionTrainingPane extends HBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/professions/ProfessionTrainingPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     ////////////////////////////////////////////////////////////////////////////    

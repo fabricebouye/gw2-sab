@@ -47,7 +47,7 @@ public final class MaterialsPane extends VBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/account/materials/MaterialsPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObservableList<MaterialStorage> materialStorage = FXCollections.observableArrayList();

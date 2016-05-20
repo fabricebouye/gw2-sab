@@ -41,7 +41,7 @@ public final class CharacterListRenderer extends GridPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/CharacterListRenderer.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<CharacterWrapper> character = new SimpleObjectProperty<>(this, "character", null);

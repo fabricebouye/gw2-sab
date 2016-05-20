@@ -42,7 +42,7 @@ public final class ItemTooltipRenderer extends GridPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/items/ItemTooltipRenderer.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<ItemWrapper> item = new SimpleObjectProperty<>(this, "item", null); // NOI18N.

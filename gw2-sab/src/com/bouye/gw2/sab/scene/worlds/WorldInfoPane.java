@@ -42,7 +42,7 @@ public final class WorldInfoPane extends GridPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/worlds/WorldInfoPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<World> world = new SimpleObjectProperty<>(this, "world", null); // NOI18N.   

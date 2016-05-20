@@ -44,7 +44,7 @@ public final class CharactersListPane extends VBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/CharacterListPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
     
     private final ObservableList<CharacterWrapper> characters = FXCollections.observableArrayList();

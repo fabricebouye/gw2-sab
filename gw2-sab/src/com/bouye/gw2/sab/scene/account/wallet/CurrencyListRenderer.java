@@ -40,7 +40,7 @@ public final class CurrencyListRenderer extends HBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/account/wallet/CurrencyListRenderer.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<CurrencyWrapper> currency = new SimpleObjectProperty<>(this, "currency", null); // NOI18N.

@@ -47,7 +47,7 @@ public final class BankPane extends VBox {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/account/bank/BankPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
     
     private final ObservableList<BankSlot> slots = FXCollections.observableArrayList();

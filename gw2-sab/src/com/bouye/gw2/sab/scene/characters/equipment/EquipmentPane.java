@@ -41,7 +41,7 @@ public final class EquipmentPane extends FlowPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/characters/equipment/EquipmentPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<Character> character = new SimpleObjectProperty<>(this, "character", null); // NOI18N.

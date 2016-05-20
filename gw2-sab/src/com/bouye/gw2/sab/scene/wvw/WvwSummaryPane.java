@@ -41,7 +41,7 @@ public final class WvwSummaryPane extends GridPane {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/wvw/WvwSummaryPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     private final ObjectProperty<MatchWrapper> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.

@@ -89,7 +89,7 @@ public final class DivisionPane extends Region {
     @Override
     public String getUserAgentStylesheet() {
         final URL url = SAB.class.getResource("styles/scene/pvp/seasons/DivisionPane.css"); // NOI18N.
-        return url.toExternalForm();
+        return (url == null) ? null : url.toExternalForm();
     }
 
     /**
