@@ -395,7 +395,7 @@ public enum WebQuery {
         Optional<Stat> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/pvp/stats/?access_token=%s", appKey); // NOI18N.
+            final String query = String.format("https://api.guildwars2.com/v2/pvp/stats?access_token=%s", appKey); // NOI18N.
             result = objectWebQuery(Stat.class, query);
         }
         return result;
