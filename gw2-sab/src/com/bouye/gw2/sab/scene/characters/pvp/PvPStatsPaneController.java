@@ -21,12 +21,15 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 
 /**
  * FXML controller.
+ *
  * @author Fabrice Bouyé
  */
 public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane> {
@@ -44,6 +47,20 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
     public PvPStatsPaneController() {
     }
 
+    /**
+     * For some reason the pie chart in the pvp stats screen in game uses the
+     * following profession order.
+     */
+    private final CharacterProfession[] professions = {
+        CharacterProfession.GUARDIAN,
+        CharacterProfession.WARRIOR,
+        CharacterProfession.ENGINEER,
+        CharacterProfession.RANGER,
+        CharacterProfession.THIEF,
+        CharacterProfession.ELEMENTALIST,
+        CharacterProfession.MESMER,
+        CharacterProfession.NECROMANCER,
+        CharacterProfession.REVENANT,};
     private final Map<CharacterProfession, PieChart.Data> dataMap = new LinkedHashMap<>();
 
     @Override
@@ -51,20 +68,23 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
         displayCombo.getItems().setAll(PvPStatsPane.ResultType.values());
         displayCombo.valueProperty().addListener(comboDisplayChangeListener);
         // Pre-allocate pie data.
-        Arrays.stream(CharacterProfession.values())
-                .filter(profession -> profession != CharacterProfession.UNKNOWN)
+        Arrays.stream(professions)
                 .forEach(profession -> {
                     final PieChart.Data data = new PieChart.Data(profession.name(), 0);
                     dataMap.put(profession, data);
                 });
         professionPieChart.getData().setAll(dataMap.values());
+        professionPieChart.setStartAngle(90);
         // FB-2016-05-20: needs to be done after the data has been added to the pie chart.
-        Arrays.stream(CharacterProfession.values())
-                .filter(profession -> profession != CharacterProfession.UNKNOWN)
+        Arrays.stream(professions)
                 .forEach(profession -> {
                     final PieChart.Data data = dataMap.get(profession);
                     final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
-                    data.getNode().pseudoClassStateChanged(pseudoClass, true);
+                    final Node sector = data.getNode();
+                    sector.pseudoClassStateChanged(pseudoClass, true);
+                    final Tooltip tooltip = new Tooltip();
+                    Tooltip.install(sector, tooltip);
+                    sector.getProperties().put("tooltip", tooltip); // NOI18N.
                 });
     }
 
@@ -98,39 +118,55 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
         final Stat stat = (node.isPresent()) ? node.get().getStat() : null;
         if (stat == null) {
             rankLabel.setText(null);
-            Arrays.stream(CharacterProfession.values())
-                    .filter(profession -> profession != CharacterProfession.UNKNOWN)
+            Arrays.stream(professions)
                     .map(dataMap::get)
-                    .forEach(data -> data.setPieValue(0));
+                    .forEach(data -> {
+                        data.setPieValue(0);
+                        final Node sector = data.getNode();
+                        final Tooltip tooltip = (Tooltip) sector.getProperties().get("tooltip"); // NOI18N.
+                        tooltip.setText(null);
+                    });
         } else {
             rankLabel.setText(String.valueOf(stat.getPvpRank()));
             final Map<CharacterProfession, StatResult> professionResult = stat.getProfessions();
             final PvPStatsPane.ResultType resultType = node.get().getDisplay();
-            Arrays.stream(CharacterProfession.values())
-                    .filter(profession -> profession != CharacterProfession.UNKNOWN)
-                    .forEach(profession -> {
+            int totalValue = Arrays.stream(professions)
+                    .mapToInt(profession -> {
                         final StatResult result = professionResult.get(profession);
+                        int value = 0;
                         if (result != null) {
-                            final PieChart.Data data = dataMap.get(profession);
-                            double value = 0;
                             switch (resultType) {
-                                case BYES:
-                                    value = result.getByes();
-                                    break;
-                                case DESERTIONS:
-                                    value = result.getDesertions();
-                                    break;
-                                case FORFEITS:
-                                    value = result.getForfeits();
-                                    break;
-                                case LOSSES:
-                                    value = result.getLosses();
+                                case TOTAL_GAMES:
+                                    value = result.getWins() + result.getLosses();
                                     break;
                                 case WINS:
                                 default:
                                     value = result.getWins();
                             }
+                        }
+                        return value;
+                    })
+                    .sum();
+            Arrays.stream(professions)
+                    .forEach(profession -> {
+                        final StatResult result = professionResult.get(profession);
+                        if (result != null) {
+                            final PieChart.Data data = dataMap.get(profession);
+                            int value = 0;
+                            switch (resultType) {
+                                case TOTAL_GAMES:
+                                    value = result.getWins() + result.getLosses();
+                                    break;
+                                case WINS:
+                                default:
+                                    value = result.getWins();
+                            }
+                            int percent = (int) Math.floor(100 * value / (double) totalValue);
                             data.setPieValue(value);
+                            final Node sector = data.getNode();
+                            final Tooltip tooltip = (Tooltip) sector.getProperties().get("tooltip"); // NOI18N.
+                            final String tip = String.format("%s - %s - %d - %d%%", profession, resultType, value, percent);
+                            tooltip.setText(tip);
                         }
                     });
         }

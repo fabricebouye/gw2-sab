@@ -34,7 +34,7 @@ public final class PvPStatsPane extends VBox {
      * @author Fabrice Bouyé
      */
     public enum ResultType {
-        WINS, LOSSES, DESERTIONS, BYES, FORFEITS;
+        WINS, TOTAL_GAMES;
     }
 
     /**
