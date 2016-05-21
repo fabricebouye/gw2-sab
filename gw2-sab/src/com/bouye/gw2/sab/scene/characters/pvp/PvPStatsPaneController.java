@@ -14,16 +14,20 @@ import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.IntStream;
 import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
@@ -76,12 +80,21 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
         professionPieChart.getData().setAll(dataMap.values());
         professionPieChart.setStartAngle(90);
         // FB-2016-05-20: needs to be done after the data has been added to the pie chart.
-        Arrays.stream(professions)
-                .forEach(profession -> {
+        final Node legend = professionPieChart.lookup(".chart-legend"); // NOI18N.
+        final Set<Node> legendItems = legend.lookupAll(".chart-legend-item");
+        final Iterator<Node> legendItemsIterator = legendItems.iterator();
+        IntStream.range(0, professions.length)
+                .forEach(professionIndex -> {
+                    final CharacterProfession profession = professions[professionIndex];
+                    final Label legendLabel = (Label) legendItemsIterator.next();
                     final PieChart.Data data = dataMap.get(profession);
                     final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(profession);
                     final Node sector = data.getNode();
                     sector.pseudoClassStateChanged(pseudoClass, true);
+                    legendLabel.pseudoClassStateChanged(pseudoClass, true);
+                    // FB-2016-05-21: does not work when using CSS, forcing this through code.
+                    legendLabel.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    // @todo Set profession icon here.
                     final Tooltip tooltip = new Tooltip();
                     Tooltip.install(sector, tooltip);
                     sector.getProperties().put("tooltip", tooltip); // NOI18N.
@@ -161,11 +174,11 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
                                 default:
                                     value = result.getWins();
                             }
-                            int percent = (int) Math.floor(100 * value / (double) totalValue);
+                            double percent = 100 * value / (double) totalValue;
                             data.setPieValue(value);
                             final Node sector = data.getNode();
                             final Tooltip tooltip = (Tooltip) sector.getProperties().get("tooltip"); // NOI18N.
-                            final String tip = String.format("%s - %s - %d - %d%%", profession, resultType, value, percent);
+                            final String tip = String.format("%s - %s - %d - %.2f%% - %d%%", profession, resultType, value, percent, (int) Math.rint(percent));
                             tooltip.setText(tip);
                         }
                     });

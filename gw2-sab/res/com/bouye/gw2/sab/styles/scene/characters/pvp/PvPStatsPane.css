@@ -2,40 +2,43 @@
 }
 .pvp-stats-pane .chart-pie {    
 }
-/* Pseudo class might be difficult to put on legend graphic. */
 .pvp-stats-pane .chart-pie:Elementalist, 
-.pvp-stats-pane .data5 {    
+.pvp-stats-pane .chart-legend-item:Elementalist .chart-legend-item-symbol {    
     -fx-background-color: -profession-elementalist-color;
 }
 .pvp-stats-pane .chart-pie:Engineer, 
-.pvp-stats-pane .data2  {    
+.pvp-stats-pane .chart-legend-item:Engineer .chart-legend-item-symbol {    
     -fx-background-color: -profession-engineer-color;
 }
 .pvp-stats-pane .chart-pie:Guardian, 
-.pvp-stats-pane .data0  {    
+.pvp-stats-pane .chart-legend-item:Guardian .chart-legend-item-symbol {    
     -fx-background-color: -profession-guardian-color;
 }
 .pvp-stats-pane .chart-pie:Mesmer, 
-.pvp-stats-pane .data6  {    
+.pvp-stats-pane .chart-legend-item:Mesmer .chart-legend-item-symbol {    
     -fx-background-color: -profession-mesmer-color;
 }
 .pvp-stats-pane .chart-pie:Necromancer, 
-.pvp-stats-pane .data7  {    
+.pvp-stats-pane .chart-legend-item:Necromancer .chart-legend-item-symbol {    
     -fx-background-color: -profession-necromancer-color;
 }
 .pvp-stats-pane .chart-pie:Ranger, 
-.pvp-stats-pane .data3  {    
+.pvp-stats-pane .chart-legend-item:Ranger .chart-legend-item-symbol {    
     -fx-background-color: -profession-ranger-color;
 }
 .pvp-stats-pane .chart-pie:Revenant, 
-.pvp-stats-pane .data8  {    
+.pvp-stats-pane .chart-legend-item:Revenant .chart-legend-item-symbol {    
     -fx-background-color: -profession-revenant-color;
 }
 .pvp-stats-pane .chart-pie:Thief, 
-.pvp-stats-pane .data4  {    
+.pvp-stats-pane .chart-legend-item:Thief .chart-legend-item-symbol {    
     -fx-background-color: -profession-thief-color;
 }
 .pvp-stats-pane .chart-pie:Warrrior, 
-.pvp-stats-pane .data1  {    
+.pvp-stats-pane .chart-legend-item:Warrior .chart-legend-item-symbol {    
     -fx-background-color: -profession-warrior-color;
+}
+/* FB-2016-05-21: -fx-content-display does not appear to work here. */
+.pvp-stats-pane .chart-legend-item {
+    -fx-content-display: graphic-only;
 }
