@@ -5,7 +5,7 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  */
-package com.bouye.gw2.sab.scene.characters.pvp;
+package com.bouye.gw2.sab.scene.account.pvp;
 
 import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import com.bouye.gw2.sab.SAB;
@@ -44,7 +44,7 @@ public final class PvPStatsPane extends VBox {
         super();
         setId("pvpStatsPane"); // NOI18N.
         // An issue here is that we do not dispose of the controller.
-        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/characters/pvp/PvPStatsPane.fxml", this); // NOI18N.
+        controller = SABFXMLUtils.INSTANCE.loadAndInject("fxml/scene/account/pvp/PvPStatsPane.fxml", this); // NOI18N.
     }
 
 //    @Override 
@@ -53,7 +53,7 @@ public final class PvPStatsPane extends VBox {
 //    }
     @Override
     public String getUserAgentStylesheet() {
-        final URL url = SAB.class.getResource("styles/scene/characters/pvp/PvPStatsPane.css"); // NOI18N.
+        final URL url = SAB.class.getResource("styles/scene/account/pvp/PvPStatsPane.css"); // NOI18N.
         return (url == null) ? null : url.toExternalForm();
     }
 
