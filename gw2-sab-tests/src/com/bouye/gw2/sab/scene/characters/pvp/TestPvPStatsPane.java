@@ -44,11 +44,15 @@ public class TestPvPStatsPane extends Application {
         primaryStage.setTitle("TestPvPStatsPane");
         primaryStage.setScene(scene);
         primaryStage.show();
-        ScenicView.show(root);
-        loadTest(statsPane);
+//        ScenicView.show(root);
+        loadTestAsync(statsPane);
     }
 
-    private void loadTest(final PvPStatsPane statsPane) {
+    /**
+     * Load the test asynchronously.
+     * @param statsPane The PvP stats pane.
+     */
+    private void loadTestAsync(final PvPStatsPane statsPane) {
         final Service<Stat> service = new Service<Stat>() {
             @Override
             protected Task<Stat> createTask() {
@@ -70,13 +74,21 @@ public class TestPvPStatsPane extends Application {
         });
         service.start();
     }
-
+    
+    /**
+     * Load remote test.
+     * @return A {@code Stat} object may be null.
+     */
     private Stat loadRemoteTest() {
         final Session session = SABTestUtils.INSTANCE.getTestSession();
         final Optional<Stat> result = WebQuery.INSTANCE.queryPvPStats(session.getAppKey());
         return result.orElse(null);
     }
 
+    /**
+     * Load local test.
+     * @return A {@code Stat} object may be null.
+     */
     private Stat loadLocalTest() throws NullPointerException, IOException {
         final URL url = getClass().getResource("stats.json");
         final Stat result = (url == null) ? null : JsonpContext.SAX.loadObject(Stat.class, url);
