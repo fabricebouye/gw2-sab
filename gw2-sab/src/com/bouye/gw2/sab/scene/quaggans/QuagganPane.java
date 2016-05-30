@@ -14,10 +14,13 @@ import com.bouye.gw2.sab.query.ImageCache;
 import java.net.URL;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.SelectionModel;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
@@ -45,6 +48,7 @@ public final class QuagganPane extends Region {
         imageView.setPreserveRatio(true);
         getChildren().setAll(imageView);
         //
+        getSelectionModel().selectedIndexProperty().addListener(indexChangeListener);
         getQuaggans().addListener(quaggansListChangeListener);
     }
 
@@ -68,7 +72,6 @@ public final class QuagganPane extends Region {
         imageView.setFitWidth(areaW);
     }
 
-    private int currentIndex = -1;
     private ObservableList<Quaggan> quaggans = FXCollections.observableArrayList();
 
     public final ObservableList<Quaggan> getQuaggans() {
@@ -76,14 +79,19 @@ public final class QuagganPane extends Region {
     }
 
     /**
+     * Called whenever the selected index changes in the selection model,
+     */
+    private final ChangeListener<Number> indexChangeListener = (observable, oldValue, newValue) -> {
+        switchToQuaggan(newValue.intValue());
+    };
+
+    /**
      * Called whenever the content of the quaggan list changes.
      */
     private final ListChangeListener<Quaggan> quaggansListChangeListener = change -> {
         final int quagganNumber = quaggans.size();
-        int newIndex = -1;
-        if (quagganNumber >= 0) {
-            newIndex = (currentIndex == -1) ? 0 : Math.min(currentIndex, quaggans.size() - 1);
-        }
+        final int currentIndex = getSelectionModel().getSelectedIndex();
+        int newIndex = Math.min(currentIndex, quagganNumber - 1);
         switchToQuaggan(newIndex);
     };
 
@@ -98,7 +106,22 @@ public final class QuagganPane extends Region {
         final URLReference imageURL = (quaggan == null) ? null : quaggan.getUrl();
         final Image image = (imageURL == null || !imageURL.isPresent()) ? null : ImageCache.INSTANCE.getImage(imageURL.get().toExternalForm());
         imageView.setImage(image);
-        currentIndex = index;
+    }
+
+    private final SelectionModel<Quaggan> selectionModel = new SingleSelectionModel<Quaggan>() {
+        @Override
+        protected Quaggan getModelItem(final int index) {
+            return (index < 0) ? null : quaggans.get(index);
+        }
+
+        @Override
+        protected int getItemCount() {
+            return quaggans.size();
+        }
+    };
+
+    public final SelectionModel<Quaggan> getSelectionModel() {
+        return selectionModel;
     }
 
     /**
@@ -107,8 +130,9 @@ public final class QuagganPane extends Region {
     public void next() {
         final int quagganNumber = quaggans.size();
         if (quagganNumber > 0) {
+            final int currentIndex = getSelectionModel().getSelectedIndex();
             final int newIndex = (currentIndex + 1) % quagganNumber;
-            switchToQuaggan(newIndex);
+            getSelectionModel().select(newIndex);
         }
     }
 
@@ -118,8 +142,9 @@ public final class QuagganPane extends Region {
     public void previous() {
         final int quagganNumber = quaggans.size();
         if (quagganNumber > 0) {
+            final int currentIndex = getSelectionModel().getSelectedIndex();
             final int newIndex = (currentIndex == 0) ? quagganNumber - 1 : currentIndex - 1;
-            switchToQuaggan(newIndex);
+            getSelectionModel().select(newIndex);
         }
     }
 
@@ -129,8 +154,9 @@ public final class QuagganPane extends Region {
     public void random() {
         final int quagganNumber = quaggans.size();
         if (quagganNumber > 0) {
+            final int currentIndex = getSelectionModel().getSelectedIndex();
             final int newIndex = (int) (quagganNumber * Math.random());
-            switchToQuaggan(newIndex);
+            getSelectionModel().select(newIndex);
         }
     }
 
