@@ -13,10 +13,9 @@ import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.application.Application;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -49,20 +48,20 @@ public final class TestQuagganPane extends Application {
     }
 
     private void loadTestAsync(final QuagganPane quagganPane) {
-        final Service<List<Quaggan>> service = new Service<List<Quaggan>>() {
+        final Service<Collection<Quaggan>> service = new Service<Collection<Quaggan>>() {
             @Override
-            protected Task<List<Quaggan>> createTask() {
-                return new Task<List<Quaggan>>() {
+            protected Task<Collection<Quaggan>> createTask() {
+                return new Task<Collection<Quaggan>>() {
                     @Override
-                    protected List<Quaggan> call() throws Exception {
-                        final List<Quaggan> result = SABConstants.INSTANCE.isOffline() ? loadLocalTest() : loadRemoteTest();
+                    protected Collection<Quaggan> call() throws Exception {
+                        final Collection<Quaggan> result = SABConstants.INSTANCE.isOffline() ? loadLocalTest() : loadRemoteTest();
                         return result;
                     }
                 };
             }
         };
         service.setOnSucceeded(workerStateEvent -> {
-            final List<Quaggan> value = (List<Quaggan>) workerStateEvent.getSource().getValue();
+            final Collection<Quaggan> value = (Collection<Quaggan>) workerStateEvent.getSource().getValue();
             quagganPane.getQuaggans().setAll(value);
         });
         service.setOnFailed(workerStateEvent -> {
@@ -72,16 +71,14 @@ public final class TestQuagganPane extends Application {
         service.start();
     }
 
-    private List<Quaggan> loadRemoteTest() {
-        final List<Quaggan> result = WebQuery.INSTANCE.queryQuaggans();
+    private Collection<Quaggan> loadRemoteTest() {
+        final Collection<Quaggan> result = WebQuery.INSTANCE.queryQuaggans();
         return result;
     }
 
-    private List<Quaggan> loadLocalTest() throws IOException {
+    private Collection<Quaggan> loadLocalTest() throws IOException {
         final URL quagganURL = getClass().getResource("quaggans.json"); // NOI18N.
-        final List<Quaggan> result = JsonpContext.SAX.loadObjectArray(Quaggan.class, quagganURL)
-                .stream()
-                .collect(Collectors.toList());
+        final Collection<Quaggan> result = JsonpContext.SAX.loadObjectArray(Quaggan.class, quagganURL);
         return result;
     }
 
