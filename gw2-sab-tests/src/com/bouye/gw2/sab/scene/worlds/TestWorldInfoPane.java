@@ -14,7 +14,7 @@ import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.SABTestUtils;
-import com.bouye.gw2.sab.scene.wvw.TestWvWSummaryPane;
+import com.bouye.gw2.sab.scene.wvw.TestWvwSummaryPane;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import java.io.IOException;
@@ -128,9 +128,9 @@ public final class TestWorldInfoPane extends Application {
         if (world != null) {
             Platform.runLater(() -> worldInfoPane.setWorld(world));
         }
-        final Optional<URL> matchURL = Optional.ofNullable(TestWvWSummaryPane.class.getResource("matches/match01.json")); // NOI18N.
+        final Optional<URL> matchURL = Optional.ofNullable(TestWvwSummaryPane.class.getResource("matches/match01.json")); // NOI18N.
         final Match match = (!matchURL.isPresent()) ? null : JsonpContext.SAX.loadObject(Match.class, matchURL.get());
-        final Optional<URL> worldsURL = Optional.ofNullable(TestWvWSummaryPane.class.getResource("matches/worlds01.json")); // NOI18N.
+        final Optional<URL> worldsURL = Optional.ofNullable(TestWvwSummaryPane.class.getResource("matches/worlds01.json")); // NOI18N.
         final List<World> worlds = (!matchURL.isPresent()) ? Collections.EMPTY_LIST : JsonpContext.SAX.loadObjectArray(World.class, worldsURL.get())
                 .stream()
                 .collect(Collectors.toList());

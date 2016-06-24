@@ -39,7 +39,7 @@ import org.scenicview.ScenicView;
  * Test.
  * @author fabriceb
  */
-public final class TestWvWSummaryPane extends Application {
+public final class TestWvwSummaryPane extends Application {
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,7 +49,7 @@ public final class TestWvWSummaryPane extends Application {
         final Scene scene = new Scene(root, 600, 600);
         final Optional<URL> cssURL = Optional.ofNullable(SAB.class.getResource("styles/Styles.css")); // NOI18N.
         cssURL.ifPresent(url -> scene.getStylesheets().add(url.toExternalForm()));
-        primaryStage.setTitle("TestWvWSummaryPane"); // NOI18N.
+        primaryStage.setTitle("TestWvwSummaryPane"); // NOI18N.
         primaryStage.setScene(scene);
         primaryStage.show();
         ScenicView.show(scene);
@@ -74,7 +74,7 @@ public final class TestWvWSummaryPane extends Application {
         });
         service.setOnFailed(workerStateEvent -> {
             final Throwable ex = workerStateEvent.getSource().getException();
-            Logger.getLogger(TestWvWSummaryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            Logger.getLogger(TestWvwSummaryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         });
         service.setPeriod(Duration.minutes(5));
         service.setRestartOnFailure(true);
