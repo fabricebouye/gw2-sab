@@ -7,6 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.wvw;
 
+import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.worlds.WorldRegion;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
@@ -14,11 +15,11 @@ import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
-import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import com.bouye.gw2.sab.wrappers.MatchesWrapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -110,11 +111,11 @@ public final class TestWvwMatchesPane extends Application {
                 .stream()
                 .filter(world -> world.getRegion() == region)
                 .collect(Collectors.toMap(World::getId, Function.identity()));
-        final Map<String, Match> matchsId = WebQuery.INSTANCE.queryWvwMatches()
+        final Map<String, Match> matchIds = WebQuery.INSTANCE.queryWvwMatches()
                 .stream()
                 .filter(match -> worldIds.containsKey(match.getWorlds().get(MatchTeam.GREEN)))
                 .collect(Collectors.toMap(Match::getId, Function.identity()));
-        return new MatchesWrapper(matchsId, worldIds);
+        return new MatchesWrapper(matchIds, worldIds);
     }
 
     /**
@@ -122,7 +123,15 @@ public final class TestWvwMatchesPane extends Application {
      * @return A {@code MatchesWrapper}, may be {@code null}.
      */
     private MatchesWrapper doLocalTest(final WorldRegion region) throws IOException {
-        return null;
+        final Optional<URL> worldsURL = Optional.ofNullable(getClass().getResource("matches/worlds01.json")); // NOI18N.
+        final Map<Integer, World> worldIds = (!worldsURL.isPresent()) ? Collections.EMPTY_MAP : JsonpContext.SAX.loadObjectArray(World.class, worldsURL.get())
+                .stream()
+                .collect(Collectors.toMap(World::getId, Function.identity()));
+        final Optional<URL> matchURL = Optional.ofNullable(getClass().getResource("matches/match01.json")); // NOI18N.
+        final Map<String, Match> matchsId = (!matchURL.isPresent()) ? Collections.EMPTY_MAP : Arrays.asList(JsonpContext.SAX.loadObject(Match.class, matchURL.get()))
+                .stream()
+                .collect(Collectors.toMap(Match::getId, Function.identity()));
+        return new MatchesWrapper(matchsId, worldIds);
     }
 
     public static void main(String... args) {
