@@ -42,7 +42,7 @@ import org.scenicview.ScenicView;
  * @author fabriceb
  */
 public final class TestWvwMatchesPane extends Application {
-    
+
     @Override
     public void start(Stage primaryStage) {
         final WvwMatchesPane wvwMatchesPane = new WvwMatchesPane();
@@ -69,9 +69,15 @@ public final class TestWvwMatchesPane extends Application {
             }
         });
     }
-    
+
+    private ScheduledService<MatchesWrapper> service;
+
     private void loadTestAsync(final WvwMatchesPane wvwMatchesPane, final WorldRegion region) {
-        ScheduledService<MatchesWrapper> service = new ScheduledService<MatchesWrapper>() {
+        if (service != null) {
+            service.cancel();
+            service = null;
+        }
+        service = new ScheduledService<MatchesWrapper>() {
             @Override
             protected Task<MatchesWrapper> createTask() {
                 return new Task<MatchesWrapper>() {
@@ -118,7 +124,7 @@ public final class TestWvwMatchesPane extends Application {
     private MatchesWrapper doLocalTest(final WorldRegion region) throws IOException {
         return null;
     }
-    
+
     public static void main(String... args) {
         launch(args);
     }
