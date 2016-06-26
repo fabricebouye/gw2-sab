@@ -118,7 +118,7 @@ public final class TestWvwSummaryPane extends Application {
         final Optional<URL> matchURL = Optional.ofNullable(getClass().getResource("matches/match01.json")); // NOI18N.
         final Match match = (!matchURL.isPresent()) ? null : JsonpContext.SAX.loadObject(Match.class, matchURL.get());
         final Optional<URL> worldsURL = Optional.ofNullable(getClass().getResource("matches/worlds01.json")); // NOI18N.
-        final List<World> worlds = (!matchURL.isPresent()) ? Collections.EMPTY_LIST : JsonpContext.SAX.loadObjectArray(World.class, worldsURL.get())
+        final List<World> worlds = (!worldsURL.isPresent()) ? Collections.EMPTY_LIST : JsonpContext.SAX.loadObjectArray(World.class, worldsURL.get())
                 .stream()
                 .collect(Collectors.toList());
         return (match == null) ? null : new MatchWrapper(match, worlds);
