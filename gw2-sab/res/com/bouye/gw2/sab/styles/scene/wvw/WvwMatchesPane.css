@@ -1,0 +1,23 @@
+.wvw-matches-pane {
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+    -fx-padding: 6px;
+}
+.wvw-matches-pane .header {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 6px;
+}
+/* WvW charts. */
+.wvw-matches-pane .wvw-bar-chart {    
+}
+.wvw-matches-pane .wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-blue-color; }
+.wvw-matches-pane .wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-green-color; }
+.wvw-matches-pane .wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -team-red-color; }
+.wvw-matches-pane .wvw-pie-chart {    
+}
+.wvw-matches-pane .wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -team-blue-color; }
+.wvw-matches-pane .wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -team-green-color; }
+.wvw-matches-pane .wvw-pie-chart .default-color2.chart-pie { -fx-pie-color: -team-red-color; }
+

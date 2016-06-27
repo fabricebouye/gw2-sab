@@ -7,19 +7,20 @@
  */
 package com.bouye.gw2.sab.scene.wvw;
 
+import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import com.bouye.gw2.sab.wrappers.MatchesWrapper;
+import java.net.URL;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 
 /**
  * Summary of all WvW matches for a given region.
  * @author Fabrice Bouyé
  */
-public final class WvwMatchesPane extends VBox {
+public final class WvwMatchesPane extends GridPane {
 
     private final Optional<WvwMatchesPaneController> controller;
 
@@ -33,6 +34,13 @@ public final class WvwMatchesPane extends VBox {
 //    public void dispose() {
 //        SABFXMLUtils.INSTANCE.disposeController(controller);
 //    }
+    
+    @Override
+    public String getUserAgentStylesheet() {
+        final URL url = SAB.class.getResource("styles/scene/wvw/WvwMatchesPane.css"); // NOI18N.
+        return (url == null) ? null : url.toExternalForm();
+    }
+    
     private final ObjectProperty<MatchesWrapper> matches = new SimpleObjectProperty<>(this, "matches", null); // NOI18N.
 
     public final MatchesWrapper getMatches() {

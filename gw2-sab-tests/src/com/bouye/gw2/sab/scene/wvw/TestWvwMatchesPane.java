@@ -39,7 +39,6 @@ import org.scenicview.ScenicView;
 
 /**
  * Test.
- *
  * @author fabriceb
  */
 public final class TestWvwMatchesPane extends Application {
