@@ -219,7 +219,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final Tooltip ownedTooltip = new Tooltip(owned);
                         ownedLabel.setTooltip(ownedTooltip);
                         rowNodes.add(ownedLabel);
-                    }                    // Column#9 - Castle.
+                    }
+                    // Column#9 - Castle.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
@@ -240,12 +241,12 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     }
                     //
                     final PseudoClass rowPseudoClass = (matchIndex % 2 == 0) ? EVEN_PSEUDO_CLASS : ODD_PSEUDO_CLASS;
-            rowNodes.stream()
-                    .forEach(n -> {
-                        n.pseudoClassStateChanged(EVEN_PSEUDO_CLASS, false);
-                        n.pseudoClassStateChanged(ODD_PSEUDO_CLASS, false);
-                        n.pseudoClassStateChanged(rowPseudoClass, true);
-                    });
+                    rowNodes.stream()
+                            .forEach(n -> {
+                                n.pseudoClassStateChanged(EVEN_PSEUDO_CLASS, false);
+                                n.pseudoClassStateChanged(ODD_PSEUDO_CLASS, false);
+                                n.pseudoClassStateChanged(rowPseudoClass, true);
+                            });
                     rootPane.getChildren().addAll(rowNodes);
                     rowNodes.clear();
                 });
