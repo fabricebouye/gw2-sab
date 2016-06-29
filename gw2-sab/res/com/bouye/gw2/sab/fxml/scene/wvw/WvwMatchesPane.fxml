@@ -15,16 +15,16 @@
 
 <fx:root fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" styleClass="wvw-matches-pane" type="GridPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwMatchesPaneController">
     <columnConstraints>
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="100.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="10.0" />
+        <ColumnConstraints minWidth="10.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
