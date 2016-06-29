@@ -112,7 +112,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                 .forEach(rootPane.getRowConstraints()::add);
         rootPane.getChildren().clear();
         rootPane.getChildren().addAll(headerNodes);
-        final Iterator<Match> matchIterator = matches.values().iterator();
+        final Iterator<Match> matchIterator = matches.values()
+                .stream()
+                .sorted()
+                .iterator();
         final List<Node> rowNodes = new ArrayList();
         IntStream.range(0, matchNumber)
                 .forEach(matchIndex -> {
