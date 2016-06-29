@@ -114,7 +114,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         rootPane.getChildren().addAll(headerNodes);
         final Iterator<Match> matchIterator = matches.values()
                 .stream()
-                .sorted()
+                .sorted((m1, m2) -> m1.getId().compareTo(m2.getId()))
                 .iterator();
         final List<Node> rowNodes = new ArrayList();
         IntStream.range(0, matchNumber)
