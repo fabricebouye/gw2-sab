@@ -83,8 +83,6 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
     private static final PseudoClass ODD_PSEUDO_CLASS = PseudoClass.getPseudoClass("odd"); // NOI18N.
     private static final PseudoClass EVEN_PSEUDO_CLASS = PseudoClass.getPseudoClass("even"); // NOI18N.
 
-    private final Map<Integer, Map<MatchTeam, Integer>> previousScores = new HashMap<>();
-
     @Override
     protected void updateUI() {
         super.updateUI();
@@ -122,16 +120,27 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     final int startRowIndex = teamNumber * matchIndex + 1;
                     final Match match = matchIterator.next();
                     final Map<MatchTeam, String> worldNames = createWorldNames(match, worlds);
-                    final Map<MatchTeam, Integer> lastScores = previousScores.get(matchIndex);
                     // Compute income.
                     final Map<MatchTeam, Integer> incomes = IntStream.range(0, pieTeams.size())
                             .mapToObj(pieTeams::get)
                             .collect(Collectors.toMap(Function.identity(), team -> {
-                                final int lastScore = (lastScores == null) ? 0 : lastScores.get(team);
-                                final int currentScore = match.getScores().get(team);
-                                return currentScore - lastScore;
+                                final ObjectiveType[] objectiveTypes = new ObjectiveType[]{ObjectiveType.CAMP, ObjectiveType.TOWER, ObjectiveType.KEEP, ObjectiveType.CASTLE};
+                                final int[] points = new int[]{5, 10, 25, 35};
+                                return IntStream.range(0, objectiveTypes.length)
+                                        .map(objectiveIndex -> {
+                                            final ObjectiveType objectiveType = objectiveTypes[objectiveIndex];
+                                            final int point = points[objectiveIndex];
+                                            final int objectiveNumber = match.getMaps()
+                                                    .stream()
+                                                    .mapToInt(map -> (int) map.getObjectives()
+                                                            .stream()
+                                                            .filter(objective -> (objective.getType() == objectiveType) && (objective.getOwner() == team))
+                                                            .count())
+                                                    .sum();
+                                            return objectiveNumber * point;
+                                        })
+                                        .sum();
                             }));
-                    previousScores.put(matchIndex, match.getScores());
                     // Column#1 - Names.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
@@ -191,7 +200,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
 //                    rowNodes.add(scoreBarChart);
                     // Column#4 - Income pie chart.
                     //final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
-                    final PieChart summaryPieChart = createSummaryPieChart(match.getScores(), worldNames);
+                    final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
                     GridPane.setConstraints(summaryPieChart, 4, startRowIndex, 1, teamNumber, HPos.CENTER, VPos.CENTER, Priority.NEVER, Priority.NEVER);
                     rowNodes.add(summaryPieChart);
                     // Column#5 - Incomes.
@@ -392,10 +401,5 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
     /**
      * Called whenever the match wrapper changes.
      */
-    private final ChangeListener<MatchesWrapper> matchesChangeListener = (observable, oldValue, newValue) -> {
-        if (newValue == null) {
-            previousScores.clear();
-        }
-        updateUI();
-    };
+    private final ChangeListener<MatchesWrapper> matchesChangeListener = (observable, oldValue, newValue) -> updateUI();
 }

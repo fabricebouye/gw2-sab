@@ -77,7 +77,6 @@ public final class TestWvwMatchesPane extends Application {
             service.cancel();
             service = null;
         }
-        wvwMatchesPane.setMatches(null);
         service = new ScheduledService<MatchesWrapper>() {
             @Override
             protected Task<MatchesWrapper> createTask() {
@@ -97,7 +96,7 @@ public final class TestWvwMatchesPane extends Application {
             final Throwable ex = workerStateEvent.getSource().getException();
             Logger.getLogger(TestWvwMatchesPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         });
-        service.setPeriod(Duration.minutes(5));
+        service.setPeriod(Duration.minutes(1));
         service.setRestartOnFailure(true);
         service.start();
     }
