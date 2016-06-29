@@ -164,6 +164,12 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                             .stream()
                             .mapToInt(value -> value)
                             .sum();
+                    final double maxScore = match.getScores()
+                            .values()
+                            .stream()
+                            .mapToInt(value -> value)
+                            .max()
+                            .getAsInt();
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
@@ -172,7 +178,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final String score = String.valueOf(scoreValue);
                         final PseudoClass teamPseudoClass = PseudoClass.getPseudoClass(team.name());
                         final ProgressBar scoreProgressBar = new ProgressBar();
-                        scoreProgressBar.setProgress(scoreValue / totalScore);
+                        scoreProgressBar.setProgress(scoreValue / maxScore);
                         scoreProgressBar.pseudoClassStateChanged(teamPseudoClass, true);
                         scoreProgressBar.setMaxWidth(Double.MAX_VALUE);
                         GridPane.setConstraints(scoreProgressBar, 3, rowIndex, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
