@@ -77,6 +77,7 @@ public final class TestWvwMatchesPane extends Application {
             service.cancel();
             service = null;
         }
+        wvwMatchesPane.setMatches(null);
         service = new ScheduledService<MatchesWrapper>() {
             @Override
             protected Task<MatchesWrapper> createTask() {

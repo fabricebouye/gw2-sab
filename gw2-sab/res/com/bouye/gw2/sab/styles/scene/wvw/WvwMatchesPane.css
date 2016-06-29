@@ -9,13 +9,25 @@
     -fx-font-weight: bold;
     -fx-padding: 6px;
 }
-/* WvW charts. */
+.wvw-matches-pane .progress-bar:GREEN  .bar { -fx-accent: -team-green-color; }
+.wvw-matches-pane .progress-bar:BLUE .bar { -fx-accent: -team-blue-color; }
+.wvw-matches-pane .progress-bar:RED  .bar { -fx-accent: -team-red-color; }
+/* WvW bar charts. */
 .wvw-matches-pane .wvw-bar-chart {    
 }
-.wvw-matches-pane .wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-blue-color; }
-.wvw-matches-pane .wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-green-color; }
+.wvw-matches-pane .wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-green-color; }
+.wvw-matches-pane .wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-blue-color; }
 .wvw-matches-pane .wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -team-red-color; }
+/* WvW pie charts. */
 .wvw-matches-pane .wvw-pie-chart {    
+    -fx-min-width: 75px;
+    -fx-min-height: 75px;
+    -fx-pref-width: 75px;
+    -fx-pref-height: 75px;
+    -fx-max-width: 75px;
+    -fx-max-height: 75px;
+    -fx-start-angle: 90;
+    -fx-pie-label-visible: false;
 }
 .wvw-matches-pane .wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -team-blue-color; }
 .wvw-matches-pane .wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -team-green-color; }

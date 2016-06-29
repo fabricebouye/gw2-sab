@@ -9,8 +9,6 @@ package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
-import api.web.gw2.mapping.v2.wvw.matches.MatchMap;
-import api.web.gw2.mapping.v2.wvw.matches.MatchMapObjective;
 import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
 import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
 import com.bouye.gw2.sab.scene.SABControllerBase;
@@ -40,6 +38,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -47,6 +46,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import sun.security.pkcs11.wrapper.Functions;
 
 /**
  * FXML Controller class
@@ -77,9 +77,13 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
     }
 
     private final List<MatchTeam> teams = Arrays.asList(MatchTeam.GREEN, MatchTeam.BLUE, MatchTeam.RED);
+    // Order of teams in pie chart is different.
+    private final List<MatchTeam> pieTeams = Arrays.asList(MatchTeam.BLUE, MatchTeam.GREEN, MatchTeam.RED);
 
     private static final PseudoClass ODD_PSEUDO_CLASS = PseudoClass.getPseudoClass("odd"); // NOI18N.
     private static final PseudoClass EVEN_PSEUDO_CLASS = PseudoClass.getPseudoClass("even"); // NOI18N.
+
+    private final Map<Integer, Map<MatchTeam, Integer>> previousScores = new HashMap<>();
 
     @Override
     protected void updateUI() {
@@ -89,6 +93,9 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         final MatchesWrapper wrapper = node.isPresent() ? node.get().getMatches() : null;
         final Map<String, Match> matches = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getMatches();
         final Map<Integer, World> worlds = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getWorlds();
+        if ((matches == null) || (worlds == null)) {
+            return;
+        }
         final int matchNumber = matches.size();
         final int teamNumber = teams.size();
         rootPane.getRowConstraints().clear();
@@ -96,8 +103,9 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         IntStream.range(0, teamNumber * matchNumber)
                 .mapToObj(rowIndex -> {
                     final RowConstraints rowConstraints = new RowConstraints();
-                    rowConstraints.setMinHeight(Region.USE_PREF_SIZE);
+                    rowConstraints.setMinHeight(Region.USE_COMPUTED_SIZE);
                     rowConstraints.setPrefHeight(Region.USE_COMPUTED_SIZE);
+                    rowConstraints.setMaxHeight(Region.USE_COMPUTED_SIZE);
                     rowConstraints.setVgrow(Priority.NEVER);
                     return rowConstraints;
                 })
@@ -111,11 +119,16 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     final int startRowIndex = teamNumber * matchIndex + 1;
                     final Match match = matchIterator.next();
                     final Map<MatchTeam, String> worldNames = createWorldNames(match, worlds);
-                    final Map<MatchTeam, Integer> incomes = teams.stream()
-                            .collect(Collectors.toConcurrentMap(Function.identity(), team -> match.getMaps()
-                                    .stream()
-                                    .mapToInt(map -> map.getScores().get(team))
-                                    .sum()));
+                    final Map<MatchTeam, Integer> lastScores = previousScores.get(matchIndex);
+                    // Compute income.
+                    final Map<MatchTeam, Integer> incomes = IntStream.range(0, pieTeams.size())
+                            .mapToObj(pieTeams::get)
+                            .collect(Collectors.toMap(Function.identity(), team -> {
+                                final int lastScore = (lastScores == null) ? 0 : lastScores.get(team);
+                                final int currentScore = match.getScores().get(team);
+                                return currentScore - lastScore;
+                            }));
+                    previousScores.put(matchIndex, match.getScores());
                     // Column#1 - Names.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
@@ -143,12 +156,34 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         rowNodes.add(scoreLabel);
                     }
                     // Column#3 - Score bar chart.
-                    final BarChart scoreBarChart = createScoreBarChart(match, worldNames);
-                    GridPane.setConstraints(scoreBarChart, 3, startRowIndex, 1, teamNumber, HPos.LEFT, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
-                    rowNodes.add(scoreBarChart);
+                    final double totalScore = match.getScores()
+                            .values()
+                            .stream()
+                            .mapToInt(value -> value)
+                            .sum();
+                    for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
+                        final int rowIndex = startRowIndex + teamIndex;
+                        final MatchTeam team = teams.get(teamIndex);
+                        //
+                        final int scoreValue = match.getScores().get(team);
+                        final String score = String.valueOf(scoreValue);
+                        final PseudoClass teamPseudoClass = PseudoClass.getPseudoClass(team.name());
+                        final ProgressBar scoreProgressBar = new ProgressBar();
+                        scoreProgressBar.setProgress(scoreValue / totalScore);
+                        scoreProgressBar.pseudoClassStateChanged(teamPseudoClass, true);
+                        scoreProgressBar.setMaxWidth(Double.MAX_VALUE);
+                        GridPane.setConstraints(scoreProgressBar, 3, rowIndex, 1, 1, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+                        final Tooltip scoreTooltip = new Tooltip(score);
+                        scoreProgressBar.setTooltip(scoreTooltip);
+                        rowNodes.add(scoreProgressBar);
+                    }
+//                    final BarChart scoreBarChart = createScoreBarChart(match, worldNames);
+//                    GridPane.setConstraints(scoreBarChart, 3, startRowIndex, 1, teamNumber, HPos.LEFT, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
+//                    rowNodes.add(scoreBarChart);
                     // Column#4 - Income pie chart.
-                    final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
-                    GridPane.setConstraints(summaryPieChart, 4, startRowIndex, 1, teamNumber, HPos.LEFT, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
+                    //final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
+                    final PieChart summaryPieChart = createSummaryPieChart(match.getScores(), worldNames);
+                    GridPane.setConstraints(summaryPieChart, 4, startRowIndex, 1, teamNumber, HPos.CENTER, VPos.CENTER, Priority.NEVER, Priority.NEVER);
                     rowNodes.add(summaryPieChart);
                     // Column#5 - Incomes.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
@@ -326,19 +361,16 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
     private PieChart createSummaryPieChart(final Map<MatchTeam, Integer> incomes, final Map<MatchTeam, String> worldNames) {
         final PieChart summaryPieChart = new PieChart();
         summaryPieChart.getStyleClass().add("wvw-pie-chart");
-        summaryPieChart.setMinWidth(0);
-        summaryPieChart.setMinHeight(0);
-        summaryPieChart.setPrefWidth(0);
-        summaryPieChart.setPrefHeight(0);
         summaryPieChart.setLegendVisible(false);
-        summaryPieChart.setLabelsVisible(false);
         // Prepare content.
-        teams.stream()
-                .forEach(team -> summaryPieChart.getData().add(new PieChart.Data(team.name(), 0)));
+        IntStream.range(0, pieTeams.size())
+                .mapToObj(pieTeams::get)
+                .map(team -> new PieChart.Data(team.name(), 0))
+                .forEach(summaryPieChart.getData()::add);
         // Update content.
-        IntStream.range(0, teams.size())
+        IntStream.range(0, pieTeams.size())
                 .forEach(teamIndex -> {
-                    final MatchTeam team = teams.get(teamIndex);
+                    final MatchTeam team = pieTeams.get(teamIndex);
                     final int teamScore = incomes.get(team);
                     final String worldName = worldNames.get(team);
                     final PieChart.Data data = (PieChart.Data) summaryPieChart.getData().get(teamIndex);
@@ -348,5 +380,13 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         return summaryPieChart;
     }
 
-    private final ChangeListener<MatchesWrapper> matchesChangeListener = (observable, oldValue, newValue) -> updateUI();
+    /**
+     * Called whenever the match wrapper changes.
+     */
+    private final ChangeListener<MatchesWrapper> matchesChangeListener = (observable, oldValue, newValue) -> {
+        if (newValue == null) {
+            previousScores.clear();
+        }
+        updateUI();
+    };
 }
