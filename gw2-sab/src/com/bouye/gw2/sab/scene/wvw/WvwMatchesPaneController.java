@@ -9,6 +9,7 @@ package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
+import api.web.gw2.mapping.v2.wvw.matches.MatchMap;
 import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
 import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
 import com.bouye.gw2.sab.scene.SABControllerBase;
@@ -46,7 +47,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import sun.security.pkcs11.wrapper.Functions;
 
 /**
  * FXML Controller class
@@ -82,6 +82,27 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
 
     private static final PseudoClass ODD_PSEUDO_CLASS = PseudoClass.getPseudoClass("odd"); // NOI18N.
     private static final PseudoClass EVEN_PSEUDO_CLASS = PseudoClass.getPseudoClass("even"); // NOI18N.
+    private static final PseudoClass SMALL_PSEUDO_CLASS = PseudoClass.getPseudoClass("small"); // NOI18N.
+
+    /**
+     * Objectives that give points.
+     */
+    private static final List<ObjectiveType> OBJECTIVE_TYPES = Collections.unmodifiableList(Arrays.asList(
+            ObjectiveType.CAMP,
+            ObjectiveType.TOWER,
+            ObjectiveType.KEEP,
+            ObjectiveType.CASTLE
+    ));
+    /**
+     * Points per objectives.
+     * <br>Not currently accessible by API?
+     */
+    private static final List<Integer> OBJECTIVE_POINTS = Collections.unmodifiableList(Arrays.asList(
+            5,
+            10,
+            25,
+            35
+    ));
 
     @Override
     protected void updateUI() {
@@ -91,25 +112,23 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         final MatchesWrapper wrapper = node.isPresent() ? node.get().getMatches() : null;
         final Map<String, Match> matches = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getMatches();
         final Map<Integer, World> worlds = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getWorlds();
-        if ((matches == null) || (worlds == null)) {
-            return;
-        }
         final int matchNumber = matches.size();
         final int teamNumber = teams.size();
+        // Clear content.
         rootPane.getRowConstraints().clear();
-        rootPane.getRowConstraints().add(headerRowConstraints);
-        IntStream.range(0, teamNumber * matchNumber)
-                .mapToObj(rowIndex -> {
-                    final RowConstraints rowConstraints = new RowConstraints();
-                    rowConstraints.setMinHeight(Region.USE_COMPUTED_SIZE);
-                    rowConstraints.setPrefHeight(Region.USE_COMPUTED_SIZE);
-                    rowConstraints.setMaxHeight(Region.USE_COMPUTED_SIZE);
-                    rowConstraints.setVgrow(Priority.NEVER);
-                    return rowConstraints;
-                })
-                .forEach(rootPane.getRowConstraints()::add);
         rootPane.getChildren().clear();
+        // Create row constraints.
+        rootPane.getRowConstraints().add(headerRowConstraints);
+        final int totalRows = teamNumber * matchNumber;
+        IntStream.range(0, totalRows)
+                .mapToObj(this::createTeamRowConstraints)
+                .forEach(rootPane.getRowConstraints()::add);
+        // Restore header.
         rootPane.getChildren().addAll(headerNodes);
+        if (matchNumber == 0) {
+            return;
+        }
+        // Start creating match content.
         final Iterator<Match> matchIterator = matches.values()
                 .stream()
                 .sorted((m1, m2) -> m1.getId().compareTo(m2.getId()))
@@ -120,38 +139,21 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     final int startRowIndex = teamNumber * matchIndex + 1;
                     final Match match = matchIterator.next();
                     final Map<MatchTeam, String> worldNames = createWorldNames(match, worlds);
-                    // Compute income.
-                    final Map<MatchTeam, Integer> incomes = IntStream.range(0, pieTeams.size())
-                            .mapToObj(pieTeams::get)
-                            .collect(Collectors.toMap(Function.identity(), team -> {
-                                final ObjectiveType[] objectiveTypes = new ObjectiveType[]{ObjectiveType.CAMP, ObjectiveType.TOWER, ObjectiveType.KEEP, ObjectiveType.CASTLE};
-                                final int[] points = new int[]{5, 10, 25, 35};
-                                return IntStream.range(0, objectiveTypes.length)
-                                        .map(objectiveIndex -> {
-                                            final ObjectiveType objectiveType = objectiveTypes[objectiveIndex];
-                                            final int point = points[objectiveIndex];
-                                            final int objectiveNumber = match.getMaps()
-                                                    .stream()
-                                                    .mapToInt(map -> (int) map.getObjectives()
-                                                            .stream()
-                                                            .filter(objective -> (objective.getType() == objectiveType) && (objective.getOwner() == team))
-                                                            .count())
-                                                    .sum();
-                                            return objectiveNumber * point;
-                                        })
-                                        .sum();
-                            }));
+                    // Compute aggragated objectives and income.
+                    final Map<MatchTeam, int[]> aggregateObjectives = computeAggregateObjectives(match);
+                    final Map<MatchTeam, Integer> incomes = computeIncome(aggregateObjectives);
                     // Column#1 - Names.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
                         //
-                        final String name = worldNames.get(team);
-                        final Label nameLabel = new Label(name);
-                        nameLabel.setWrapText(true);
+                        final int mainWorldId = match.getWorlds().get(team);
+                        final Set<Integer> auxWorldIds = match.getAllWorlds().get(team);
+                        final TextFlow nameLabel = createWorldLabels(worlds, mainWorldId, auxWorldIds);
                         GridPane.setConstraints(nameLabel, 1, rowIndex);
-                        final Tooltip nameTooltip = new Tooltip(name);
-                        nameLabel.setTooltip(nameTooltip);
+                        final String baseName = worldNames.get(team);
+                        final Tooltip nameTooltip = new Tooltip(baseName);
+                        Tooltip.install(nameLabel, nameTooltip);
                         rowNodes.add(nameLabel);
                     }
                     // Column#2 - Scores.
@@ -168,11 +170,6 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         rowNodes.add(scoreLabel);
                     }
                     // Column#3 - Score bar chart.
-                    final double totalScore = match.getScores()
-                            .values()
-                            .stream()
-                            .mapToInt(value -> value)
-                            .sum();
                     final double maxScore = match.getScores()
                             .values()
                             .stream()
@@ -195,9 +192,6 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         scoreProgressBar.setTooltip(scoreTooltip);
                         rowNodes.add(scoreProgressBar);
                     }
-//                    final BarChart scoreBarChart = createScoreBarChart(match, worldNames);
-//                    GridPane.setConstraints(scoreBarChart, 3, startRowIndex, 1, teamNumber, HPos.LEFT, VPos.TOP, Priority.ALWAYS, Priority.ALWAYS);
-//                    rowNodes.add(scoreBarChart);
                     // Column#4 - Income pie chart.
                     //final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
                     final PieChart summaryPieChart = createSummaryPieChart(incomes, worldNames);
@@ -221,13 +215,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
                         //
-                        final int value = match.getMaps()
-                                .stream()
-                                .mapToInt(map -> (int) map.getObjectives()
-                                        .stream()
-                                        .filter(objective -> (objective.getType() == ObjectiveType.CAMP) && (objective.getOwner() == team))
-                                        .count())
-                                .sum();
+                        final int[] teamObjectives = aggregateObjectives.get(team);
+                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.CAMP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 6, rowIndex);
@@ -240,13 +229,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
                         //
-                        final int value = match.getMaps()
-                                .stream()
-                                .mapToInt(map -> (int) map.getObjectives()
-                                        .stream()
-                                        .filter(objective -> (objective.getType() == ObjectiveType.TOWER) && (objective.getOwner() == team))
-                                        .count())
-                                .sum();
+                        final int[] teamObjectives = aggregateObjectives.get(team);
+                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.TOWER)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 7, rowIndex);
@@ -259,13 +243,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
                         //
-                        final int value = match.getMaps()
-                                .stream()
-                                .mapToInt(map -> (int) map.getObjectives()
-                                        .stream()
-                                        .filter(objective -> (objective.getType() == ObjectiveType.KEEP) && (objective.getOwner() == team))
-                                        .count())
-                                .sum();
+                        final int[] teamObjectives = aggregateObjectives.get(team);
+                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.KEEP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 8, rowIndex);
@@ -278,13 +257,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final int rowIndex = startRowIndex + teamIndex;
                         final MatchTeam team = teams.get(teamIndex);
                         //
-                        final int value = match.getMaps()
-                                .stream()
-                                .mapToInt(map -> (int) map.getObjectives()
-                                        .stream()
-                                        .filter(objective -> (objective.getType() == ObjectiveType.CASTLE) && (objective.getOwner() == team))
-                                        .count())
-                                .sum();
+                        final int[] teamObjectives = aggregateObjectives.get(team);
+                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.CASTLE)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 9, rowIndex);
@@ -305,19 +279,155 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                 });
     }
 
+    /**
+     * Create a row constraints for team.
+     * @param rowIndex The row index.
+     * @return A {@code RowConstraints} instance, never {@code null}.
+     */
+    private RowConstraints createTeamRowConstraints(final int rowIndex) {
+        final RowConstraints rowConstraints = new RowConstraints();
+        rowConstraints.setMinHeight(Region.USE_COMPUTED_SIZE);
+        rowConstraints.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        rowConstraints.setMaxHeight(Region.USE_COMPUTED_SIZE);
+        rowConstraints.setVgrow(Priority.NEVER);
+        return rowConstraints;
+    }
+
+    /**
+     * Compute aggregate objectives owned by each team on given match.
+     * @param match The match.
+     * @return A {@code Map<MatchTeam, int[]>}, never {@code null}.
+     */
+    private Map<MatchTeam, int[]> computeAggregateObjectives(final Match match) {
+        return IntStream.range(0, teams.size())
+                .mapToObj(teams::get)
+                .collect(Collectors.toMap(Function.identity(), team -> countAggregateObjectives(match, team)));
+    }
+
+    /**
+     * Aggregate all objectives owned by given team for given match.
+     * @param match The match.
+     * @param team The team.
+     * @return An {@code int[]} instance, never {@code null}.
+     */
+    int[] countAggregateObjectives(final Match match, final MatchTeam team) {
+        return OBJECTIVE_TYPES.stream()
+                .mapToInt(objectiveType -> countObjective(match, team, objectiveType))
+                .toArray();
+    }
+
+    /**
+     * Count given objective type owned by given team for given match.
+     * @param map The map.
+     * @param team The team.
+     * @param objectiveType The type of the objective.
+     * @return An {@code int}.
+     */
+    final int countObjective(final Match match, final MatchTeam team, final ObjectiveType objectiveType) {
+        return match.getMaps()
+                .stream()
+                .mapToInt(map -> countObjectiveOnMap(map, team, objectiveType))
+                .sum();
+    }
+
+    /**
+     * Count given objective type owned by given team for given map.
+     * @param map The map.
+     * @param team The team.
+     * @param objectiveType The type of the objective.
+     * @return An {@code int}.
+     */
+    private int countObjectiveOnMap(final MatchMap map, final MatchTeam team, final ObjectiveType objectiveType) {
+        return (int) map.getObjectives()
+                .stream()
+                .filter(objective -> (objective.getType() == objectiveType) && (objective.getOwner() == team))
+                .count();
+    }
+
+    /**
+     * Compute income based on aggregate objectives owned by teams.
+     * @param aggregateObjectives Map of aggregate objectives.
+     * @return A {@code Map<MatchTeam, Integer>} instance, never {@code null}.
+     */
+    private Map<MatchTeam, Integer> computeIncome(final Map<MatchTeam, int[]> aggregateObjectives) {
+        return teams.stream()
+                .collect(Collectors.toMap(Function.identity(), team -> computeAggregateIncome(aggregateObjectives, team)));
+    }
+
+    /**
+     * Compute aggregated income for given team.
+     * @param aggregateObjectives Map of aggregate objectives.
+     * @param team The team.
+     * @return An {@code int}.
+     */
+    private int computeAggregateIncome(final Map<MatchTeam, int[]> aggregateObjectives, final MatchTeam team) {
+        final int[] teamObjectives = aggregateObjectives.get(team);
+        return OBJECTIVE_TYPES.stream()
+                .mapToInt(objectiveType -> computeObjectiveIncome(teamObjectives, objectiveType))
+                .sum();
+    }
+
+    /**
+     * Compute income for given objective type.
+     * @param teamObjectives Arrays of objectives owned by team.
+     * @param objectiveType The type of the objective.
+     * @return An {@code int}.
+     */
+    private int computeObjectiveIncome(final int[] teamObjectives, final ObjectiveType objectiveType) {
+        final int objectiveIndex = OBJECTIVE_TYPES.indexOf(objectiveType);
+        final int point = OBJECTIVE_POINTS.get(objectiveIndex);
+        final int objectiveNumber = teamObjectives[objectiveIndex];
+        return objectiveNumber * point;
+    }
+
     private Map<MatchTeam, String> createWorldNames(final Match match, final Map<Integer, World> worlds) {
+        final Map<MatchTeam, Integer> mainWorlds = match.getWorlds();
         final Map<MatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
         final Map<MatchTeam, String> result = new HashMap<>();
         teams.stream()
                 .forEach(team -> {
-                    final Set<Integer> worldIds = allWorlds.get(team);
-                    final String name = worldIds.stream()
-                            .map(worlds::get)
-                            .map(World::getName)
-                            .collect(Collectors.joining(" + ", "", ""));
+                    final int mainWorldId = mainWorlds.get(team);
+                    String name = worlds.get(mainWorldId).getName();
+                    final Set<Integer> allWorldIds = allWorlds.get(team);
+                    if (allWorldIds.size() > 1) {
+                        name += allWorldIds.stream()
+                                .filter(worldId -> worldId != mainWorldId)
+                                .map(worlds::get)
+                                .map(World::getName)
+                                .collect(Collectors.joining(", ", " + ", ""));
+                    }
                     result.put(team, name);
                 });
         return Collections.unmodifiableMap(result);
+    }
+
+    private TextFlow createWorldLabels(final Map<Integer, World> worlds, final int mainWorldId, final Set<Integer> auxWorldIds) {
+        final String mainName = worlds.get(mainWorldId).getName();
+        final Text mainLabel = new Text(mainName);
+        mainLabel.getStyleClass().add("server-name");
+        final TextFlow result = new TextFlow(mainLabel);
+        if (auxWorldIds.size() > 1) {
+            final Text plusLabel = new Text(" + "); // NOI18N.
+            plusLabel.getStyleClass().add("server-name");
+            plusLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
+            result.getChildren().add(plusLabel);
+            auxWorldIds.stream()
+                    .filter(worldId -> worldId != mainWorldId)
+                    .map(worlds::get)
+                    .map(World::getName)
+                    .forEach(worldName -> {
+                        final Text auxLabel = new Text(worldName);
+                        auxLabel.getStyleClass().add("server-name");
+                        auxLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
+                        result.getChildren().add(auxLabel);
+                        final Text commaLabel = new Text(", "); // NOI18N.
+                        commaLabel.getStyleClass().add("server-name");
+                        commaLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
+                        result.getChildren().add(commaLabel);
+                    });
+            result.getChildren().remove(result.getChildren().size() - 1);
+        }
+        return result;
     }
 
     private Node createServersHeader(final Match match, final Map<MatchTeam, String> worldNames) {
@@ -329,60 +439,18 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         return new TextFlow(serverText);
     }
 
-    private BarChart createScoreBarChart(final Match match, final Map<MatchTeam, String> worldNames) {
-        final CategoryAxis scoreCategoryAxis = new CategoryAxis();
-        scoreCategoryAxis.setTickMarkVisible(false);
-        scoreCategoryAxis.setTickLabelsVisible(false);
-        final NumberAxis xAxis = new NumberAxis();
-        xAxis.setTickMarkVisible(false);
-        xAxis.setMinorTickVisible(false);
-        xAxis.setTickLabelsVisible(false);
-        final BarChart scoreBarChart = new BarChart(xAxis, scoreCategoryAxis);
-        scoreBarChart.getStyleClass().add("wvw-bar-chart"); // NOI18N.
-        scoreBarChart.setMinWidth(0);
-        scoreBarChart.setMinHeight(0);
-        scoreBarChart.setPrefWidth(0);
-        scoreBarChart.setPrefHeight(0);
-        scoreBarChart.setLegendVisible(false);
-        scoreBarChart.setCategoryGap(0);
-        scoreBarChart.setBarGap(0);
-        scoreBarChart.setHorizontalGridLinesVisible(false);
-        scoreBarChart.setVerticalGridLinesVisible(false);
-        final List<String> teamNames = teams.stream()
-                .map(team -> team.name())
-                .collect(Collectors.toList());
-        scoreCategoryAxis.getCategories().setAll(teamNames);
-        // Prepare content.
-        teams.stream()
-                .forEach(team -> {
-                    final BarChart.Series series = new BarChart.Series();
-                    // Initially the series' name is the team's name.
-                    series.setName(team.name());
-                    series.getData().add(new BarChart.Data(0, team.name()));
-                    scoreBarChart.getData().add(series);
-                });
-        // Update content.
-        IntStream.range(0, teams.size())
-                .forEach(teamIndex -> {
-                    final MatchTeam team = teams.get(teamIndex);
-                    final int teamScore = match.getScores().get(team);
-                    final String worldName = worldNames.get(team);
-                    final BarChart.Series series = (BarChart.Series) scoreBarChart.getData().get(teamIndex);
-                    series.setName(worldName);
-                    // Update data.
-                    final BarChart.Data data = (BarChart.Data) series.getData().get(0);
-                    data.setXValue(teamScore);
-                });
-        return scoreBarChart;
-    }
-
+    /**
+     * Create the income pie chart.
+     * @param incomes The income map for each team.
+     * @param worldNames World names.s
+     * @return A {@code PieChart} instance, never {@code null}.
+     */
     private PieChart createSummaryPieChart(final Map<MatchTeam, Integer> incomes, final Map<MatchTeam, String> worldNames) {
         final PieChart summaryPieChart = new PieChart();
         summaryPieChart.getStyleClass().add("wvw-pie-chart");
         summaryPieChart.setLegendVisible(false);
         // Prepare content.
-        IntStream.range(0, pieTeams.size())
-                .mapToObj(pieTeams::get)
+        pieTeams.stream()
                 .map(team -> new PieChart.Data(team.name(), 0))
                 .forEach(summaryPieChart.getData()::add);
         // Update content.
