@@ -31,6 +31,11 @@
     -fx-max-height: 75px;
     -fx-start-angle: 90;
     -fx-pie-label-visible: false;
+    -fx-padding: 3px;
+}
+.wvw-matches-pane .wvw-pie-chart .chart-pie { 
+    -fx-background-insets: 0px;
+    -fx-border-color: null; 
 }
 .wvw-matches-pane .wvw-pie-chart .default-color0.chart-pie { -fx-pie-color: -team-blue-color; }
 .wvw-matches-pane .wvw-pie-chart .default-color1.chart-pie { -fx-pie-color: -team-green-color; }
