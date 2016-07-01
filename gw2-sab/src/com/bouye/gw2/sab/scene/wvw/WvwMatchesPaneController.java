@@ -73,33 +73,13 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         node.matchesProperty().addListener(matchesChangeListener);
     }
 
-    private final List<MatchTeam> teams = Arrays.asList(MatchTeam.GREEN, MatchTeam.BLUE, MatchTeam.RED);
-    // Order of teams in pie chart is different.
-    private final List<MatchTeam> pieTeams = Arrays.asList(MatchTeam.BLUE, MatchTeam.GREEN, MatchTeam.RED);
-
     private static final PseudoClass ODD_PSEUDO_CLASS = PseudoClass.getPseudoClass("odd"); // NOI18N.
     private static final PseudoClass EVEN_PSEUDO_CLASS = PseudoClass.getPseudoClass("even"); // NOI18N.
     private static final PseudoClass SMALL_PSEUDO_CLASS = PseudoClass.getPseudoClass("small"); // NOI18N.
-
-    /**
-     * Objectives that give points.
-     */
-    private static final List<ObjectiveType> OBJECTIVE_TYPES = Collections.unmodifiableList(Arrays.asList(
-            ObjectiveType.CAMP,
-            ObjectiveType.TOWER,
-            ObjectiveType.KEEP,
-            ObjectiveType.CASTLE
-    ));
-    /**
-     * Points per objectives.
-     * <br>Not currently accessible by API?
-     */
-    private static final List<Integer> OBJECTIVE_POINTS = Collections.unmodifiableList(Arrays.asList(
-            5,
-            10,
-            25,
-            35
-    ));
+    private final List<MatchTeam> teams = WvwUtils.INSTANCE.getTeams();
+    private final List<MatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
+    private final List<ObjectiveType> objectiveTypes = WvwUtils.INSTANCE.getObjectiveTypes();
+    private final Map<ObjectiveType, Integer> objectivePoints = WvwUtils.INSTANCE.getObjectivePoints();
 
     @Override
     protected void updateUI() {
@@ -213,7 +193,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final MatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.CAMP)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.CAMP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 6, rowIndex);
@@ -227,7 +207,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final MatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.TOWER)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.TOWER)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 7, rowIndex);
@@ -241,7 +221,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final MatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.KEEP)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.KEEP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 8, rowIndex);
@@ -255,7 +235,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                         final MatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[OBJECTIVE_TYPES.indexOf(ObjectiveType.CASTLE)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.CASTLE)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 9, rowIndex);
@@ -308,7 +288,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @return An {@code int[]} instance, never {@code null}.
      */
     int[] countAggregateObjectives(final Match match, final MatchTeam team) {
-        return OBJECTIVE_TYPES.stream()
+        return objectiveTypes.stream()
                 .mapToInt(objectiveType -> countObjective(match, team, objectiveType))
                 .toArray();
     }
@@ -359,7 +339,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      */
     private int computeAggregateIncome(final Map<MatchTeam, int[]> aggregateObjectives, final MatchTeam team) {
         final int[] teamObjectives = aggregateObjectives.get(team);
-        return OBJECTIVE_TYPES.stream()
+        return objectiveTypes.stream()
                 .mapToInt(objectiveType -> computeObjectiveIncome(teamObjectives, objectiveType))
                 .sum();
     }
@@ -371,8 +351,8 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @return An {@code int}.
      */
     private int computeObjectiveIncome(final int[] teamObjectives, final ObjectiveType objectiveType) {
-        final int objectiveIndex = OBJECTIVE_TYPES.indexOf(objectiveType);
-        final int point = OBJECTIVE_POINTS.get(objectiveIndex);
+        final int objectiveIndex = objectiveTypes.indexOf(objectiveType);
+        final int point = objectivePoints.get(objectiveType);
         final int objectiveNumber = teamObjectives[objectiveIndex];
         return objectiveNumber * point;
     }

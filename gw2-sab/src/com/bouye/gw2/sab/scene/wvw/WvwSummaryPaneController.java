@@ -51,10 +51,8 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     @FXML
     private PieChart greenPieChart;
 
-    // Valid player teams for match results.
-    private final List<MatchTeam> teams = Arrays.stream(MatchTeam.values())
-            .filter(team -> (team != MatchTeam.NEUTRAL) && (team != MatchTeam.UNKNOWN))
-            .collect(Collectors.toList());
+    private final List<MatchTeam> teams = WvwUtils.INSTANCE.getTeams();
+    private final List<MatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
 
     /**
      * Creates a new instance.
@@ -78,6 +76,9 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
                     series.setName(team.name());
                     series.getData().add(new BarChart.Data(0, team.name()));
                     scoreBarChart.getData().add(series);
+                });
+        pieTeams.stream()
+                .forEach(team -> {
                     ebPieChart.getData().add(new PieChart.Data(team.name(), 0));
                     redPieChart.getData().add(new PieChart.Data(team.name(), 0));
                     bluePieChart.getData().add(new PieChart.Data(team.name(), 0));
@@ -157,9 +158,9 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
                         }
                         // Update the chart.
                         final PieChart pieChart = chart;
-                        IntStream.range(0, teams.size())
+                        IntStream.range(0, pieTeams.size())
                                 .forEach(teamIndex -> {
-                                    final MatchTeam team = teams.get(teamIndex);
+                                    final MatchTeam team = pieTeams.get(teamIndex);
                                     final int teamScore = map.getScores().get(team);
                                     final Optional<PieChart.Data> data = pieChart.getData()
                                             .stream()
