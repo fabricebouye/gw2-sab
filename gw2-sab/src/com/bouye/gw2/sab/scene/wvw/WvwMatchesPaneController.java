@@ -364,56 +364,23 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         teams.stream()
                 .forEach(team -> {
                     final int mainWorldId = mainWorlds.get(team);
-                    String name = worlds.get(mainWorldId).getName();
                     final Set<Integer> allWorldIds = allWorlds.get(team);
-                    if (allWorldIds.size() > 1) {
-                        name += allWorldIds.stream()
-                                .filter(worldId -> worldId != mainWorldId)
-                                .map(worlds::get)
-                                .map(World::getName)
-                                .collect(Collectors.joining(", ", " + ", ""));
-                    }
+                    final int[] secondaryWorldIds = allWorldIds.stream()
+                            .mapToInt(id -> id)
+                            .toArray();
+                    final String name = WvwUtils.INSTANCE.createTeamName(worlds, mainWorldId, secondaryWorldIds);
                     result.put(team, name);
                 });
         return Collections.unmodifiableMap(result);
     }
 
     private TextFlow createWorldLabels(final Map<Integer, World> worlds, final int mainWorldId, final Set<Integer> auxWorldIds) {
-        final String mainName = worlds.get(mainWorldId).getName();
-        final Text mainLabel = new Text(mainName);
-        mainLabel.getStyleClass().add("server-name");
-        final TextFlow result = new TextFlow(mainLabel);
-        if (auxWorldIds.size() > 1) {
-            final Text plusLabel = new Text(" + "); // NOI18N.
-            plusLabel.getStyleClass().add("server-name");
-            plusLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
-            result.getChildren().add(plusLabel);
-            auxWorldIds.stream()
-                    .filter(worldId -> worldId != mainWorldId)
-                    .map(worlds::get)
-                    .map(World::getName)
-                    .forEach(worldName -> {
-                        final Text auxLabel = new Text(worldName);
-                        auxLabel.getStyleClass().add("server-name");
-                        auxLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
-                        result.getChildren().add(auxLabel);
-                        final Text commaLabel = new Text(", "); // NOI18N.
-                        commaLabel.getStyleClass().add("server-name");
-                        commaLabel.pseudoClassStateChanged(SMALL_PSEUDO_CLASS, true);
-                        result.getChildren().add(commaLabel);
-                    });
-            result.getChildren().remove(result.getChildren().size() - 1);
-        }
+        final TextFlow result = new TextFlow();
+        final int[] secondaryWorldIds = auxWorldIds.stream()
+                .mapToInt(id -> id)
+                .toArray();
+        result.getChildren().setAll(WvwUtils.INSTANCE.createTeamLabels(worlds, mainWorldId, secondaryWorldIds));
         return result;
-    }
-
-    private Node createServersHeader(final Match match, final Map<MatchTeam, String> worldNames) {
-        final Map<MatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
-        final String serverLabel = teams.stream()
-                .map(worldNames::get)
-                .collect(Collectors.joining("\n", "", ""));
-        final Text serverText = new Text(serverLabel);
-        return new TextFlow(serverText);
     }
 
     /**

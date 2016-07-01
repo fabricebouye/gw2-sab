@@ -9,7 +9,12 @@
     -fx-font-weight: bold;
     -fx-padding: 6px;
 }
-.wvw-matches-pane .server-name:small {
+.wvw-matches-pane .team-name:main {
+    -fx-font-size: 1.0em;
+    -fx-font-weight: bold;
+}
+.wvw-matches-pane .team-name,
+.wvw-matches-pane .team-name:secondary {
     -fx-font-size: 0.9em;
 }
 .wvw-matches-pane .progress-bar:GREEN  .bar { -fx-accent: -team-green-color; }
