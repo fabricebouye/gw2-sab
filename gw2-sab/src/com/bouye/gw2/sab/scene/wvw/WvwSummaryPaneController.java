@@ -15,6 +15,7 @@ import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +38,7 @@ import javafx.scene.chart.PieChart;
  * @author Fabrice Bouyé
  */
 public final class WvwSummaryPaneController extends SABControllerBase<WvwSummaryPane> {
-
+    
     @FXML
     private BarChart scoreBarChart;
     @FXML
@@ -50,7 +51,8 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     private PieChart bluePieChart;
     @FXML
     private PieChart greenPieChart;
-
+    
+    private static final String SCORE_CATEGORY = "Score"; // NOI18N.
     private final List<MatchTeam> teams = WvwUtils.INSTANCE.getTeams();
     private final List<MatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
 
@@ -59,22 +61,27 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
      */
     public WvwSummaryPaneController() {
     }
-
+    
     private PieChart[] pieCharts;
-
+    
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         // Prepare bar and pie charts.
         final List<String> teamNames = teams.stream()
                 .map(team -> team.name())
                 .collect(Collectors.toList());
-        scoreCategoryAxis.getCategories().setAll(teamNames);
-        teams.stream()
+        scoreCategoryAxis.getCategories().setAll(SCORE_CATEGORY);
+        scoreCategoryAxis.setTickLabelsVisible(false);
+        scoreCategoryAxis.setTickMarkVisible(false);
+        IntStream.range(0, teams.size())
+                .map(teamIndex -> teams.size() - 1 - teamIndex)
+                .mapToObj(teams::get)
                 .forEach(team -> {
-                    final BarChart.Series series = new BarChart.Series();
                     // Initially the series' name is the team's name.
+                    final BarChart.Data data = new BarChart.Data(0, SCORE_CATEGORY);
+                    final BarChart.Series series = new BarChart.Series();
                     series.setName(team.name());
-                    series.getData().add(new BarChart.Data(0, team.name()));
+                    series.getData().add(data);
                     scoreBarChart.getData().add(series);
                 });
         pieTeams.stream()
@@ -94,14 +101,14 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     protected void uninstallNode(final WvwSummaryPane node) {
         matchProperty().unbind();
     }
-
+    
     @Override
     protected void installNode(final WvwSummaryPane node) {
         matchProperty().bind(node.matchProperty());
     }
-
+    
     private final ChangeListener<MatchWrapper> matchChangleListener = (observable, oldValue, newValue) -> updateUI();
-
+    
     @Override
     protected void updateUI() {
         final MatchWrapper wrapper = getMatch();
@@ -124,9 +131,10 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
                             .map(obj -> (PieChart.Data) obj)
                             .forEach(data -> data.setPieValue(0)));
         } else {
-            final Map<MatchTeam, String> worldNames = findWorldNamesForTeams(match, worlds);
+            final Map<MatchTeam, String> worldNames = createTeamNames(match, worlds);
             // Update score bar chart.
             IntStream.range(0, teams.size())
+                    //.map(teamIndex -> teams.size() - 1 - teamIndex)
                     .forEach(teamIndex -> {
                         final MatchTeam team = teams.get(teamIndex);
                         final int teamScore = match.getScores().get(team);
@@ -174,47 +182,28 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     }
 
     /**
-     * Return proper world name for given world id.
-     * @param worldId The world id.
-     * @param worldList The world list.
-     * @return A {@code String} instance, never {@code null}.
-     * <br>If the world's name cannot be resolved, the returned {@code String} contains the world's id instead.
-     */
-    private String findWorldNameForId(final int worldId, final List<World> worldList) {
-        final Optional<World> world = worldList.stream()
-                .filter(w -> w.getId() == worldId)
-                .findFirst();
-        return world.isPresent() ? world.get().getName() : String.valueOf(worldId);
-    }
-
-    /**
      * Find proper world names for each match team.
      * @param match The match descriptor.
-     * @param worldList The world list.
+     * @param worlds The world list.
      * @return A {@code Map<MatchTeam, String>}, never {@code null}.
      * <br> The map does not contain {@code null} values.
      */
-    private Map<MatchTeam, String> findWorldNamesForTeams(final Match match, final List<World> worldList) {
-        final Map<MatchTeam, Integer> worldIds = match.getWorlds();
-        final Map<MatchTeam, Set<Integer>> allWorldIds = match.getAllWorlds();
-        final boolean pairedMatch = !allWorldIds.isEmpty();
-        final Map<MatchTeam, String> result = teams.stream()
-                .collect(Collectors.toMap(Function.identity(), team -> {
-                    String value = "";
-                    // Support for non-paired matches.
-                    if (!pairedMatch) {
-                        final int id = worldIds.get(team);
-                        value = findWorldNameForId(id, worldList);
-                    } // Support for paired matches.
-                    else {
-                        final Set<Integer> ids = allWorldIds.get(team);
-                        final String separator = (ids.size() == 2) ? " & " : ", "; // NOI18N.
-                        value = ids.stream()
-                                .map(id -> findWorldNameForId(id, worldList))
-                                .collect(Collectors.joining(separator));
-                    }
-                    return value;
-                }));
+    private Map<MatchTeam, String> createTeamNames(final Match match, final List<World> worlds) {
+        final Map<MatchTeam, Integer> mainWorlds = match.getWorlds();
+        final Map<MatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
+        final Map<MatchTeam, String> result = new HashMap<>();
+        final Map<Integer, World> worldMap = worlds.stream()
+                .collect(Collectors.toMap(World::getId, Function.identity()));
+        teams.stream()
+                .forEach(team -> {
+                    final int mainWorldId = mainWorlds.get(team);
+                    final Set<Integer> allWorldIds = allWorlds.get(team);
+                    final int[] secondaryWorldIds = allWorldIds.stream()
+                            .mapToInt(id -> id)
+                            .toArray();
+                    final String name = WvwUtils.INSTANCE.createTeamName(worldMap, mainWorldId, secondaryWorldIds);
+                    result.put(team, name);
+                });
         return Collections.unmodifiableMap(result);
     }
 
@@ -224,11 +213,11 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     public final MatchWrapper getMatch() {
         return match.get();
     }
-
+    
     public final void setMatch(final MatchWrapper value) {
         match.set(value);
     }
-
+    
     public final ObjectProperty<MatchWrapper> matchProperty() {
         return match;
     }
