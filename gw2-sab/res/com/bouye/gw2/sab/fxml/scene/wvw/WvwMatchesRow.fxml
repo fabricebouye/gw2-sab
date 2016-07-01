@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<GridPane fx:id="rootPane" styleClass="wvw-matche-pane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.wvw.WvwMatchesRowController">
+    <columnConstraints>
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" />
+        <ColumnConstraints hgrow="NEVER" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+        <ColumnConstraints maxWidth="-Infinity" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="ALWAYS" />
+    </rowConstraints>
+    <children>
+        <Label fx:id="rankLabel1" text="Rank #1">
+         <tooltip>
+            <Tooltip fx:id="rankTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <TextFlow fx:id="nameLabel1" maxHeight="-Infinity" GridPane.columnIndex="1">
+            <children>
+                <Text text="Server #1" />
+            </children>
+        </TextFlow>
+        <Label fx:id="scoreLabel1" text="Score #1" GridPane.columnIndex="2">
+         <tooltip>
+            <Tooltip fx:id="scoreTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <ProgressBar fx:id="scoreProgressBar1" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3">
+         <tooltip>
+            <Tooltip fx:id="scoreProgressTip1" text="Empty Tooltip" />
+         </tooltip></ProgressBar>
+        <PieChart fx:id="incomePieChart" maxHeight="75.0" maxWidth="75.0" minHeight="75.0" minWidth="75.0" prefHeight="75.0" prefWidth="75.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowSpan="2147483647" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+        <Label fx:id="incomeLabel1" text="Icome #1" GridPane.columnIndex="5">
+         <tooltip>
+            <Tooltip fx:id="incomeTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="campsLabel1" text="Camps #1" GridPane.columnIndex="6">
+         <tooltip>
+            <Tooltip fx:id="campsTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="towersLabel1" text="Tower #1" GridPane.columnIndex="7">
+         <tooltip>
+            <Tooltip fx:id="towersTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="keepsLabel1" text="Keeps #1" GridPane.columnIndex="8">
+         <tooltip>
+            <Tooltip fx:id="keepsTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="castleLabel1" text="Castle #1" GridPane.columnIndex="9">
+         <tooltip>
+            <Tooltip fx:id="castleTip1" text="Empty Tooltip" />
+         </tooltip></Label>
+        <!---->
+        <Label fx:id="rankLabel2" text="Rank #2" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="rankTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <TextFlow fx:id="nameLabel2" maxHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+                <Text text="Server #2" />
+            </children>
+        </TextFlow>
+        <Label fx:id="scoreLabel2" text="Score #2" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="scoreTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <ProgressBar fx:id="scoreProgressBar2" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="scoreProgressTip2" text="Empty Tooltip" />
+         </tooltip></ProgressBar>
+        <Label fx:id="incomeLabel2" text="Icome #2" GridPane.columnIndex="5" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="incomeTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="campsLabel2" text="Camps #2" GridPane.columnIndex="6" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="campsTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="towersLabel2" text="Tower #2" GridPane.columnIndex="7" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="towersTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="keepsLabel2" text="Keeps #2" GridPane.columnIndex="8" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="keepsTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="castleLabel2" text="Castle #2" GridPane.columnIndex="9" GridPane.rowIndex="1">
+         <tooltip>
+            <Tooltip fx:id="castleTip2" text="Empty Tooltip" />
+         </tooltip></Label>
+        <!---->
+        <Label fx:id="rankLabel3" text="Rank #3" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="rankTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <TextFlow fx:id="nameLabel3" maxHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <children>
+                <Text text="Server #3" />
+            </children>
+        </TextFlow>
+        <Label fx:id="scoreLabel3" text="Score #3" GridPane.columnIndex="2" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="scoreTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <ProgressBar fx:id="scoreProgressBar3" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="scoreProgressTip3" text="Empty Tooltip" />
+         </tooltip></ProgressBar>
+        <Label fx:id="incomeLabel3" text="Icome #3" GridPane.columnIndex="5" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="incomeTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="campsLabel3" text="Camps #3" GridPane.columnIndex="6" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="campsTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="towersLabel3" text="Tower #3" GridPane.columnIndex="7" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="towersTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="keepsLabel3" text="Keeps #3" GridPane.columnIndex="8" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="keepsTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+        <Label fx:id="castleLabel3" text="Castle #3" GridPane.columnIndex="9" GridPane.rowIndex="2">
+         <tooltip>
+            <Tooltip fx:id="castleTip3" text="Empty Tooltip" />
+         </tooltip></Label>
+    </children>
+</GridPane>
