@@ -7,11 +7,13 @@
     -fx-spacing: 6px;
 }
 /* WvW bar charts. */
+.wvw-summary-pane .wvw-bar-chart {
+    -fx-bar-gap: 0px;
+    -fx-category-gap: 0px;
+}
 .wvw-summary-pane .wvw-bar-chart .default-color0.chart-bar { -fx-bar-fill: -team-green-color; }
 .wvw-summary-pane .wvw-bar-chart .default-color1.chart-bar { -fx-bar-fill: -team-blue-color; }
 .wvw-summary-pane .wvw-bar-chart .default-color2.chart-bar { -fx-bar-fill: -team-red-color; }
-.wvw-summary-pane .wvw-pie-chart {    
-}
 /* WvW pie charts. */
 .wvw-summary-pane .wvw-pie-chart {    
     -fx-start-angle: 90;
