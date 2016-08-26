@@ -7,8 +7,7 @@
  */
 package com.bouye.gw2.sab.query;
 
-import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.core.PageResult;
+import api.web.gw2.mapping.core.APILevel;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
@@ -28,21 +27,13 @@ import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.demo.DemoSupport;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import static com.bouye.gw2.sab.query.GW2APIClient.*;
 
 /**
  * Centralized class for web-queries.
@@ -50,12 +41,6 @@ import java.util.stream.Collectors;
  */
 public enum WebQuery {
     INSTANCE;
-
-    public String encodeURLParameter(final String value) throws UnsupportedEncodingException {
-        String result = URLEncoder.encode(value, "utf-8"); // NOI18N.
-        result = result.replaceAll("\\+", "%20"); // NOI18N.
-        return result;
-    }
 
     /**
      * Return the language code to be used when doing queries that return localized values.
@@ -68,98 +53,17 @@ public enum WebQuery {
         return supportedLanguages.contains(currentLanguage) ? currentLanguage : SABConstants.DEFAULT_WEBAPI_LANGUAGE;
     }
 
-    /**
-     * Convert given {@code int} ids into a {@code String} for the query.
-     * @param ids the ids.
-     * @return A {@code String}, never {@code null}.
-     * <br>Contains {@code "all"} no id provided.
-     */
-    public String idsToString(final int... ids) {
-        String result = "all"; // NOI18N.
-        if (ids.length > 0) {
-            result = Arrays.stream(ids)
-                    .mapToObj(value -> String.valueOf(value))
-                    .collect(Collectors.joining(",")); // NOI18N.
-        }
-        return result;
-    }
-
-    /**
-     * Convert given {@code String} ids into a {@code String} for the query.
-     * @param ids the ids.
-     * @return A {@code String}, never {@code null}.
-     * <br>Contains {@code "all"} no id provided.
-     */
-    public String idsToString(final String... ids) {
-        String result = "all"; // NOI18N.
-        if (ids.length > 0) {
-            result = Arrays.stream(ids)
-                    .collect(Collectors.joining(",")); // NOI18N.
-        }
-        return result;
-    }
-
-    /**
-     * Do a simply web query that returns a simple object.
-     * @param <T> The type to use.
-     * @param targetClass The target class.
-     * @param query The query.
-     * @return An {@code Optional<T>} instance, never {@code null}.
-     */
-    private <T> Optional<T> objectWebQuery(final Class<T> targetClass, final String query) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "objectWebQuery " + query); // NOI18N.
-        Optional<T> result = Optional.empty();
-        try {
-            final URL url = new URL(query);
-            final T value = JsonpContext.SAX.loadObject(targetClass, url);
-            result = Optional.ofNullable(value);
-        } catch (NullPointerException | IOException ex) {
-            Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return result;
-    }
-
-    /**
-     * Do a simple web query that returns a list of object.
-     * @param <T> The type to use.
-     * @param targetClass The target class.
-     * @param query The query.
-     * @return A {@code List<T>} instance, never {@code null}.
-     */
-    private <T> List<T> arrayWebQuery(final Class<T> targetClass, final String query) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + query); // NOI18N.
-        List<T> result = Collections.EMPTY_LIST;
-        try {
-            final URL url = new URL(query);
-            final Collection<T> value = JsonpContext.SAX.loadObjectArray(targetClass, url);
-            result = new ArrayList<>(value);
-            result = Collections.unmodifiableList(result);
-        } catch (NullPointerException | IOException ex) {
-            Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return result;
-    }
-
-    private <T> PageResult<T> pageWebQuery(final Class<T> targetClass, final String query) {
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "arrayWebQuery " + query); // NOI18N.
-        PageResult<T> result = PageResult.EMPTY;
-        try {
-            final URL url = new URL(query);
-            result = JsonpContext.SAX.loadPage(targetClass, url);;
-        } catch (NullPointerException | IOException ex) {
-            Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return result;
-    }
-
     public Optional<TokenInfo> queryTokenInfo(final String appKey) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         Optional<TokenInfo> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadTokenInfo());
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/tokeninfo?access_token=%s", appKey); // NOI18N.
-            result = objectWebQuery(TokenInfo.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("tokeninfo") // NOI18N.
+                    .applicationKey(appKey)
+                    .queryObject(TokenInfo.class);
         }
         return result;
     }
@@ -170,8 +74,11 @@ public enum WebQuery {
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = Optional.ofNullable(DemoSupport.INSTANCE.loadAccount());
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/account?access_token=%s", appKey); // NOI18N.
-            result = objectWebQuery(Account.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("account") // NOI18N.
+                    .applicationKey(appKey)
+                    .queryObject(Account.class);
         }
         return result;
     }
@@ -182,8 +89,12 @@ public enum WebQuery {
         if (isOffline) {
             result = DemoSupport.INSTANCE.loadWorlds(ids);
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/worlds?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(World.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("worlds") // NOI18N.
+                    .language(getLanguageCode())
+                    .ids(ids)
+                    .queryArray(World.class);
         }
         return result;
     }
@@ -193,8 +104,11 @@ public enum WebQuery {
         List<File> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = "https://api.guildwars2.com/v2/files?ids=all"; // NOI18N.        
-            result = arrayWebQuery(File.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("files") // NOI18N.
+                    .ids(new int[0])
+                    .queryArray(File.class);
         }
         return result;
     }
@@ -206,10 +120,14 @@ public enum WebQuery {
         if (isOffline) {
             result = DemoSupport.INSTANCE.loadGuilds(ids);
         } else {
+            final GW2APIClient client = GW2APIClient.create()
+                    .apiLevel(APILevel.V1)
+                    .endPoint("guild_details.php"); // NOI18N.
             result = new ArrayList(ids.length);
             for (final String id : ids) {
-                final String query = String.format("https://api.guildwars2.com/v1/guild_details.php?guild_id=%s", id); // NOI18N.
-                final Optional<GuildDetails> value = objectWebQuery(GuildDetails.class, query);
+                final Optional<GuildDetails> value = client
+                        .putParameter("guild_id", id) // NOI18N.
+                        .queryObject(GuildDetails.class);
                 if (value.isPresent()) {
                     result.add(value.get());
                 }
@@ -225,8 +143,12 @@ public enum WebQuery {
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildRoster(id);
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/members?access_token=%s", id, appKey); // NOI18N.
-            result = arrayWebQuery(Member.class, query);
+            final String endPoint = String.format("guild/%s/members", id); // NOI18N.
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint(endPoint)
+                    .applicationKey(appKey)
+                    .queryArray(Member.class);
         }
         return result;
     }
@@ -237,8 +159,12 @@ public enum WebQuery {
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildLogs(id);
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/log?access_token=%s", id, appKey); // NOI18N.
-            result = arrayWebQuery(LogEvent.class, query);
+            final String endPoint = String.format("guild/%s/log", id); // NOI18N.
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint(endPoint)
+                    .applicationKey(appKey)
+                    .queryArray(LogEvent.class);
         }
         return result;
     }
@@ -248,8 +174,12 @@ public enum WebQuery {
         List<Treasury> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guild/%s/treasury?access_token=%s", id, appKey); // NOI18N.
-            result = arrayWebQuery(Treasury.class, query);
+            final String endPoint = String.format("guild/%s/treasury", id); // NOI18N.
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint(endPoint)
+                    .applicationKey(appKey)
+                    .queryArray(Treasury.class);
         }
         return result;
     }
@@ -259,8 +189,12 @@ public enum WebQuery {
         List<Upgrade> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guild/upgrades?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Upgrade.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("guild/upgrades") // NOI18N.
+                    .language(getLanguageCode())
+                    .ids(ids)
+                    .queryArray(Upgrade.class);
         }
         return result;
     }
@@ -270,8 +204,12 @@ public enum WebQuery {
         List<Item> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/items?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Item.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("guild/items") // NOI18N.
+                    .language(getLanguageCode())
+                    .ids(ids)
+                    .queryArray(Item.class);
         }
         return result;
     }
@@ -286,8 +224,11 @@ public enum WebQuery {
         Optional<Match> result = Optional.empty();
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?world=%d", id); // NOI18N.
-            result = objectWebQuery(Match.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("wvw/matches") // NOI18N.
+                    .putParameter("world", id) // NOI18N.
+                    .queryObject(Match.class);
         }
         return result;
     }
@@ -302,8 +243,11 @@ public enum WebQuery {
         List<Match> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/wvw/matches?ids=%s", idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Match.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("wvw/matches") // NOI18N.
+                    .ids(ids)
+                    .queryArray(Match.class);
         }
         return result;
     }
@@ -313,8 +257,11 @@ public enum WebQuery {
         List<String> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/characters?access_token=%s", appKey); // NOI18N.
-            result = arrayWebQuery(String.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("characters") // NOI18N.
+                    .applicationKey(appKey)
+                    .queryArray(String.class);
         }
         return result;
     }
@@ -324,13 +271,13 @@ public enum WebQuery {
         Optional<Character> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            try {
-                final String escapedCharacterName = encodeURLParameter(characterName);
-                final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey); // NOI18N.
-                result = objectWebQuery(Character.class, query);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            }
+            final String escapedCharacterName = encodeURLParameter(characterName);
+            final String endPoint = String.format("characters/%s", escapedCharacterName); // NOI18N.
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint(endPoint)
+                    .applicationKey(appKey)
+                    .queryObject(Character.class);
         }
         return result;
     }
@@ -341,16 +288,17 @@ public enum WebQuery {
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
             result = new ArrayList(ids.length);
+            final GW2APIClient client = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .applicationKey(appKey);
             for (final String id : ids) {
-                try {
-                    final String escapedCharacterName = encodeURLParameter(id);
-                    final String query = String.format("https://api.guildwars2.com/v2/characters/%s?access_token=%s", escapedCharacterName, appKey); // NOI18N.
-                    final Optional<Character> value = objectWebQuery(Character.class, query);
-                    if (value.isPresent()) {
-                        result.add(value.get());
-                    }
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                final String escapedCharacterName = encodeURLParameter(id);
+                final String endPoint = String.format("characters/%s", escapedCharacterName); // NOI18N.
+                final Optional<Character> value = client
+                        .endPoint(endPoint)
+                        .queryObject(Character.class);
+                if (value.isPresent()) {
+                    result.add(value.get());
                 }
             }
             result = Collections.unmodifiableList(result);
@@ -363,8 +311,12 @@ public enum WebQuery {
         List<Currency> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/currencies?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Currency.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("currencies") // NOI18N.
+                    .language(getLanguageCode())
+                    .ids(ids)
+                    .queryArray(Currency.class);
         }
         return result;
     }
@@ -374,19 +326,26 @@ public enum WebQuery {
         List<CurrencyAmount> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/account/wallet?access_token=%s", appKey); // NOI18N.
-            result = arrayWebQuery(CurrencyAmount.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("account/wallet") // NOI18N.
+                    .applicationKey(appKey)
+                    .queryArray(CurrencyAmount.class);
         }
         return result;
     }
 
-    public List<Profession> queryProfessions(String... ids) {
+    public List<Profession> queryProfessions(final String... ids) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<Profession> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/professions?lang=%s&ids=%s", getLanguageCode(), idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Profession.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("professions") // NOI18N.
+                    .language(getLanguageCode())
+                    .ids(ids)
+                    .queryArray(Profession.class);
         }
         return result;
     }
@@ -396,19 +355,25 @@ public enum WebQuery {
         Optional<Stat> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/pvp/stats?access_token=%s", appKey); // NOI18N.
-            result = objectWebQuery(Stat.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("pvp/stats") // NOI18N.
+                    .applicationKey(appKey)
+                    .queryObject(Stat.class);
         }
         return result;
     }
 
-    public List<Quaggan> queryQuaggans(String... ids) {
+    public List<Quaggan> queryQuaggans(final String... ids) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
         List<Quaggan> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
-            final String query = String.format("https://api.guildwars2.com/v2/guaggans?ids=%s", idsToString(ids)); // NOI18N.
-            result = arrayWebQuery(Quaggan.class, query);
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint("quaggans") // NOI18N.
+                    .ids(ids)
+                    .queryArray(Quaggan.class);
         }
         return result;
     }
