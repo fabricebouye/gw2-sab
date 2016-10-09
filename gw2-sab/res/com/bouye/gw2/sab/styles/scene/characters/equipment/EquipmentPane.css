@@ -47,6 +47,6 @@
 }
 .equipment-pane .icon-box {
     -fx-border-color: cyan;
-    -fx-alignment: left-center;
+    -fx-alignment: center-left;
     -fx-padding: 6px;
 }
