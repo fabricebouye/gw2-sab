@@ -12,6 +12,8 @@ import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.Character;
+import api.web.gw2.mapping.v2.characters.equipment.Equipment;
+import api.web.gw2.mapping.v2.characters.equipment.EquipmentResponse;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
@@ -43,8 +45,10 @@ public enum WebQuery {
     INSTANCE;
 
     /**
-     * Return the language code to be used when doing queries that return localized values.
-     * <br>If the user's current language is not supported, the default locale will be used instead.
+     * Return the language code to be used when doing queries that return
+     * localized values.
+     * <br>If the user's current language is not supported, the default locale
+     * will be used instead.
      * @return A {@code String} instance, never {@code null}.
      */
     private String getLanguageCode() {
@@ -278,6 +282,22 @@ public enum WebQuery {
                     .endPoint(endPoint)
                     .applicationKey(appKey)
                     .queryObject(Character.class);
+        }
+        return result;
+    }
+
+    public Optional<EquipmentResponse> queryCharacterEquipment(final String appKey, final String characterName) {
+        final boolean isOffline = SABConstants.INSTANCE.isOffline();
+        Optional<EquipmentResponse> result = Optional.empty();
+        if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
+        } else {
+            final String escapedCharacterName = encodeURLParameter(characterName);
+            final String endPoint = String.format("characters/%s/equipment", escapedCharacterName); // NOI18N.
+            result = GW2APIClient.create()
+                    .apiLevel(APILevel.V2)
+                    .endPoint(endPoint)
+                    .applicationKey(appKey)
+                    .queryObject(EquipmentResponse.class);
         }
         return result;
     }
