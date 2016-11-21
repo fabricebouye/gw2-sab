@@ -243,8 +243,9 @@ public final class GW2APIClient {
      * @return An {@code Optional<T>} instance, never {@code null}.
      */
     public <T> Optional<T> queryObject(final Class<T> targetClass) {
+        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryObject", targetClass); // NOI18N.
         final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryWebObject " + query); // NOI18N.
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryObject " + query); // NOI18N.
         Optional<T> result = Optional.empty();
         try {
             final URL url = new URL(query);
@@ -252,6 +253,8 @@ public final class GW2APIClient {
             result = Optional.ofNullable(value);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryObject"); // NOI18N.
         }
         return result;
     }
@@ -263,8 +266,9 @@ public final class GW2APIClient {
      * @return A {@code List<T>} instance, never {@code null}.
      */
     public <T> List<T> queryArray(final Class<T> targetClass) {
+        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryArray", targetClass); // NOI18N.
         final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryWebArray " + query); // NOI18N.
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryArray " + query); // NOI18N.
         List<T> result = Collections.EMPTY_LIST;
         try {
             final URL url = new URL(query);
@@ -273,6 +277,8 @@ public final class GW2APIClient {
             result = Collections.unmodifiableList(result);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryArray"); // NOI18N.
         }
         return result;
     }
@@ -285,16 +291,18 @@ public final class GW2APIClient {
      * @todo Support page query per page index.
      */
     public <T> PageResult<T> queryPage(final Class<T> targetClass) {
+        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryPage", targetClass); // NOI18N.
         final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryWebPage " + query); // NOI18N.
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryPage " + query); // NOI18N.
         PageResult<T> result = PageResult.EMPTY;
         try {
             final URL url = new URL(query);
             result = context.loadPage(targetClass, url);
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryPage"); // NOI18N.
         }
         return result;
     }
-
 }
