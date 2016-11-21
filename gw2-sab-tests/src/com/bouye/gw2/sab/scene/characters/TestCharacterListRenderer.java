@@ -9,12 +9,14 @@ package com.bouye.gw2.sab.scene.characters;
 
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.characters.CharacterCrafting;
+import api.web.gw2.mapping.v2.characters.CharacterEquipmentPvP;
 import api.web.gw2.mapping.v2.characters.CharacterGameType;
 import api.web.gw2.mapping.v2.characters.CharacterGender;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.characters.CharacterRace;
 import api.web.gw2.mapping.v2.characters.CharacterSkillSet;
 import api.web.gw2.mapping.v2.characters.CharacterSpecialization;
+import api.web.gw2.mapping.v2.characters.CharacterTraining;
 import api.web.gw2.mapping.v2.characters.equipment.Equipment;
 import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import com.bouye.gw2.sab.SAB;
@@ -23,9 +25,11 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.application.Application;
@@ -37,7 +41,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -202,6 +205,26 @@ public final class TestCharacterListRenderer extends Application {
 
             @Override
             public Optional<Map<CharacterGameType, CharacterSkillSet>> getSkills() {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<Set<CharacterTraining>> getTraining() {
+                return Optional.empty();
+            }
+
+            @Override
+            public Set<Integer> getBackstory() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public OptionalInt getTitle() {
+                return OptionalInt.empty();
+            }
+
+            @Override
+            public Optional<CharacterEquipmentPvP> getEquipmentPvp() {
                 return Optional.empty();
             }
         };
