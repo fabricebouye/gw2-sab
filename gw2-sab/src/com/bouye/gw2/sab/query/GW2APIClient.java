@@ -98,8 +98,7 @@ public final class GW2APIClient {
      * @return A {@code GW2APIClient}, never {@code null}.
      */
     public GW2APIClient language(final String value) {
-        putParameter("lang", value); // NOI8N.
-        return this;
+        return putParameter("lang", value); // NOI8N.
     }
 
     /**
