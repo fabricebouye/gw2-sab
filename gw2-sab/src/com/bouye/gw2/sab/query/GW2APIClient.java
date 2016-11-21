@@ -33,10 +33,25 @@ import java.util.stream.Collectors;
  */
 public final class GW2APIClient {
 
+    /**
+     * Base URL for all GW2 API endpoints.
+     */
     private static final String API_BASE_CODE = "https://api.guildwars2.com"; // NOI18N.
+    /**
+     * API level to use.
+     */
     private APILevel apiLevel = APILevel.V2;
+    /**
+     * Endpoint at the base URL.
+     */
     private String endPoint;
+    /**
+     * Other parameters.
+     */
     private final Map<String, Object> parameters = new LinkedHashMap<>();
+    /**
+     * JSON-P context to use when parsing results.
+     */
     private JsonpContext context = JsonpContext.SAX;
 
     /**
@@ -159,7 +174,7 @@ public final class GW2APIClient {
             // Should never happen.
             Logger.getLogger(GW2APIClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "";
+        return ""; // NOI18N.
     }
 
     /**
@@ -222,7 +237,7 @@ public final class GW2APIClient {
     }
 
     /**
-     * Do a simply web query that returns a simple object.
+     * Do a simply query that returns a simple object.
      * @param <T> The type to use.
      * @param targetClass The target class.`
      * @return An {@code Optional<T>} instance, never {@code null}.
@@ -242,7 +257,7 @@ public final class GW2APIClient {
     }
 
     /**
-     * Do a simple web query that returns a list of object.
+     * Do a simple query that returns a list of object.
      * @param <T> The type to use.
      * @param targetClass The target class.
      * @return A {@code List<T>} instance, never {@code null}.
@@ -262,6 +277,13 @@ public final class GW2APIClient {
         return result;
     }
 
+    /**
+     * Do a simple query that returns a page.
+     * @param <T> The type to use.
+     * @param targetClass The target class.
+     * @return A {@code List<T>} instance, never {@code null}.
+     * @todo Support page query per page index.
+     */
     public <T> PageResult<T> queryPage(final Class<T> targetClass) {
         final String query = buildQuery();
         Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryWebPage " + query); // NOI18N.
