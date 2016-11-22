@@ -112,20 +112,46 @@ public final class GW2APIClient {
 
     /**
      * Sets the integer ids to use on the query.
+     * <br>This parameter is mutually exclusive with the {@code id} parameter.
      * @param value The new value.
      * @return A {@code GW2APIClient}, never {@code null}.
      */
     public GW2APIClient ids(final int... value) {
+        putParameter("id", null); // NOI8N.
         return putParameter("ids", idsToString(value)); // NOI8N.
     }
 
     /**
      * Sets the string ids to use on the query.
+     * <br>This parameter is mutually exclusive with the {@code id} parameter.
      * @param value The new value.
      * @return A {@code GW2APIClient}, never {@code null}.
      */
     public GW2APIClient ids(final String... value) {
+        putParameter("id", null); // NOI8N.
         return putParameter("ids", idsToString(value)); // NOI8N.
+    }
+
+    /**
+     * Sets a single integer id to use on the query.
+     * <br>This parameter is mutually exclusive with the {@code ids} parameter.
+     * @param value The new value.
+     * @return A {@code GW2APIClient}, never {@code null}.
+     */
+    public GW2APIClient id(final int value) {
+        putParameter("ids", null); // NOI8N.
+        return putParameter("id", idsToString(value)); // NOI8N.
+    }
+
+    /**
+     * Sets a single string id to use on the query.
+     * <br>This parameter is mutually exclusive with the {@code ids} parameter.
+     * @param value The new value.
+     * @return A {@code GW2APIClient}, never {@code null}.
+     */
+    public GW2APIClient id(final String value) {
+        putParameter("ids", null); // NOI8N.
+        return putParameter("id", idsToString(value)); // NOI8N.
     }
 
     /**
