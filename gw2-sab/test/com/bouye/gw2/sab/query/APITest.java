@@ -8,11 +8,15 @@
 package com.bouye.gw2.sab.query;
 
 import api.web.gw2.mapping.core.APILevel;
+import api.web.gw2.mapping.core.CoinAmount;
 import api.web.gw2.mapping.core.EnumValueFactory;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
+import api.web.gw2.mapping.v2.items.Item;
+import api.web.gw2.mapping.v2.items.ItemRarity;
+import api.web.gw2.mapping.v2.items.ItemType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -30,6 +35,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import static org.hamcrest.CoreMatchers.is;
 
 /**
  * API automated tests.
@@ -67,12 +73,15 @@ public class APITest {
 
     @Test
     public void testAccount() {
+        System.out.println("testAccount");
+        final String expId = SETTINGS.getProperty("account.id"); // NOI18N.
         final String expName = SETTINGS.getProperty("account.name"); // NOI18N.
         final ZonedDateTime expCreated = ZonedDateTime.parse(SETTINGS.getProperty("account.created")); // NOI18N.
         final int expWorld = Integer.parseInt(SETTINGS.getProperty("account.world")); // NOI18N.
         final AccountAccessType expAccess = EnumValueFactory.INSTANCE.mapEnumValue(AccountAccessType.class, SETTINGS.getProperty("account.access")); // NOI18N.
         final boolean expCommander = Boolean.parseBoolean(SETTINGS.getProperty("account.commander")); // NOI18N.
         final int expFractal = Integer.parseInt(SETTINGS.getProperty("account.fractal_level")); // NOI18N.
+        assertNotNull(expId);
         assertNotNull(expName);
         //
         final Optional<Account> value = GW2APIClient.create()
@@ -81,6 +90,7 @@ public class APITest {
                 .endPoint("account") // NOI18N.
                 .queryObject(Account.class);
         assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());
         assertEquals(expCreated, value.get().getCreated());
         assertEquals(expWorld, value.get().getWorld());
@@ -91,6 +101,7 @@ public class APITest {
 
     @Test
     public void testCharacters() {
+        System.out.println("testCharacters");
         final List<String> expNames = Arrays.asList(SETTINGS.getProperty("characters.names").split(",")); // NOI18N.
         //
         final List<String> value = GW2APIClient.create()
@@ -104,6 +115,7 @@ public class APITest {
 
     @Test
     public void testCharacter() {
+        System.out.println("testCharacter");
         final String expName = SETTINGS.getProperty("character.name"); // NOI18N.
         final int expLevel = Integer.parseInt(SETTINGS.getProperty("character.level")); // NOI18N.
         final CharacterProfession expProfession = EnumValueFactory.INSTANCE.mapEnumValue(CharacterProfession.class, SETTINGS.getProperty("character.profession")); // NOI18N.
@@ -120,5 +132,35 @@ public class APITest {
         assertEquals(expName, value.get().getName());
         assertEquals(expLevel, value.get().getLevel());
         assertEquals(expProfession, value.get().getProfession());
+    }
+
+    @Test
+    public void testItem() {
+        System.out.println("testItem");
+        final int expId = Integer.parseInt(SETTINGS.getProperty("item.id")); // NOI18N.
+        final String expName = SETTINGS.getProperty("item.name"); // NOI18N.
+        final ItemType expType = EnumValueFactory.INSTANCE.mapEnumValue(ItemType.class, SETTINGS.getProperty("item.type")); // NOI18N.
+        final int expLevel = Integer.parseInt(SETTINGS.getProperty("item.level")); // NOI18N.
+        final ItemRarity expRarity = EnumValueFactory.INSTANCE.mapEnumValue(ItemRarity.class, SETTINGS.getProperty("item.rarity")); // NOI18N.\
+        final CoinAmount expVendorValue = CoinAmount.ofCopper(Integer.parseInt(SETTINGS.getProperty("item.vendor_value"))); // NOI18N.)
+        final OptionalInt expDefaultSkin = OptionalInt.of(Integer.parseInt(SETTINGS.getProperty("item.default_skin"))); // NOI18N.
+        assertNotNull(expName);
+        //
+        final String id = SETTINGS.getProperty("item.id"); // NOI18N.
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Item> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("items") // NOI18N.
+                .language(lang)
+                .id(id)
+                .queryObject(Item.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expType, value.get().getType());
+        assertEquals(expLevel, value.get().getLevel());
+        assertEquals(expRarity, value.get().getRarity());
+        assertEquals(expVendorValue, value.get().getVendorValue());
+        assertEquals(expDefaultSkin, value.get().getDefaultSkin());
     }
 }
