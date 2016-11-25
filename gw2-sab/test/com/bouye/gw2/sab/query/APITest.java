@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Properties;
-import static org.hamcrest.CoreMatchers.is;
+import java.util.function.Function;
 import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -135,32 +135,53 @@ public class APITest {
     }
 
     @Test
-    public void testItem() {
-        System.out.println("testItem");
-        final int expId = Integer.parseInt(SETTINGS.getProperty("item.id")); // NOI18N.
-        final String expName = SETTINGS.getProperty("item.name"); // NOI18N.
-        final ItemType expType = EnumValueFactory.INSTANCE.mapEnumValue(ItemType.class, SETTINGS.getProperty("item.type")); // NOI18N.
-        final int expLevel = Integer.parseInt(SETTINGS.getProperty("item.level")); // NOI18N.
-        final ItemRarity expRarity = EnumValueFactory.INSTANCE.mapEnumValue(ItemRarity.class, SETTINGS.getProperty("item.rarity")); // NOI18N.\
-        final CoinAmount expVendorValue = CoinAmount.ofCopper(Integer.parseInt(SETTINGS.getProperty("item.vendor_value"))); // NOI18N.)
-        final OptionalInt expDefaultSkin = OptionalInt.of(Integer.parseInt(SETTINGS.getProperty("item.default_skin"))); // NOI18N.
+    public void testItems() {
+        System.out.println("testItems"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("items.ids").split(",")) // NOI18N.
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testItem);
+    }
+
+    private void testItem(final int idToTest) {
+        System.out.printf("testItem(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("item.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final Optional<String> expDescription = getOptional(prefix + "description", value -> value); // NOI18N.
+        final ItemType expType = EnumValueFactory.INSTANCE.mapEnumValue(ItemType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
+        final int expLevel = Integer.parseInt(SETTINGS.getProperty(prefix + "level")); // NOI18N.
+        final ItemRarity expRarity = EnumValueFactory.INSTANCE.mapEnumValue(ItemRarity.class, SETTINGS.getProperty(prefix + "rarity")); // NOI18N.\
+        final CoinAmount expVendorValue = CoinAmount.ofCopper(Integer.parseInt(SETTINGS.getProperty(prefix + "vendor_value"))); // NOI18N.)
+        final OptionalInt expDefaultSkin = getOptionalInt(prefix + "default_skin"); // NOI18N.
         assertNotNull(expName);
         //
-        final String id = SETTINGS.getProperty("item.id"); // NOI18N.
         final String lang = SETTINGS.getProperty("lang"); // NOI18N.
         final Optional<Item> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .endPoint("items") // NOI18N.
                 .language(lang)
-                .id(id)
+                .id(idToTest)
                 .queryObject(Item.class);
         assertTrue(value.isPresent());
         assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());
+        assertEquals(expDescription, value.get().getDescription());
         assertEquals(expType, value.get().getType());
         assertEquals(expLevel, value.get().getLevel());
         assertEquals(expRarity, value.get().getRarity());
         assertEquals(expVendorValue, value.get().getVendorValue());
         assertEquals(expDefaultSkin, value.get().getDefaultSkin());
     }
+    private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
+        final String value = SETTINGS.getProperty(property);
+        return (value == null) ? Optional.empty() : Optional.of(converter.apply(value));
+    }
+
+    private OptionalInt getOptionalInt(final String property) {
+        final String value = SETTINGS.getProperty(property);
+        return (value == null) ? OptionalInt.empty() : OptionalInt.of(Integer.parseInt(value));
+    }
+
 }
