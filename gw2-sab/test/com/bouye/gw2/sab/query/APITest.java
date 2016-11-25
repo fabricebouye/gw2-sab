@@ -17,6 +17,8 @@ import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
 import api.web.gw2.mapping.v2.items.ItemType;
+import api.web.gw2.mapping.v2.skills.Skill;
+import api.web.gw2.mapping.v2.skills.SkillType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -174,6 +176,40 @@ public class APITest {
         assertEquals(expVendorValue, value.get().getVendorValue());
         assertEquals(expDefaultSkin, value.get().getDefaultSkin());
     }
+
+    @Test
+    public void testSkills() {
+        System.out.println("testSkills"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skills.ids").split(",")) // NOI18N.
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testSkill);
+    }
+
+    private void testSkill(final int idToTest) {
+        System.out.printf("testSkill(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("skill.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final Optional<String> expDescription = getOptional(prefix + "description", value -> value); // NOI18N.
+        final SkillType expType = EnumValueFactory.INSTANCE.mapEnumValue(SkillType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Skill> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("skills") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(Skill.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expDescription, value.get().getDescription());
+        assertEquals(expType, value.get().getType());
+    }
+
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
         return (value == null) ? Optional.empty() : Optional.of(converter.apply(value));
