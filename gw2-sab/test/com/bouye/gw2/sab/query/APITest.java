@@ -22,6 +22,7 @@ import api.web.gw2.mapping.v2.skills.SkillType;
 import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.skins.SkinRarity;
 import api.web.gw2.mapping.v2.skins.SkinType;
+import api.web.gw2.mapping.v2.wvw.abilities.Ability;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -246,6 +247,37 @@ public class APITest {
         assertEquals(expName, value.get().getName());
         assertEquals(expDescription, value.get().getDescription());
         assertEquals(expType, value.get().getType());
+    }
+
+    @Test
+    public void testAbilities() {
+        System.out.println("testAbilities"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("abilities.ids").split(",")) // NOI18N.
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testAbility);
+    }
+
+    private void testAbility(final int idToTest) {
+        System.out.printf("testAbility(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("ability.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final String expDescription = SETTINGS.getProperty(prefix + "description"); // NOI18N.
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Ability> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("wvw/abilities") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(Ability.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expDescription, value.get().getDescription());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
