@@ -19,6 +19,9 @@ import api.web.gw2.mapping.v2.items.ItemRarity;
 import api.web.gw2.mapping.v2.items.ItemType;
 import api.web.gw2.mapping.v2.skills.Skill;
 import api.web.gw2.mapping.v2.skills.SkillType;
+import api.web.gw2.mapping.v2.skins.Skin;
+import api.web.gw2.mapping.v2.skins.SkinRarity;
+import api.web.gw2.mapping.v2.skins.SkinType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -175,6 +178,41 @@ public class APITest {
         assertEquals(expRarity, value.get().getRarity());
         assertEquals(expVendorValue, value.get().getVendorValue());
         assertEquals(expDefaultSkin, value.get().getDefaultSkin());
+    }
+
+    @Test
+    public void testSkins() {
+        System.out.println("testSkins"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skins.ids").split(",")) // NOI18N.
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testSkin);
+    }
+
+    private void testSkin(final int idToTest) {
+        System.out.printf("testSkin(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("skin.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final Optional<String> expDescription = getOptional(prefix + "description", value -> value); // NOI18N.
+        final SkinType expType = EnumValueFactory.INSTANCE.mapEnumValue(SkinType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
+        final SkinRarity expRarity = EnumValueFactory.INSTANCE.mapEnumValue(SkinRarity.class, SETTINGS.getProperty(prefix + "rarity")); // NOI18N.\
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Skin> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("skins") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(Skin.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expDescription, value.get().getDescription());
+        assertEquals(expType, value.get().getType());
+        assertEquals(expRarity, value.get().getRarity());
     }
 
     @Test
