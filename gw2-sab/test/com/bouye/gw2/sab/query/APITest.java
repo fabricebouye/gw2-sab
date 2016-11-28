@@ -22,7 +22,10 @@ import api.web.gw2.mapping.v2.skills.SkillType;
 import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.skins.SkinRarity;
 import api.web.gw2.mapping.v2.skins.SkinType;
+import api.web.gw2.mapping.v2.wvw.MapType;
 import api.web.gw2.mapping.v2.wvw.abilities.Ability;
+import api.web.gw2.mapping.v2.wvw.objectives.Objective;
+import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -278,6 +281,42 @@ public class APITest {
         assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());
         assertEquals(expDescription, value.get().getDescription());
+    }
+
+    @Test
+    public void testObjectives() {
+        System.out.println("testObjectives"); // NOI18N.
+        final String[] ids = SETTINGS.getProperty("objectives.ids").split(","); // NOI18N.
+        Arrays.stream(ids)
+                .forEach(this::testObjective);
+    }
+
+    private void testObjective(final String idToTest) {
+        System.out.printf("testObjective(%s)%n", idToTest); // NOI18N.
+        final String prefix = String.format("objective.%s.", idToTest); // NOI18N.
+        final String expId = SETTINGS.getProperty(prefix + "id"); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final int expSectorId = Integer.parseInt(SETTINGS.getProperty(prefix + "sector_id")); // NOI18N.
+        final ObjectiveType expType = EnumValueFactory.INSTANCE.mapEnumValue(ObjectiveType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
+        final MapType expMapType = EnumValueFactory.INSTANCE.mapEnumValue(MapType.class, SETTINGS.getProperty(prefix + "map_type")); // NOI18N.
+        final int expMapId = Integer.parseInt(SETTINGS.getProperty(prefix + "map_id")); // NOI18N.
+        assertNotNull(expId);
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Objective> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("wvw/objectives") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(Objective.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expSectorId, value.get().getSectorId());
+        assertEquals(expType, value.get().getType());
+        assertEquals(expMapType, value.get().getMapType());
+        assertEquals(expMapId, value.get().getMapId());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
