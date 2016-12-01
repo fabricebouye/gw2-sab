@@ -43,6 +43,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -116,7 +117,11 @@ public class APITest {
     @Test
     public void testCharacters() {
         System.out.println("testCharacters");
-        final List<String> expNames = Arrays.asList(SETTINGS.getProperty("characters.names").split(",")); // NOI18N.
+        final List<String> expNames = Arrays.stream(SETTINGS.getProperty("characters.names") // NOI18N.
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .collect(Collectors.toList());
+        assertFalse(expNames.isEmpty());
         //
         final List<String> value = GW2APIClient.create()
                 .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
@@ -151,7 +156,9 @@ public class APITest {
     @Test
     public void testItems() {
         System.out.println("testItems"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("items.ids").split(",")) // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("items.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
         Arrays.stream(ids)
@@ -192,7 +199,9 @@ public class APITest {
     @Test
     public void testSkins() {
         System.out.println("testSkins"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("skins.ids").split(",")) // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skins.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
         Arrays.stream(ids)
@@ -227,7 +236,9 @@ public class APITest {
     @Test
     public void testSkills() {
         System.out.println("testSkills"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("skills.ids").split(",")) // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skills.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
         Arrays.stream(ids)
@@ -260,7 +271,9 @@ public class APITest {
     @Test
     public void testAbilities() {
         System.out.println("testAbilities"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("abilities.ids").split(",")) // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("abilities.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
         Arrays.stream(ids)
@@ -291,7 +304,10 @@ public class APITest {
     @Test
     public void testObjectives() {
         System.out.println("testObjectives"); // NOI18N.
-        final String[] ids = SETTINGS.getProperty("objectives.ids").split(","); // NOI18N.
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("objectives.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .toArray(String[]::new);
         Arrays.stream(ids)
                 .forEach(this::testObjective);
     }
@@ -366,9 +382,12 @@ public class APITest {
     @Test
     public void testBackstoryQuestions() {
         System.out.println("testBackstoryQuestions"); // NOI18N.
-        final String[] ids = SETTINGS.getProperty("backstory.questions.ids").split(","); // NOI18N.
-        Arrays.stream(ids)
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("backstory.questions.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
                 .forEach(this::testBackstoryQuestion);
     }
 
@@ -391,7 +410,10 @@ public class APITest {
     @Test
     public void testBackstoryAnswers() {
         System.out.println("testBackstoryAnswers"); // NOI18N.
-        final String[] ids = SETTINGS.getProperty("backstory.answers.ids").split(","); // NOI18N.
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("backstory.answers.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .toArray(String[]::new);
         Arrays.stream(ids)
                 .forEach(this::testBackstoryAnswer);
     }
@@ -423,6 +445,8 @@ public class APITest {
         assertEquals(expJournal, value.get().getJournal());
         assertEquals(expQuestion, value.get().getQuestion());
     }
+    
+    ////////////////////////////////////////////////////////////////////////////
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
