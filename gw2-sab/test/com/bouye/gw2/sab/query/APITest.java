@@ -400,7 +400,14 @@ public class APITest {
         System.out.printf("testBackstoryAnswer(%s)%n", idToTest); // NOI18N.
         final String prefix = String.format("backstory.answer.%s.", idToTest); // NOI18N.
         final String expId = SETTINGS.getProperty(prefix + "id"); // NOI18N.
+        final String expTitle = SETTINGS.getProperty(prefix + "title"); // NOI18N.
+        final String expDescription = SETTINGS.getProperty(prefix + "description"); // NOI18N.
+        final String expJournal = SETTINGS.getProperty(prefix + "journal"); // NOI18N.
+        final int expQuestion = Integer.parseInt(SETTINGS.getProperty(prefix + "question")); // NOI18N.
         assertNotNull(expId);
+        assertNotNull(expTitle);
+        assertNotNull(expDescription);
+        assertNotNull(expJournal);
         //
         final String lang = SETTINGS.getProperty("lang"); // NOI18N.
         final Optional<BackstoryAnswer> value = GW2APIClient.create()
@@ -411,6 +418,10 @@ public class APITest {
                 .queryObject(BackstoryAnswer.class);
         assertTrue(value.isPresent());
         assertEquals(expId, value.get().getId());
+        assertEquals(expTitle, value.get().getTitle());
+        assertEquals(expDescription, value.get().getDescription());
+        assertEquals(expJournal, value.get().getJournal());
+        assertEquals(expQuestion, value.get().getQuestion());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
