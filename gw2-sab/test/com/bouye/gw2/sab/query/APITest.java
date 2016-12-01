@@ -16,6 +16,7 @@ import api.web.gw2.mapping.v2.account.AccountAccessType;
 import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.backstory.answers.BackstoryAnswer;
+import api.web.gw2.mapping.v2.backstory.questions.BackstoryQuestion;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.items.Item;
@@ -360,6 +361,31 @@ public class APITest {
                 .endPoint("currencies") // NOI18N.
                 .queryArray(Currency.class);
         assertFalse(value.isEmpty());
+    }
+
+    @Test
+    public void testBackstoryQuestions() {
+        System.out.println("testBackstoryQuestions"); // NOI18N.
+        final String[] ids = SETTINGS.getProperty("backstory.questions.ids").split(","); // NOI18N.
+        Arrays.stream(ids)
+                .mapToInt(Integer::parseInt)
+                .forEach(this::testBackstoryQuestion);
+    }
+
+    private void testBackstoryQuestion(final int idToTest) {
+        System.out.printf("testBackstoryQuestion(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("backstory.question.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<BackstoryQuestion> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("backstory/questions") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(BackstoryQuestion.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
     }
 
     @Test
