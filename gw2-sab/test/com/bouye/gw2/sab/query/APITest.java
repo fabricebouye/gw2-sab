@@ -13,6 +13,7 @@ import api.web.gw2.mapping.core.EnumValueFactory;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
+import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
@@ -317,6 +318,20 @@ public class APITest {
         assertEquals(expType, value.get().getType());
         assertEquals(expMapType, value.get().getMapType());
         assertEquals(expMapId, value.get().getMapId());
+    }
+
+    @Test
+    public void testBank() {
+        System.out.println("testBank"); // NOI18N.
+        final int expSlotNumber = Integer.parseInt(SETTINGS.getProperty("bank.slot_number")); // NOI18N.
+        //
+        final List<BankSlot> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
+                .endPoint("account/bank") // NOI18N.
+                .queryArray(BankSlot.class);
+        assertFalse(value.isEmpty());
+        assertEquals(expSlotNumber, value.size());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
