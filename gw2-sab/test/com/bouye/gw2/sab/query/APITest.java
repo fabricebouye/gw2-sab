@@ -14,6 +14,7 @@ import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
 import api.web.gw2.mapping.v2.account.bank.BankSlot;
+import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
@@ -332,6 +333,18 @@ public class APITest {
                 .queryArray(BankSlot.class);
         assertFalse(value.isEmpty());
         assertEquals(expSlotNumber, value.size());
+    }
+
+    @Test
+    public void testWallet() {
+        System.out.println("testWallet"); // NOI18N.
+        //
+        final List<CurrencyAmount> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
+                .endPoint("account/wallet") // NOI18N.
+                .queryArray(CurrencyAmount.class);
+        assertFalse(value.isEmpty());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
