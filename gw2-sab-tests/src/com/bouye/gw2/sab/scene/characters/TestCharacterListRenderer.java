@@ -8,6 +8,7 @@
 package com.bouye.gw2.sab.scene.characters;
 
 import api.web.gw2.mapping.v2.characters.Character;
+import api.web.gw2.mapping.v2.characters.CharacterAbility;
 import api.web.gw2.mapping.v2.characters.CharacterCrafting;
 import api.web.gw2.mapping.v2.characters.CharacterEquipmentPvP;
 import api.web.gw2.mapping.v2.characters.CharacterGameType;
@@ -179,38 +180,38 @@ public final class TestCharacterListRenderer extends Application {
             }
 
             @Override
-            public Optional<List<Equipment>> getEquipment() {
-                return Optional.empty();
+            public List<Equipment> getEquipment() {
+                return Collections.emptyList();
             }
 
             @Override
-            public Optional<List<InventoryBag>> getBags() {
-                return Optional.empty();
+            public List<InventoryBag> getBags() {
+                return Collections.emptyList();
             }
 
             @Override
-            public Optional<Set<CharacterCrafting>> getCrafting() {
-                return Optional.empty();
+            public Set<CharacterCrafting> getCrafting() {
+                return Collections.emptySet();
             }
 
             @Override
-            public Optional<Map<CharacterGameType, Set<CharacterSpecialization>>> getSpecializations() {
-                return Optional.empty();
+            public Map<CharacterGameType, Set<CharacterSpecialization>> getSpecializations() {
+                return Collections.emptyMap();
             }
 
             @Override
-            public Optional<Set<Integer>> getRecipes() {
-                return Optional.empty();
+            public Set<Integer> getRecipes() {
+                return Collections.emptySet();
             }
 
             @Override
-            public Optional<Map<CharacterGameType, CharacterSkillSet>> getSkills() {
-                return Optional.empty();
+            public Map<CharacterGameType, CharacterSkillSet> getSkills() {
+                return Collections.emptyMap();
             }
 
             @Override
-            public Optional<Set<CharacterTraining>> getTraining() {
-                return Optional.empty();
+            public Set<CharacterTraining> getTraining() {
+                return Collections.emptySet();
             }
 
             @Override
@@ -226,6 +227,11 @@ public final class TestCharacterListRenderer extends Application {
             @Override
             public Optional<CharacterEquipmentPvP> getEquipmentPvp() {
                 return Optional.empty();
+            }
+
+            @Override
+            public Set<CharacterAbility> getWvwAbilities() {
+                return Collections.emptySet();
             }
         };
         wrapper.setCharacter(character);
