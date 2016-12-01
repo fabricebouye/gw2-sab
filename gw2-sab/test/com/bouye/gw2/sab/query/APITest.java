@@ -16,6 +16,7 @@ import api.web.gw2.mapping.v2.account.AccountAccessType;
 import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
+import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
 import api.web.gw2.mapping.v2.items.ItemType;
@@ -344,6 +345,19 @@ public class APITest {
                 .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
                 .endPoint("account/wallet") // NOI18N.
                 .queryArray(CurrencyAmount.class);
+        assertFalse(value.isEmpty());
+    }
+
+    @Test
+    public void testCurrencies() {
+        System.out.println("testCurrencies"); // NOI18N.
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final List<Currency> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .language(lang)
+                .endPoint("currencies") // NOI18N.
+                .queryArray(Currency.class);
         assertFalse(value.isEmpty());
     }
 
