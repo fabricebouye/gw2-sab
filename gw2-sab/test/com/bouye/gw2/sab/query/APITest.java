@@ -481,6 +481,20 @@ public class APITest {
         assertTrue(value.isPresent());
     }
 
+    @Test
+    public void testExchangeCoins() {
+        System.out.println("testExchangeCoins()"); // NOI18N.
+        final int quantity = Integer.parseInt(SETTINGS.getProperty("exchange.coins.quantity")); // NOI18N.
+        //
+        final Optional<ExchangeRate> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("commerce/exchange/coins") // NOI18N.
+                .putParameter("quantity", quantity)
+                .queryObject(ExchangeRate.class);
+        assertTrue(value.isPresent());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
         return (value == null) ? Optional.empty() : Optional.of(converter.apply(value));
