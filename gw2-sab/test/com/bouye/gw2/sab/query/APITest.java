@@ -18,6 +18,7 @@ import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.backstory.answers.BackstoryAnswer;
 import api.web.gw2.mapping.v2.backstory.questions.BackstoryQuestion;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
+import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static org.junit.Assert.*;
@@ -447,6 +449,25 @@ public class APITest {
     }
     
     ////////////////////////////////////////////////////////////////////////////
+
+    @Test
+    public void testExchange() {
+        System.out.println("testExchange()"); // NOI18N.
+        final Set<ExchangeResource> expResources = Arrays.stream(SETTINGS.getProperty("exchange.resources") // NOI18N.
+                .split(","))
+                .map(String::trim) // NOI18N.
+                .map(s -> EnumValueFactory.INSTANCE.mapEnumValue(ExchangeResource.class, s))
+                .collect(Collectors.toSet());
+        //
+        final Set<ExchangeResource> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("commerce/exchange") // NOI18N.
+                .queryEnumValues(ExchangeResource.class)
+                .stream()
+                .collect(Collectors.toSet());
+        assertFalse(value.isEmpty());
+        assertEquals(expResources, value);
+    }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
