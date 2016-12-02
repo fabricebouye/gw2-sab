@@ -309,6 +309,30 @@ public final class GW2APIClient {
     }
 
     /**
+     * Do a simple query that returns a list of enum values.
+     * @param <T> The type to use.
+     * @param targetClass The target class.
+     * @return A {@code List<T>} instance, never {@code null}.
+     */
+    public <T extends Enum> List<T> queryEnumValues(final Class<T> targetClass) {
+        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryArray", targetClass); // NOI18N.
+        final String query = buildQuery();
+        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryArray " + query); // NOI18N.
+        List<T> result = Collections.EMPTY_LIST;
+        try {
+            final URL url = new URL(query);
+            final Collection<T> value = context.loadEnumArray(targetClass, url);
+            result = new ArrayList<>(value);
+            result = Collections.unmodifiableList(result);
+        } catch (NullPointerException | IOException ex) {
+            Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryArray"); // NOI18N.
+        }
+        return result;
+    }
+
+    /**
      * Do a simple query that returns a page.
      * @param <T> The type to use.
      * @param targetClass The target class.
