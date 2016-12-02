@@ -18,6 +18,7 @@ import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.backstory.answers.BackstoryAnswer;
 import api.web.gw2.mapping.v2.backstory.questions.BackstoryQuestion;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
+import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.items.Item;
@@ -447,8 +448,6 @@ public class APITest {
         assertEquals(expJournal, value.get().getJournal());
         assertEquals(expQuestion, value.get().getQuestion());
     }
-    
-    ////////////////////////////////////////////////////////////////////////////
 
     @Test
     public void testExchange() {
@@ -467,6 +466,19 @@ public class APITest {
                 .collect(Collectors.toSet());
         assertFalse(value.isEmpty());
         assertEquals(expResources, value);
+    }
+
+    @Test
+    public void testExchangeGems() {
+        System.out.println("testExchangeGems()"); // NOI18N.
+        final int quantity = Integer.parseInt(SETTINGS.getProperty("exchange.gems.quantity")); // NOI18N.
+        //
+        final Optional<ExchangeRate> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("commerce/exchange/gems") // NOI18N.
+                .putParameter("quantity", quantity)
+                .queryObject(ExchangeRate.class);
+        assertTrue(value.isPresent());
     }
 
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
