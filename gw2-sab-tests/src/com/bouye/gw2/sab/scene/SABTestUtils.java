@@ -77,4 +77,8 @@ public enum SABTestUtils {
         account.ifPresent(a -> result.setAccount(a));
         return result;
     }
+    
+    public String getTestCharacter() {
+        return settings.getProperty("character.name");
+    }
 }
