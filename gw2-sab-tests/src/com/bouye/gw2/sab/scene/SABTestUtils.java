@@ -78,7 +78,11 @@ public enum SABTestUtils {
         return result;
     }
     
+    /**
+     * Gets the name of the test character.
+     * @return A {@code String}, may be {@code null}.
+     */
     public String getTestCharacter() {
-        return settings.getProperty("character.name");
+        return settings.getProperty("character.name"); // NOI18N.
     }
 }
