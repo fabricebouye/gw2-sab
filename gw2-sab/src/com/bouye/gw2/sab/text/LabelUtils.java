@@ -128,6 +128,8 @@ public enum LabelUtils {
                 if (escapedContent.contains(FLAVOR_START) && !escapedContent.contains(FLAVOR_END)) {
                     escapedContent += FLAVOR_END;
                 }
+                escapedContent = escapedContent.replaceAll(FLAVOR_START, String.format("<%s>", QUOTE_TAG)); // NOI18N.
+                escapedContent = escapedContent.replaceAll(FLAVOR_END, String.format("</%s>", QUOTE_TAG)); // NOI18N.
                 final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT_TAG, escapedContent, CONTENT_TAG); // NOI18N.
                 final Map<String, Boolean> styleAttributes = initializeAttributeMap();
                 try (final InputStream source = new ByteArrayInputStream(xmlString.getBytes("UTF-8"))) { // NOI18N.
