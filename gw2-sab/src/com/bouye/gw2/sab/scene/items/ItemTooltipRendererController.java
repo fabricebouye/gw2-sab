@@ -489,6 +489,7 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
         text = text.replaceAll("\n", LabelUtils.INSTANCE.lineBreak()); // NOI18N.
         if (description.startsWith("<c=@flavor>")) { // NOI18N.
             text = text.replaceAll("<c=@flavor>", ""); // NOI18N.
+            text = text.replaceAll("<c>", ""); // NOI18N.
             text = LabelUtils.INSTANCE.toQuote(text);
         }
         builder.append(text);

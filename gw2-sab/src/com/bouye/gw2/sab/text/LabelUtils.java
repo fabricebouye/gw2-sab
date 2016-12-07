@@ -76,9 +76,6 @@ public enum LabelUtils {
     private final PseudoClass STATS_DOWN_PSEUDO_CLASS = PseudoClass.getPseudoClass(STATS_DOWN_TAG); // NOI18N.
     private final PseudoClass NOTE_PSEUDO_CLASS = PseudoClass.getPseudoClass(NOTE_TAG); // NOI18N.
     
-    private static final String FLAVOR_START = "<c=@flavor>"; // NOI18N.
-    private static final String FLAVOR_END = "</c>"; // NOI18N.
-
     /**
      * Provides a suitable label from an {@code Enum} instance.
      * @param value The value, may be {@code null}.
@@ -125,11 +122,6 @@ public enum LabelUtils {
                 spf.setValidating(false);
                 final SAXParser saxParser = spf.newSAXParser();
                 String escapedContent = string.replaceAll("&", "&amp;"); // NOI18N.
-                if (escapedContent.contains(FLAVOR_START) && !escapedContent.contains(FLAVOR_END)) {
-                    escapedContent += FLAVOR_END;
-                }
-                escapedContent = escapedContent.replaceAll(FLAVOR_START, String.format("<%s>", QUOTE_TAG)); // NOI18N.
-                escapedContent = escapedContent.replaceAll(FLAVOR_END, String.format("</%s>", QUOTE_TAG)); // NOI18N.
                 final String xmlString = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?><%s>%s</%s>", CONTENT_TAG, escapedContent, CONTENT_TAG); // NOI18N.
                 final Map<String, Boolean> styleAttributes = initializeAttributeMap();
                 try (final InputStream source = new ByteArrayInputStream(xmlString.getBytes("UTF-8"))) { // NOI18N.
