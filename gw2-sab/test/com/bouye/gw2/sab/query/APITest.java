@@ -29,6 +29,7 @@ import api.web.gw2.mapping.v2.skills.SkillType;
 import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.skins.SkinRarity;
 import api.web.gw2.mapping.v2.skins.SkinType;
+import api.web.gw2.mapping.v2.worlds.World;
 import api.web.gw2.mapping.v2.wvw.MapType;
 import api.web.gw2.mapping.v2.wvw.abilities.Ability;
 import api.web.gw2.mapping.v2.wvw.objectives.Objective;
@@ -492,6 +493,37 @@ public class APITest {
                 .putParameter("quantity", quantity)
                 .queryObject(ExchangeRate.class);
         assertTrue(value.isPresent());
+    }
+    
+    @Test
+    public void testWorlds() {        
+        System.out.println("testSkins"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("worlds.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testWorld);
+    }
+    
+    private void testWorld(final int idToTest) {
+        System.out.printf("testSkin(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("world.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<World> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("worlds") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(World.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
     }
 
     ////////////////////////////////////////////////////////////////////////////
