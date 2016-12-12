@@ -497,7 +497,7 @@ public class APITest {
     
     @Test
     public void testWorlds() {        
-        System.out.println("testSkins"); // NOI18N.
+        System.out.println("testWorlds"); // NOI18N.
         final int[] ids = Arrays.stream(SETTINGS.getProperty("worlds.ids")
                 .split(",")) // NOI18N.
                 .map(String::trim)
@@ -508,7 +508,7 @@ public class APITest {
     }
     
     private void testWorld(final int idToTest) {
-        System.out.printf("testSkin(%d)%n", idToTest); // NOI18N.
+        System.out.printf("testWorld(%d)%n", idToTest); // NOI18N.
         final String prefix = String.format("world.%d.", idToTest); // NOI18N.
         final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
         final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
