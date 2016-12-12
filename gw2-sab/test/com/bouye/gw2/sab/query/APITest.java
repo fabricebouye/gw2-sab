@@ -20,6 +20,7 @@ import api.web.gw2.mapping.v2.backstory.questions.BackstoryQuestion;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
+import api.web.gw2.mapping.v2.continents.Continent;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
@@ -526,6 +527,37 @@ public class APITest {
         assertEquals(expName, value.get().getName());
     }
 
+    @Test
+    public void testContinents() {        
+        System.out.println("testContinents"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("continents.ids")
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Arrays.stream(ids)
+                .forEach(this::testContinent);
+    }
+    
+    private void testContinent(final int idToTest) {
+        System.out.printf("testContinent(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("continent.%d.", idToTest); // NOI18N.
+        final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        assertNotNull(expName);
+        //
+        final String lang = SETTINGS.getProperty("lang"); // NOI18N.
+        final Optional<Continent> value = GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("continents") // NOI18N.
+                .language(lang)
+                .id(idToTest)
+                .queryObject(Continent.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+    }
+    
     ////////////////////////////////////////////////////////////////////////////
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
