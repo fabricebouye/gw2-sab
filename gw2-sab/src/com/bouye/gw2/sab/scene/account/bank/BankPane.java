@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2016 Fabrice Bouyé
+ * Copyright (C) 2016-2017 Fabrice Bouyé
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms
