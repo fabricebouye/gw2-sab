@@ -14,6 +14,7 @@ import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.session.Session;
 import java.net.URL;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -175,6 +176,11 @@ public final class TestAccountListRenderer extends Application {
             @Override
             public Set<String> getGuildLeader() {
                 return Collections.EMPTY_SET;
+            }
+
+            @Override
+            public Duration getAge() {
+                return Duration.ZERO;
             }
         };
     }
