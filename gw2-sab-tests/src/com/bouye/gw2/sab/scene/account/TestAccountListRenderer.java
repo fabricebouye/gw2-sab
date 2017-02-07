@@ -171,6 +171,11 @@ public final class TestAccountListRenderer extends Application {
             public int getWvwRank() {
                 return 1;
             }
+
+            @Override
+            public Set<String> getGuildLeader() {
+                return Collections.EMPTY_SET;
+            }
         };
     }
 
