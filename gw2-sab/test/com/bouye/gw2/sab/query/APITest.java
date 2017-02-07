@@ -186,11 +186,10 @@ public class APITest {
         assertNotNull(expName);
         assertNotNull(expTag);
         //
-        final String id = SETTINGS.getProperty("guild.id"); // NOI18N.
         final Optional<Guild> value = GW2APIClient.create()
                 .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
                 .apiLevel(APILevel.V2)
-                .endPoint(String.format("guild/%s", id)) // NOI18N.
+                .endPoint(String.format("guild/%s", idToTest)) // NOI18N.
                 .queryObject(Guild.class);
         assertTrue(value.isPresent());
         assertEquals(expId, value.get().getId());
