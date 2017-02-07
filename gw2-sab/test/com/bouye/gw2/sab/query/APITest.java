@@ -22,6 +22,7 @@ import api.web.gw2.mapping.v2.commerce.exchange.ExchangeRate;
 import api.web.gw2.mapping.v2.commerce.exchange.ExchangeResource;
 import api.web.gw2.mapping.v2.continents.Continent;
 import api.web.gw2.mapping.v2.currencies.Currency;
+import api.web.gw2.mapping.v2.guild.id.Guild;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.items.ItemRarity;
 import api.web.gw2.mapping.v2.items.ItemType;
@@ -93,7 +94,7 @@ public class APITest {
 
     @Test
     public void testAccount() {
-        System.out.println("testAccount");
+        System.out.println("testAccount"); // NOI18N.
         final String expId = SETTINGS.getProperty("account.id"); // NOI18N.
         final String expName = SETTINGS.getProperty("account.name"); // NOI18N.
         final ZonedDateTime expCreated = ZonedDateTime.parse(SETTINGS.getProperty("account.created")); // NOI18N.
@@ -121,7 +122,7 @@ public class APITest {
 
     @Test
     public void testCharacters() {
-        System.out.println("testCharacters");
+        System.out.println("testCharacters"); // NOI18N.
         final List<String> expNames = Arrays.stream(SETTINGS.getProperty("characters.names") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
@@ -139,7 +140,7 @@ public class APITest {
 
     @Test
     public void testCharacter() {
-        System.out.println("testCharacter");
+        System.out.println("testCharacter"); // NOI18N.
         final String expName = SETTINGS.getProperty("character.name"); // NOI18N.
         final int expLevel = Integer.parseInt(SETTINGS.getProperty("character.level")); // NOI18N.
         final CharacterProfession expProfession = EnumValueFactory.INSTANCE.mapEnumValue(CharacterProfession.class, SETTINGS.getProperty("character.profession")); // NOI18N.
@@ -159,9 +160,55 @@ public class APITest {
     }
 
     @Test
+    public void testGuilds() {
+        System.out.println("testGuilds"); // NOI18N.
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("guilds.ids") // NOI18N.
+                .split(",")) // NOI18N.
+                .map(String::trim)
+                .toArray(String[]::new);
+        Arrays.stream(ids)
+                .forEach(this::testGuild);
+    }
+
+    private void testGuild(final String idToTest) {
+        System.out.printf("testGuilds(%s)%n", idToTest); // NOI18N.
+        final String prefix = String.format("guild.%s.", idToTest); // NOI18N.
+        final String expId = SETTINGS.getProperty(prefix + "id"); // NOI18N.
+        final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
+        final String expTag = SETTINGS.getProperty(prefix + "tag"); // NOI18N.
+        final String expMotd = SETTINGS.getProperty(prefix + "motd"); // NOI18N.
+        final int expLevel = Integer.parseInt(SETTINGS.getProperty(prefix + "level")); // NOI18N.
+        final int expInfluence = Integer.parseInt(SETTINGS.getProperty(prefix + "influence")); // NOI18N.
+        final int expFavor = Integer.parseInt(SETTINGS.getProperty(prefix + "favor")); // NOI18N.
+        final int expAetherium = Integer.parseInt(SETTINGS.getProperty(prefix + "aetherium")); // NOI18N.
+        final int expResonance = Integer.parseInt(SETTINGS.getProperty(prefix + "resonance")); // NOI18N.
+        assertNotNull(expId);
+        assertNotNull(expName);
+        assertNotNull(expTag);
+        //
+        final String id = SETTINGS.getProperty("guild.id"); // NOI18N.
+        final Optional<Guild> value = GW2APIClient.create()
+                .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
+                .apiLevel(APILevel.V2)
+                .endPoint(String.format("guild/%s", id)) // NOI18N.
+                .queryObject(Guild.class);
+        assertTrue(value.isPresent());
+        assertEquals(expId, value.get().getId());
+        assertEquals(expName, value.get().getName());
+        assertEquals(expTag, value.get().getTag());
+        // Those are currently still fluctuating so they are not good for testing.
+//        assertEquals(expMotd, value.get().getMotd());
+//        assertEquals(expLevel, value.get().getLevel());
+//        assertEquals(expInfluence, value.get().getInfluence());
+//        assertEquals(expFavor, value.get().getFavor());
+//        assertEquals(expAetherium, value.get().getAetherium());
+        assertEquals(expResonance, value.get().getResonance());
+    }
+
+    @Test
     public void testItems() {
         System.out.println("testItems"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("items.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("items.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -204,7 +251,7 @@ public class APITest {
     @Test
     public void testSkins() {
         System.out.println("testSkins"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("skins.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skins.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -241,7 +288,7 @@ public class APITest {
     @Test
     public void testSkills() {
         System.out.println("testSkills"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("skills.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("skills.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -309,7 +356,7 @@ public class APITest {
     @Test
     public void testObjectives() {
         System.out.println("testObjectives"); // NOI18N.
-        final String[] ids = Arrays.stream(SETTINGS.getProperty("objectives.ids")
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("objectives.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .toArray(String[]::new);
@@ -387,7 +434,7 @@ public class APITest {
     @Test
     public void testBackstoryQuestions() {
         System.out.println("testBackstoryQuestions"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("backstory.questions.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("backstory.questions.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -415,7 +462,7 @@ public class APITest {
     @Test
     public void testBackstoryAnswers() {
         System.out.println("testBackstoryAnswers"); // NOI18N.
-        final String[] ids = Arrays.stream(SETTINGS.getProperty("backstory.answers.ids")
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("backstory.answers.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .toArray(String[]::new);
@@ -455,8 +502,8 @@ public class APITest {
     public void testExchange() {
         System.out.println("testExchange()"); // NOI18N.
         final Set<ExchangeResource> expResources = Arrays.stream(SETTINGS.getProperty("exchange.resources") // NOI18N.
-                .split(","))
-                .map(String::trim) // NOI18N.
+                .split(",")) // NOI18N.
+                .map(String::trim)
                 .map(s -> EnumValueFactory.INSTANCE.mapEnumValue(ExchangeResource.class, s))
                 .collect(Collectors.toSet());
         //
@@ -478,7 +525,7 @@ public class APITest {
         final Optional<ExchangeRate> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .endPoint("commerce/exchange/gems") // NOI18N.
-                .putParameter("quantity", quantity)
+                .putParameter("quantity", quantity) // NOI18N.
                 .queryObject(ExchangeRate.class);
         assertTrue(value.isPresent());
     }
@@ -491,15 +538,15 @@ public class APITest {
         final Optional<ExchangeRate> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .endPoint("commerce/exchange/coins") // NOI18N.
-                .putParameter("quantity", quantity)
+                .putParameter("quantity", quantity) // NOI18N.
                 .queryObject(ExchangeRate.class);
         assertTrue(value.isPresent());
     }
-    
+
     @Test
-    public void testWorlds() {        
+    public void testWorlds() {
         System.out.println("testWorlds"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("worlds.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("worlds.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -507,7 +554,7 @@ public class APITest {
         Arrays.stream(ids)
                 .forEach(this::testWorld);
     }
-    
+
     private void testWorld(final int idToTest) {
         System.out.printf("testWorld(%d)%n", idToTest); // NOI18N.
         final String prefix = String.format("world.%d.", idToTest); // NOI18N.
@@ -528,9 +575,9 @@ public class APITest {
     }
 
     @Test
-    public void testContinents() {        
+    public void testContinents() {
         System.out.println("testContinents"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("continents.ids")
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("continents.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
@@ -538,7 +585,7 @@ public class APITest {
         Arrays.stream(ids)
                 .forEach(this::testContinent);
     }
-    
+
     private void testContinent(final int idToTest) {
         System.out.printf("testContinent(%d)%n", idToTest); // NOI18N.
         final String prefix = String.format("continent.%d.", idToTest); // NOI18N.
@@ -557,7 +604,7 @@ public class APITest {
         assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     private <T> Optional<T> getOptional(final String property, Function<String, T> converter) {
         final String value = SETTINGS.getProperty(property);
