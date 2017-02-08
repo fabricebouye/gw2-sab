@@ -265,7 +265,7 @@ public final class WelcomeViewController extends SABControllerBase<WelcomeView> 
         }
         final GuildInfoPane content = new GuildInfoPane();
         content.setSession(session);
-        content.setGuildId(guildId);
+//        content.setGuildId(guildId);
         pushToDisplay(content);
     }
 

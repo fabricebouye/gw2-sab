@@ -8,8 +8,9 @@
 package com.bouye.gw2.sab.scene.guild;
 
 import com.bouye.gw2.sab.scene.SABControlBase;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
+import com.bouye.gw2.sab.wrappers.GuildInfoWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Displays guild info.
@@ -25,18 +26,17 @@ public final class GuildInfoPane extends SABControlBase<GuildInfoPaneController>
         getStyleClass().add("guild-info-pane"); // NOI18N.
     }
 
-    private final ReadOnlyStringWrapper guildId = new ReadOnlyStringWrapper(this, "guildId", null); // NOI18N.
+    private final ObjectProperty<GuildInfoWrapper> guild = new SimpleObjectProperty<>(this, "guild", null);
 
-    public final String getGuildId() {
-        return guildId.get();
+    public final GuildInfoWrapper getGuild() {
+        return guild.get();
     }
 
-    public final void setGuildId(final String value) {
-        final String v = (value == null || value.trim().isEmpty()) ? null : value.trim();
-        guildId.set(v);
+    public final void setGuild(GuildInfoWrapper value) {
+        guild.set(value);
     }
 
-    public final ReadOnlyStringProperty guildIdProperty() {
-        return guildId.getReadOnlyProperty();
+    public ObjectProperty<GuildInfoWrapper> guildProperty() {
+        return guild;
     }
 }

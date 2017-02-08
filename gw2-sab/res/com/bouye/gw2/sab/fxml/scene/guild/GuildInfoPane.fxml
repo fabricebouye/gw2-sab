@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<TabPane id="TabPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" side="LEFT" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.guild.GuildInfoPaneController">
+<TabPane id="TabPane" fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" side="LEFT" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.guild.GuildInfoPaneController">
     <tabs>
         <Tab id="Tab" fx:id="generalTab">
             <content>
@@ -51,6 +51,14 @@
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                     </columnResizePolicy>
                                 </TableView>
+                        <HBox fx:id="currencyHBox" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
+                           <children>
+                              <Label fx:id="aetheriumLabel" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="favorLabel" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="influenceLabel" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="resonanceLabel" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                             </children>
                             <columnConstraints>
                                 <ColumnConstraints hgrow="NEVER" />
@@ -64,6 +72,7 @@
                                 <RowConstraints vgrow="NEVER" />
                                 <RowConstraints vgrow="NEVER" />
                                 <RowConstraints vgrow="ALWAYS" />
+                        <RowConstraints vgrow="ALWAYS" />
                             </rowConstraints>
                         </GridPane>
                     </children>
