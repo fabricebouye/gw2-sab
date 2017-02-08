@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -60,12 +62,17 @@ public final class TestEquipmentPane extends Application {
             characterNamesLoadingService.cancel();
         }
         if (characterNamesLoadingService == null) {
-            characterNamesLoadingService = new Service<Void>() {
+            final Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
                     return new CharacterNamesLoadingTask(session, characterCombo);
                 }
             };
+            service.setOnFailed(workerStateEvent -> {
+                final Throwable ex = workerStateEvent.getSource().getException();
+                Logger.getLogger(TestEquipmentPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            });
+            characterNamesLoadingService = service;
         }
         characterNamesLoadingService.restart();
     }
@@ -77,12 +84,17 @@ public final class TestEquipmentPane extends Application {
             equipmentLoadingService.cancel();
         }
         if (equipmentLoadingService == null) {
-            equipmentLoadingService = new Service<Void>() {
+            final Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
                     return new EquipmentLoadingTask(session, characterName);
                 }
             };
+            service.setOnFailed(workerStateEvent -> {
+                final Throwable ex = workerStateEvent.getSource().getException();
+                Logger.getLogger(TestEquipmentPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            });
+            equipmentLoadingService = service;
         }
         equipmentLoadingService.restart();
     }
@@ -127,6 +139,9 @@ public final class TestEquipmentPane extends Application {
         @Override
         protected Void call() throws Exception {
             final Optional<EquipmentResponse> response = WebQuery.INSTANCE.queryCharacterEquipment(session.getAppKey(), characterName);
+            final Optional<api.web.gw2.mapping.v2.characters.Character> character = WebQuery.INSTANCE.queryCharacter(session.getAppKey(), characterName);
+            final List<String> characterNames =  WebQuery.INSTANCE.queryCharacterNames(session.getAppKey());
+            final List<api.web.gw2.mapping.v2.characters.Character> characters = WebQuery.INSTANCE.queryCharacters(session.getAppKey(), characterNames.toArray(new String[0]));
             return null;
         }
     }
