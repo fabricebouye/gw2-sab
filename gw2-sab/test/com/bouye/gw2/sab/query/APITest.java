@@ -196,12 +196,18 @@ public class APITest {
         assertEquals(expName, value.get().getName());
         assertEquals(expTag, value.get().getTag());
         // Those are currently still fluctuating so they are not good for testing.
-//        assertEquals(expMotd, value.get().getMotd());
-//        assertEquals(expLevel, value.get().getLevel());
-//        assertEquals(expInfluence, value.get().getInfluence());
-//        assertEquals(expFavor, value.get().getFavor());
-//        assertEquals(expAetherium, value.get().getAetherium());
-        assertEquals(expResonance, value.get().getResonance());
+        assertEquals(true, value.get().getMotd().isPresent());
+//        assertEquals(expMotd, value.get().getMotd().get());
+        assertEquals(true, value.get().getLevel().isPresent());
+//        assertEquals(expLevel, value.get().getLevel().getAsInt());
+        assertEquals(true, value.get().getInfluence().isPresent());
+//        assertEquals(expInfluence, value.get().getInfluence().getAsInt());
+        assertEquals(true, value.get().getFavor().isPresent());
+//        assertEquals(expFavor, value.get().getFavor().getAsInt());
+        assertEquals(true, value.get().getAetherium().isPresent());
+//        assertEquals(expAetherium, value.get().getAetherium().getAsInt());
+        assertEquals(true, value.get().getResonance().isPresent());
+        assertEquals(expResonance, value.get().getResonance().getAsInt());
     }
 
     @Test
