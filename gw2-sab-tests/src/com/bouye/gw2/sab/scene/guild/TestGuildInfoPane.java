@@ -101,7 +101,7 @@ public final class TestGuildInfoPane extends Application {
         }
         guildUpdateService.restart();
     }
-
+    
     private GuildInfoWrapper loadLocalGuildInfo(final GuildInfoWrapper wrapper, final String guildId) throws NullPointerException, IOException {
         final String filename = String.format("guild%s.json", guildId);
         final URL url = getClass().getResource(filename);
@@ -111,16 +111,18 @@ public final class TestGuildInfoPane extends Application {
         }
         return wrapper;
     }
-
+    
     private GuildInfoWrapper loadRemoteGuildInfo(final GuildInfoWrapper wrapper, final String guildId) {
+        final Session session = SABTestUtils.INSTANCE.getTestSession();
         final Optional<Guild> guild = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
+                .applicationKey(session.getAppKey())
                 .endPoint(String.format("guild/%s", guildId))
                 .queryObject(Guild.class);
         guild.ifPresent(g -> Platform.runLater(() -> wrapper.setGuild(g)));
         return wrapper;
     }
-
+    
     public static void main(String... args) {
         Application.launch(args);
     }
