@@ -1,0 +1,27 @@
+{
+    "level": 34,
+    "motd": "Our unique message of the day - 2",
+    "influence": 52800,
+    "aetherium": 15000,
+    "resonance": 1121,
+    "favor": 680,
+    "id": "116E0C0E-0035-44A9-BB22-4AE3E23127E5",
+    "name": "Edit Conflict 2",
+    "tag": "wik2",
+    "emblem": {
+        "background":
+                {
+                    "id": 8,
+                    "colors": [64]
+                },
+        "foreground":
+                {
+                    "id": 18,
+                    "colors": [584, 146]
+                },
+        "flags":
+                [
+                    "FlipBackgroundHorizontal"
+                ]
+    }
+}

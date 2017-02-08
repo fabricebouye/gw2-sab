@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2016 Fabrice Bouyé
+ * Copyright (C) 2016-2017 Fabrice Bouyé
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms
@@ -265,7 +265,7 @@ public final class WelcomeViewController extends SABControllerBase<WelcomeView> 
         }
         final GuildInfoPane content = new GuildInfoPane();
         content.setSession(session);
-        content.setGuildId(guildId);
+//        content.setGuildId(guildId);
         pushToDisplay(content);
     }
 
