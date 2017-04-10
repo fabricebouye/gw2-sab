@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.characters.inventory;
 
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
-import api.web.gw2.mapping.v2.characters.inventory.Inventory;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.skins.Skin;
 import com.bouye.gw2.sab.SABConstants;
@@ -44,6 +43,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventory;
 
 /**
  * FXML controller.
@@ -242,7 +242,7 @@ public final class InventoryPaneController extends SABControllerBase<InventoryPa
         result.getStyleClass().add("slot"); // NOI18N.
         result.pseudoClassStateChanged(CHARACTER_PSEUDO_CLASS, true);
         if (value != null) {
-            final Inventory inventory = value.getInventory();
+            final CharacterInventory inventory = value.getInventory();
             final Item item = value.getItem();
             final Skin skin = value.getSkin();
             final int id = inventory.getId();

@@ -12,8 +12,6 @@ import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.Character;
-import api.web.gw2.mapping.v2.characters.equipment.Equipment;
-import api.web.gw2.mapping.v2.characters.equipment.EquipmentResponse;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
 import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
@@ -36,6 +34,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import static com.bouye.gw2.sab.query.GW2APIClient.*;
+import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipment;
+import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipmentResponse;
 
 /**
  * Centralized class for web-queries.
@@ -286,9 +286,9 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<EquipmentResponse> queryCharacterEquipment(final String appKey, final String characterName) {
+    public Optional<CharacterEquipmentResponse> queryCharacterEquipment(final String appKey, final String characterName) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        Optional<EquipmentResponse> result = Optional.empty();
+        Optional<CharacterEquipmentResponse> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
             final String escapedCharacterName = encodeURLParameter(characterName);
@@ -297,7 +297,7 @@ public enum WebQuery {
                     .apiLevel(APILevel.V2)
                     .endPoint(endPoint)
                     .applicationKey(appKey)
-                    .queryObject(EquipmentResponse.class);
+                    .queryObject(CharacterEquipmentResponse.class);
         }
         return result;
     }

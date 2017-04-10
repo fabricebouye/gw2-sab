@@ -8,18 +8,16 @@
 package com.bouye.gw2.sab.scene.characters;
 
 import api.web.gw2.mapping.v2.characters.Character;
-import api.web.gw2.mapping.v2.characters.CharacterAbility;
-import api.web.gw2.mapping.v2.characters.CharacterCrafting;
-import api.web.gw2.mapping.v2.characters.CharacterEquipmentPvP;
-import api.web.gw2.mapping.v2.characters.CharacterGameType;
+import api.web.gw2.mapping.v2.characters.id.wvw_abilities.CharacterAbility;
+import api.web.gw2.mapping.v2.characters.id.crafting.CharacterCrafting;
+import api.web.gw2.mapping.v2.characters.id.equipment_pvp.CharacterEquipmentPvP;
+import api.web.gw2.mapping.v2.characters.id.specializations.CharacterSpecializationGameType;
 import api.web.gw2.mapping.v2.characters.CharacterGender;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
 import api.web.gw2.mapping.v2.characters.CharacterRace;
-import api.web.gw2.mapping.v2.characters.CharacterSkillSet;
-import api.web.gw2.mapping.v2.characters.CharacterSpecialization;
-import api.web.gw2.mapping.v2.characters.CharacterTraining;
-import api.web.gw2.mapping.v2.characters.equipment.Equipment;
-import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
+import api.web.gw2.mapping.v2.characters.id.skills.CharacterSkillSet;
+import api.web.gw2.mapping.v2.characters.id.specializations.CharacterSpecialization;
+import api.web.gw2.mapping.v2.characters.id.training.CharacterTraining;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.wrappers.CharacterWrapper;
 import java.net.URL;
@@ -44,6 +42,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipment;
+import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventoryBag;
 
 /**
  * Test.
@@ -180,12 +180,12 @@ public final class TestCharacterListRenderer extends Application {
             }
 
             @Override
-            public List<Equipment> getEquipment() {
+            public List<CharacterEquipment> getEquipment() {
                 return Collections.emptyList();
             }
 
             @Override
-            public List<InventoryBag> getBags() {
+            public List<CharacterInventoryBag> getBags() {
                 return Collections.emptyList();
             }
 
@@ -195,7 +195,7 @@ public final class TestCharacterListRenderer extends Application {
             }
 
             @Override
-            public Map<CharacterGameType, Set<CharacterSpecialization>> getSpecializations() {
+            public Map<CharacterSpecializationGameType, Set<CharacterSpecialization>> getSpecializations() {
                 return Collections.emptyMap();
             }
 
@@ -205,7 +205,7 @@ public final class TestCharacterListRenderer extends Application {
             }
 
             @Override
-            public Map<CharacterGameType, CharacterSkillSet> getSkills() {
+            public Map<CharacterSpecializationGameType, CharacterSkillSet> getSkills() {
                 return Collections.emptyMap();
             }
 

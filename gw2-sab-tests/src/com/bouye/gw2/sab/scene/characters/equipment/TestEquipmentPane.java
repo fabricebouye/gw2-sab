@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.characters.equipment;
 
-import api.web.gw2.mapping.v2.characters.equipment.EquipmentResponse;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.query.WebQuery;
 import com.bouye.gw2.sab.scene.SABTestUtils;
@@ -28,6 +27,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipmentResponse;
 
 /**
  * Test.
@@ -138,7 +138,7 @@ public final class TestEquipmentPane extends Application {
 
         @Override
         protected Void call() throws Exception {
-            final Optional<EquipmentResponse> response = WebQuery.INSTANCE.queryCharacterEquipment(session.getAppKey(), characterName);
+            final Optional<CharacterEquipmentResponse> response = WebQuery.INSTANCE.queryCharacterEquipment(session.getAppKey(), characterName);
             final Optional<api.web.gw2.mapping.v2.characters.Character> character = WebQuery.INSTANCE.queryCharacter(session.getAppKey(), characterName);
             final List<String> characterNames =  WebQuery.INSTANCE.queryCharacterNames(session.getAppKey());
             final List<api.web.gw2.mapping.v2.characters.Character> characters = WebQuery.INSTANCE.queryCharacters(session.getAppKey(), characterNames.toArray(new String[0]));

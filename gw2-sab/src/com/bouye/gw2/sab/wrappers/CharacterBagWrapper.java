@@ -7,12 +7,12 @@
  */
 package com.bouye.gw2.sab.wrappers;
 
-import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import api.web.gw2.mapping.v2.items.Item;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventoryBag;
 
 /**
  * Wraps a character's inventory bag.
@@ -20,18 +20,18 @@ import java.util.Objects;
  */
 public final class CharacterBagWrapper {
 
-    private final InventoryBag bag;
+    private final CharacterInventoryBag bag;
     private final Item item;
     private final List<CharacterInventoryWrapper> content;
 
-    public CharacterBagWrapper(final InventoryBag bag, final Item item, CharacterInventoryWrapper... content) throws NullPointerException {
+    public CharacterBagWrapper(final CharacterInventoryBag bag, final Item item, CharacterInventoryWrapper... content) throws NullPointerException {
         Objects.requireNonNull(bag);
         this.bag = bag;
         this.item = item;
         this.content = Collections.unmodifiableList(Arrays.asList(content));
     }
 
-    public InventoryBag getBag() {
+    public CharacterInventoryBag getBag() {
         return bag;
     }
 

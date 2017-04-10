@@ -9,8 +9,6 @@ package com.bouye.gw2.sab.scene.characters.inventory;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
-import api.web.gw2.mapping.v2.characters.inventory.Inventory;
-import api.web.gw2.mapping.v2.characters.inventory.InventoryBag;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
@@ -43,6 +41,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventory;
+import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventoryBag;
 
 /**
  * Test.
@@ -131,7 +131,7 @@ public final class TestInventoryPane extends Application {
         // Load character inventory.
         final Optional<URL> characterInventoryURL = Optional.ofNullable(getClass().getResource("character_inventories.json")); // NOI18N.
         if (characterInventoryURL.isPresent()) {
-            final Collection<InventoryBag> inventoryBags = JsonpContext.SAX.loadObjectArray(InventoryBag.class, characterInventoryURL.get());
+            final Collection<CharacterInventoryBag> inventoryBags = JsonpContext.SAX.loadObjectArray(CharacterInventoryBag.class, characterInventoryURL.get());
             final List<CharacterBagWrapper> wrappers = inventoryBags.stream()
                     .map(bag -> {
                         CharacterBagWrapper result = null;
@@ -224,14 +224,14 @@ public final class TestInventoryPane extends Application {
                     .id(SABTestUtils.INSTANCE.getTestCharacter())
                     .queryObject(api.web.gw2.mapping.v2.characters.Character.class);
             if (character.isPresent()) {
-                final List<InventoryBag> inventoryBags = character.get().getBags();
+                final List<CharacterInventoryBag> inventoryBags = character.get().getBags();
                 final List<Integer> objectIds = new ArrayList<>();
                 inventoryBags.stream()
                         .forEach(inventoryBag -> {
                             final List<Integer> bagItemIds = inventoryBag.getInventory()
                                     .stream()
                                     .filter(inventory -> inventory != null)
-                                    .map(Inventory::getId)
+                                    .map(CharacterInventory::getId)
                                     .collect(Collectors.toList());
                             objectIds.addAll(bagItemIds);
                         });

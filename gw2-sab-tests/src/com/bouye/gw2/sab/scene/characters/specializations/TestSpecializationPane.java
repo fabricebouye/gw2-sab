@@ -8,7 +8,7 @@
 package com.bouye.gw2.sab.scene.characters.specializations;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.characters.CharacterSpecialization;
+import api.web.gw2.mapping.v2.characters.id.specializations.CharacterSpecialization;
 import api.web.gw2.mapping.v2.specializations.Specialization;
 import com.bouye.gw2.sab.SAB;
 import java.io.IOException;
