@@ -9,7 +9,6 @@ package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
@@ -34,6 +33,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * Test.
@@ -88,7 +88,7 @@ public final class TestWvwSummaryPane extends Application {
     private MatchWrapper doRemoteTest() {
         final Session session = SABTestUtils.INSTANCE.getTestSession();
         final int worldId = session.getAccount().getWorld();
-        final Optional<Match> match = WebQuery.INSTANCE.queryWvwMatch(worldId);
+        final Optional<WvwMatch> match = WebQuery.INSTANCE.queryWvwMatch(worldId);
         int[] worldIds = new int[0];
         if (match.isPresent()) {
             // @todo To test.
@@ -116,7 +116,7 @@ public final class TestWvwSummaryPane extends Application {
      */
     private MatchWrapper doLocalTest() throws IOException {
         final Optional<URL> matchURL = Optional.ofNullable(getClass().getResource("matches/match01.json")); // NOI18N.
-        final Match match = (!matchURL.isPresent()) ? null : JsonpContext.SAX.loadObject(Match.class, matchURL.get());
+        final WvwMatch match = (!matchURL.isPresent()) ? null : JsonpContext.SAX.loadObject(WvwMatch.class, matchURL.get());
         final Optional<URL> worldsURL = Optional.ofNullable(getClass().getResource("matches/worlds01.json")); // NOI18N.
         final List<World> worlds = (!worldsURL.isPresent()) ? Collections.EMPTY_LIST : JsonpContext.SAX.loadObjectArray(World.class, worldsURL.get())
                 .stream()

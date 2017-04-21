@@ -8,8 +8,8 @@
 package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
-import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchTeam;
+import api.web.gw2.mapping.v2.wvw.objectives.WvwObjectiveType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,18 +35,18 @@ public enum WvwUtils {
     /**
      * Team order in most reports.
      */
-    private final List<MatchTeam> teams = Collections.unmodifiableList(Arrays.asList(MatchTeam.GREEN, MatchTeam.BLUE, MatchTeam.RED));
+    private final List<WvwMatchTeam> teams = Collections.unmodifiableList(Arrays.asList(WvwMatchTeam.GREEN, WvwMatchTeam.BLUE, WvwMatchTeam.RED));
     /**
      * Order of teams in pie chart is different.
      */
-    private final List<MatchTeam> pieTeams = Collections.unmodifiableList(Arrays.asList(MatchTeam.BLUE, MatchTeam.GREEN, MatchTeam.RED));
+    private final List<WvwMatchTeam> pieTeams = Collections.unmodifiableList(Arrays.asList(WvwMatchTeam.BLUE, WvwMatchTeam.GREEN, WvwMatchTeam.RED));
 
     /**
      * Gets the teams to be used in most reports.
      * @return A non-modifiable {@code List<MatchTeam>}, never {@code null}.
      * <br>The list is sorted in decreasing rank order.
      */
-    public List<MatchTeam> getTeams() {
+    public List<WvwMatchTeam> getTeams() {
         return teams;
     }
 
@@ -55,7 +55,7 @@ public enum WvwUtils {
      * @return A non-modifiable {@code List<MatchTeam>}, never {@code null}.
      * <br>The list is sorted in the order used by ArenaNet for pie charts in game..
      */
-    public List<MatchTeam> getPieTeams() {
+    public List<WvwMatchTeam> getPieTeams() {
         return pieTeams;
     }
 
@@ -63,11 +63,10 @@ public enum WvwUtils {
      * Objectives that give points.
      * <br>Not currently accessible by API?
      */
-    private final List<ObjectiveType> objectiveTypes = Collections.unmodifiableList(Arrays.asList(
-            ObjectiveType.CAMP,
-            ObjectiveType.TOWER,
-            ObjectiveType.KEEP,
-            ObjectiveType.CASTLE
+    private final List<WvwObjectiveType> objectiveTypes = Collections.unmodifiableList(Arrays.asList(WvwObjectiveType.CAMP,
+            WvwObjectiveType.TOWER,
+            WvwObjectiveType.KEEP,
+            WvwObjectiveType.CASTLE
     ));
     /**
      * Points per objectives.
@@ -82,7 +81,7 @@ public enum WvwUtils {
     /**
      * Map: objectives that give points -> points.
      */
-    private final Map<ObjectiveType, Integer> objectivePoints = Collections.unmodifiableMap(IntStream.range(0, objectiveTypes.size())
+    private final Map<WvwObjectiveType, Integer> objectivePoints = Collections.unmodifiableMap(IntStream.range(0, objectiveTypes.size())
             .mapToObj(index -> index)
             .collect(Collectors.toMap(objectiveTypes::get, pointsPerObjective::get)));
 
@@ -91,7 +90,7 @@ public enum WvwUtils {
      * @return A non-modifiable {@code List<ObjectiveType>} instance, never {@code null}.
      * <br>The list is sorted from the objective type that gives the least point to the objective type that gives the maximum points.
      */
-    public List<ObjectiveType> getObjectiveTypes() {
+    public List<WvwObjectiveType> getObjectiveTypes() {
         return objectiveTypes;
     }
 
@@ -99,7 +98,7 @@ public enum WvwUtils {
      * Gets the amount of points given by objective type in WvW.
      * @return A non-modifiable {@code Map<ObjectiveType, Integer>} instance, never {@code null}.
      */
-    public Map<ObjectiveType, Integer> getObjectivePoints() {
+    public Map<WvwObjectiveType, Integer> getObjectivePoints() {
         return objectivePoints;
     }
 

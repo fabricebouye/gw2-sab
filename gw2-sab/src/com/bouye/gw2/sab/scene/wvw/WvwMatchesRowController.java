@@ -7,8 +7,7 @@
  */
 package com.bouye.gw2.sab.scene.wvw;
 
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchTeam;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import java.net.URL;
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextFlow;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * FXML Controller class
@@ -141,7 +141,7 @@ public final class WvwMatchesRowController extends SABControllerBase {
     /**
     * In WvW pies, blue comes ahead of green.
     */
-    private List<MatchTeam> teams = Collections.unmodifiableList(Arrays.asList(MatchTeam.BLUE, MatchTeam.GREEN, MatchTeam.RED));
+    private List<WvwMatchTeam> teams = Collections.unmodifiableList(Arrays.asList(WvwMatchTeam.BLUE, WvwMatchTeam.GREEN, WvwMatchTeam.RED));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -206,23 +206,23 @@ public final class WvwMatchesRowController extends SABControllerBase {
 
     @Override
     protected void updateUI() {
-        final Match match = getMatch();
+        final WvwMatch match = getMatch();
         if (match == null) {
             clearUIContent();
         }
     }
 
-    private final ObjectProperty<Match> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
+    private final ObjectProperty<WvwMatch> match = new SimpleObjectProperty<>(this, "match", null); // NOI18N.
 
-    public final Match getMatch() {
+    public final WvwMatch getMatch() {
         return match.get();
     }
 
-    public final void setMatch(final Match value) {
+    public final void setMatch(final WvwMatch value) {
         match.set(value);
     }
 
-    public final ObjectProperty<Match> matchProperty() {
+    public final ObjectProperty<WvwMatch> matchProperty() {
         return match;
     }
 }

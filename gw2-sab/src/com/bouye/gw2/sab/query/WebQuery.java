@@ -24,7 +24,6 @@ import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import api.web.gw2.mapping.v2.quaggans.Quaggan;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.demo.DemoSupport;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.Set;
 import static com.bouye.gw2.sab.query.GW2APIClient.*;
 import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipment;
 import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipmentResponse;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * Centralized class for web-queries.
@@ -223,16 +223,16 @@ public enum WebQuery {
      * @param id The id of a world participating in the match.
      * @return An {@code Optional<Match>} instance, never {@code null}.
      */
-    public Optional<Match> queryWvwMatch(final int id) {
+    public Optional<WvwMatch> queryWvwMatch(final int id) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        Optional<Match> result = Optional.empty();
+        Optional<WvwMatch> result = Optional.empty();
         if (isOffline) {
         } else {
             result = GW2APIClient.create()
                     .apiLevel(APILevel.V2)
                     .endPoint("wvw/matches") // NOI18N.
                     .putParameter("world", id) // NOI18N.
-                    .queryObject(Match.class);
+                    .queryObject(WvwMatch.class);
         }
         return result;
     }
@@ -242,16 +242,16 @@ public enum WebQuery {
      * @param ids The id(s) of WvW matches.
      * @return A {@code List<Match>} instance, never {@code null}.
      */
-    public List<Match> queryWvwMatches(final String... ids) {
+    public List<WvwMatch> queryWvwMatches(final String... ids) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<Match> result = Collections.EMPTY_LIST;
+        List<WvwMatch> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
             result = GW2APIClient.create()
                     .apiLevel(APILevel.V2)
                     .endPoint("wvw/matches") // NOI18N.
                     .ids(ids)
-                    .queryArray(Match.class);
+                    .queryArray(WvwMatch.class);
         }
         return result;
     }

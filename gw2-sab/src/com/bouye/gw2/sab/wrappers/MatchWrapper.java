@@ -8,9 +8,9 @@
 package com.bouye.gw2.sab.wrappers;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
 import java.util.List;
 import java.util.Objects;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * Wraps a WvW match.
@@ -18,17 +18,17 @@ import java.util.Objects;
  */
 public final class MatchWrapper {
 
-    private final Match match;
+    private final WvwMatch match;
     private final List<World> worlds;
 
-    public MatchWrapper(final Match match, final List<World> worlds) {
+    public MatchWrapper(final WvwMatch match, final List<World> worlds) {
         Objects.requireNonNull(match);
         Objects.requireNonNull(worlds);
         this.match = match;
         this.worlds = worlds;
     }
 
-    public Match getMatch() {
+    public WvwMatch getMatch() {
         return match;
     }
 

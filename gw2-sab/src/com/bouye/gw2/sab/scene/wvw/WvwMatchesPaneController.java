@@ -8,10 +8,8 @@
 package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import api.web.gw2.mapping.v2.wvw.matches.MatchMap;
-import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
-import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchTeam;
+import api.web.gw2.mapping.v2.wvw.objectives.WvwObjectiveType;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.MatchesWrapper;
 import java.net.URL;
@@ -44,6 +42,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchMap;
 
 /**
  * FXML Controller class
@@ -76,10 +76,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
     private static final PseudoClass ODD_PSEUDO_CLASS = PseudoClass.getPseudoClass("odd"); // NOI18N.
     private static final PseudoClass EVEN_PSEUDO_CLASS = PseudoClass.getPseudoClass("even"); // NOI18N.
     private static final PseudoClass SMALL_PSEUDO_CLASS = PseudoClass.getPseudoClass("small"); // NOI18N.
-    private final List<MatchTeam> teams = WvwUtils.INSTANCE.getTeams();
-    private final List<MatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
-    private final List<ObjectiveType> objectiveTypes = WvwUtils.INSTANCE.getObjectiveTypes();
-    private final Map<ObjectiveType, Integer> objectivePoints = WvwUtils.INSTANCE.getObjectivePoints();
+    private final List<WvwMatchTeam> teams = WvwUtils.INSTANCE.getTeams();
+    private final List<WvwMatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
+    private final List<WvwObjectiveType> objectiveTypes = WvwUtils.INSTANCE.getObjectiveTypes();
+    private final Map<WvwObjectiveType, Integer> objectivePoints = WvwUtils.INSTANCE.getObjectivePoints();
 
     @Override
     protected void updateUI() {
@@ -87,7 +87,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         rootPane.getChildren().clear();
         final Optional<WvwMatchesPane> node = parentNode();
         final MatchesWrapper wrapper = node.isPresent() ? node.get().getMatches() : null;
-        final Map<String, Match> matches = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getMatches();
+        final Map<String, WvwMatch> matches = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getMatches();
         final Map<Integer, World> worlds = (wrapper == null) ? Collections.EMPTY_MAP : wrapper.getWorlds();
         final int matchNumber = matches.size();
         final int teamNumber = teams.size();
@@ -106,7 +106,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
             return;
         }
         // Start creating match content.
-        final Iterator<Match> matchIterator = matches.values()
+        final Iterator<WvwMatch> matchIterator = matches.values()
                 .stream()
                 .sorted((m1, m2) -> m1.getId().compareTo(m2.getId()))
                 .iterator();
@@ -114,15 +114,15 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         IntStream.range(0, matchNumber)
                 .forEach(matchIndex -> {
                     final int startRowIndex = teamNumber * matchIndex + 1;
-                    final Match match = matchIterator.next();
-                    final Map<MatchTeam, String> worldNames = createWorldNames(match, worlds);
+                    final WvwMatch match = matchIterator.next();
+                    final Map<WvwMatchTeam, String> worldNames = createWorldNames(match, worlds);
                     // Compute aggragated objectives and income.
-                    final Map<MatchTeam, int[]> aggregateObjectives = computeAggregateObjectives(match);
-                    final Map<MatchTeam, Integer> incomes = computeIncome(aggregateObjectives);
+                    final Map<WvwMatchTeam, int[]> aggregateObjectives = computeAggregateObjectives(match);
+                    final Map<WvwMatchTeam, Integer> incomes = computeIncome(aggregateObjectives);
                     // Column#1 - Names.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int mainWorldId = match.getWorlds().get(team);
                         final Set<Integer> auxWorldIds = match.getAllWorlds().get(team);
@@ -136,7 +136,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#2 - Scores.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int scoreValue = match.getScores().get(team);
                         final String score = String.valueOf(scoreValue);
@@ -155,7 +155,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                             .getAsInt();
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int scoreValue = match.getScores().get(team);
                         final String score = String.valueOf(scoreValue);
@@ -177,7 +177,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#5 - Incomes.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int incomeValue = incomes.get(team);
                         final String income = String.format("+ %d", incomeValue); // NOI18N.
@@ -190,10 +190,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#6 - Camps.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.CAMP)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(WvwObjectiveType.CAMP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 6, rowIndex);
@@ -204,10 +204,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#7 - Towers.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.TOWER)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(WvwObjectiveType.TOWER)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 7, rowIndex);
@@ -218,10 +218,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#8 - Keeps.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.KEEP)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(WvwObjectiveType.KEEP)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 8, rowIndex);
@@ -232,10 +232,10 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
                     // Column#9 - Castle.
                     for (int teamIndex = 0; teamIndex < teamNumber; teamIndex++) {
                         final int rowIndex = startRowIndex + teamIndex;
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         //
                         final int[] teamObjectives = aggregateObjectives.get(team);
-                        final int value = teamObjectives[objectiveTypes.indexOf(ObjectiveType.CASTLE)];
+                        final int value = teamObjectives[objectiveTypes.indexOf(WvwObjectiveType.CASTLE)];
                         final String owned = String.valueOf(value);
                         final Label ownedLabel = new Label(owned);
                         GridPane.setConstraints(ownedLabel, 9, rowIndex);
@@ -275,7 +275,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param match The match.
      * @return A {@code Map<MatchTeam, int[]>}, never {@code null}.
      */
-    private Map<MatchTeam, int[]> computeAggregateObjectives(final Match match) {
+    private Map<WvwMatchTeam, int[]> computeAggregateObjectives(final WvwMatch match) {
         return IntStream.range(0, teams.size())
                 .mapToObj(teams::get)
                 .collect(Collectors.toMap(Function.identity(), team -> countAggregateObjectives(match, team)));
@@ -287,7 +287,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param team The team.
      * @return An {@code int[]} instance, never {@code null}.
      */
-    int[] countAggregateObjectives(final Match match, final MatchTeam team) {
+    int[] countAggregateObjectives(final WvwMatch match, final WvwMatchTeam team) {
         return objectiveTypes.stream()
                 .mapToInt(objectiveType -> countObjective(match, team, objectiveType))
                 .toArray();
@@ -300,7 +300,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param objectiveType The type of the objective.
      * @return An {@code int}.
      */
-    final int countObjective(final Match match, final MatchTeam team, final ObjectiveType objectiveType) {
+    final int countObjective(final WvwMatch match, final WvwMatchTeam team, final WvwObjectiveType objectiveType) {
         return match.getMaps()
                 .stream()
                 .mapToInt(map -> countObjectiveOnMap(map, team, objectiveType))
@@ -314,7 +314,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param objectiveType The type of the objective.
      * @return An {@code int}.
      */
-    private int countObjectiveOnMap(final MatchMap map, final MatchTeam team, final ObjectiveType objectiveType) {
+    private int countObjectiveOnMap(final WvwMatchMap map, final WvwMatchTeam team, final WvwObjectiveType objectiveType) {
         return (int) map.getObjectives()
                 .stream()
                 .filter(objective -> (objective.getType() == objectiveType) && (objective.getOwner() == team))
@@ -326,7 +326,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param aggregateObjectives Map of aggregate objectives.
      * @return A {@code Map<MatchTeam, Integer>} instance, never {@code null}.
      */
-    private Map<MatchTeam, Integer> computeIncome(final Map<MatchTeam, int[]> aggregateObjectives) {
+    private Map<WvwMatchTeam, Integer> computeIncome(final Map<WvwMatchTeam, int[]> aggregateObjectives) {
         return teams.stream()
                 .collect(Collectors.toMap(Function.identity(), team -> computeAggregateIncome(aggregateObjectives, team)));
     }
@@ -337,7 +337,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param team The team.
      * @return An {@code int}.
      */
-    private int computeAggregateIncome(final Map<MatchTeam, int[]> aggregateObjectives, final MatchTeam team) {
+    private int computeAggregateIncome(final Map<WvwMatchTeam, int[]> aggregateObjectives, final WvwMatchTeam team) {
         final int[] teamObjectives = aggregateObjectives.get(team);
         return objectiveTypes.stream()
                 .mapToInt(objectiveType -> computeObjectiveIncome(teamObjectives, objectiveType))
@@ -350,17 +350,17 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param objectiveType The type of the objective.
      * @return An {@code int}.
      */
-    private int computeObjectiveIncome(final int[] teamObjectives, final ObjectiveType objectiveType) {
+    private int computeObjectiveIncome(final int[] teamObjectives, final WvwObjectiveType objectiveType) {
         final int objectiveIndex = objectiveTypes.indexOf(objectiveType);
         final int point = objectivePoints.get(objectiveType);
         final int objectiveNumber = teamObjectives[objectiveIndex];
         return objectiveNumber * point;
     }
 
-    private Map<MatchTeam, String> createWorldNames(final Match match, final Map<Integer, World> worlds) {
-        final Map<MatchTeam, Integer> mainWorlds = match.getWorlds();
-        final Map<MatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
-        final Map<MatchTeam, String> result = new HashMap<>();
+    private Map<WvwMatchTeam, String> createWorldNames(final WvwMatch match, final Map<Integer, World> worlds) {
+        final Map<WvwMatchTeam, Integer> mainWorlds = match.getWorlds();
+        final Map<WvwMatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
+        final Map<WvwMatchTeam, String> result = new HashMap<>();
         teams.stream()
                 .forEach(team -> {
                     final int mainWorldId = mainWorlds.get(team);
@@ -389,7 +389,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
      * @param worldNames World names.s
      * @return A {@code PieChart} instance, never {@code null}.
      */
-    private PieChart createSummaryPieChart(final Map<MatchTeam, Integer> incomes, final Map<MatchTeam, String> worldNames) {
+    private PieChart createSummaryPieChart(final Map<WvwMatchTeam, Integer> incomes, final Map<WvwMatchTeam, String> worldNames) {
         final PieChart summaryPieChart = new PieChart();
         summaryPieChart.getStyleClass().add("wvw-pie-chart");
         summaryPieChart.setLegendVisible(false);
@@ -400,7 +400,7 @@ public final class WvwMatchesPaneController extends SABControllerBase<WvwMatches
         // Update content.
         IntStream.range(0, pieTeams.size())
                 .forEach(teamIndex -> {
-                    final MatchTeam team = pieTeams.get(teamIndex);
+                    final WvwMatchTeam team = pieTeams.get(teamIndex);
                     final int teamScore = incomes.get(team);
                     final String worldName = worldNames.get(team);
                     final PieChart.Data data = (PieChart.Data) summaryPieChart.getData().get(teamIndex);

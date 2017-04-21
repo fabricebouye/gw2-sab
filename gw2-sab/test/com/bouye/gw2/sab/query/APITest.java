@@ -32,10 +32,8 @@ import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.skins.SkinRarity;
 import api.web.gw2.mapping.v2.skins.SkinType;
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.MapType;
-import api.web.gw2.mapping.v2.wvw.abilities.Ability;
-import api.web.gw2.mapping.v2.wvw.objectives.Objective;
-import api.web.gw2.mapping.v2.wvw.objectives.ObjectiveType;
+import api.web.gw2.mapping.v2.wvw.WvwMapType;
+import api.web.gw2.mapping.v2.wvw.objectives.WvwObjectiveType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +55,8 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.hamcrest.CoreMatchers.is;
+import api.web.gw2.mapping.v2.wvw.objectives.WvwObjective;
+import api.web.gw2.mapping.v2.wvw.abilities.WvwAbility;
 
 /**
  * API automated tests.
@@ -346,12 +346,12 @@ public class APITest {
         assertNotNull(expName);
         //
         final String lang = SETTINGS.getProperty("lang"); // NOI18N.
-        final Optional<Ability> value = GW2APIClient.create()
+        final Optional<WvwAbility> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .endPoint("wvw/abilities") // NOI18N.
                 .language(lang)
                 .id(idToTest)
-                .queryObject(Ability.class);
+                .queryObject(WvwAbility.class);
         assertTrue(value.isPresent());
         assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());
@@ -375,19 +375,19 @@ public class APITest {
         final String expId = SETTINGS.getProperty(prefix + "id"); // NOI18N.
         final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
         final int expSectorId = Integer.parseInt(SETTINGS.getProperty(prefix + "sector_id")); // NOI18N.
-        final ObjectiveType expType = EnumValueFactory.INSTANCE.mapEnumValue(ObjectiveType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
-        final MapType expMapType = EnumValueFactory.INSTANCE.mapEnumValue(MapType.class, SETTINGS.getProperty(prefix + "map_type")); // NOI18N.
+        final WvwObjectiveType expType = EnumValueFactory.INSTANCE.mapEnumValue(WvwObjectiveType.class, SETTINGS.getProperty(prefix + "type")); // NOI18N.
+        final WvwMapType expMapType = EnumValueFactory.INSTANCE.mapEnumValue(WvwMapType.class, SETTINGS.getProperty(prefix + "map_type")); // NOI18N.
         final int expMapId = Integer.parseInt(SETTINGS.getProperty(prefix + "map_id")); // NOI18N.
         assertNotNull(expId);
         assertNotNull(expName);
         //
         final String lang = SETTINGS.getProperty("lang"); // NOI18N.
-        final Optional<Objective> value = GW2APIClient.create()
+        final Optional<WvwObjective> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .endPoint("wvw/objectives") // NOI18N.
                 .language(lang)
                 .id(idToTest)
-                .queryObject(Objective.class);
+                .queryObject(WvwObjective.class);
         assertTrue(value.isPresent());
         assertEquals(expId, value.get().getId());
         assertEquals(expName, value.get().getName());

@@ -8,8 +8,7 @@
 package com.bouye.gw2.sab.scene.wvw;
 
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchTeam;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import java.net.URL;
@@ -31,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.PieChart;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * FXML Controller class.
@@ -53,8 +53,8 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     private PieChart greenPieChart;
     
     private static final String SCORE_CATEGORY = "Score"; // NOI18N.
-    private final List<MatchTeam> teams = WvwUtils.INSTANCE.getTeams();
-    private final List<MatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
+    private final List<WvwMatchTeam> teams = WvwUtils.INSTANCE.getTeams();
+    private final List<WvwMatchTeam> pieTeams = WvwUtils.INSTANCE.getPieTeams();
 
     /**
      * Creates a new instance.
@@ -112,7 +112,7 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
     @Override
     protected void updateUI() {
         final MatchWrapper wrapper = getMatch();
-        final Match match = (wrapper == null) ? null : wrapper.getMatch();
+        final WvwMatch match = (wrapper == null) ? null : wrapper.getMatch();
         final List<World> worlds = (wrapper == null) ? null : wrapper.getWorlds();
         if (match == null) {
             // Clear bar chart.
@@ -131,12 +131,12 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
                             .map(obj -> (PieChart.Data) obj)
                             .forEach(data -> data.setPieValue(0)));
         } else {
-            final Map<MatchTeam, String> worldNames = createTeamNames(match, worlds);
+            final Map<WvwMatchTeam, String> worldNames = createTeamNames(match, worlds);
             // Update score bar chart.
             IntStream.range(0, teams.size())
                     //.map(teamIndex -> teams.size() - 1 - teamIndex)
                     .forEach(teamIndex -> {
-                        final MatchTeam team = teams.get(teamIndex);
+                        final WvwMatchTeam team = teams.get(teamIndex);
                         final int teamScore = match.getScores().get(team);
                         final String worldName = worldNames.get(team);
                         final BarChart.Series series = (BarChart.Series) scoreBarChart.getData().get(teamIndex);
@@ -168,7 +168,7 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
                         final PieChart pieChart = chart;
                         IntStream.range(0, pieTeams.size())
                                 .forEach(teamIndex -> {
-                                    final MatchTeam team = pieTeams.get(teamIndex);
+                                    final WvwMatchTeam team = pieTeams.get(teamIndex);
                                     final int teamScore = map.getScores().get(team);
                                     final Optional<PieChart.Data> data = pieChart.getData()
                                             .stream()
@@ -188,10 +188,10 @@ public final class WvwSummaryPaneController extends SABControllerBase<WvwSummary
      * @return A {@code Map<MatchTeam, String>}, never {@code null}.
      * <br> The map does not contain {@code null} values.
      */
-    private Map<MatchTeam, String> createTeamNames(final Match match, final List<World> worlds) {
-        final Map<MatchTeam, Integer> mainWorlds = match.getWorlds();
-        final Map<MatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
-        final Map<MatchTeam, String> result = new HashMap<>();
+    private Map<WvwMatchTeam, String> createTeamNames(final WvwMatch match, final List<World> worlds) {
+        final Map<WvwMatchTeam, Integer> mainWorlds = match.getWorlds();
+        final Map<WvwMatchTeam, Set<Integer>> allWorlds = match.getAllWorlds();
+        final Map<WvwMatchTeam, String> result = new HashMap<>();
         final Map<Integer, World> worldMap = worlds.stream()
                 .collect(Collectors.toMap(World::getId, Function.identity()));
         teams.stream()

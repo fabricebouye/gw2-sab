@@ -9,8 +9,7 @@ package com.bouye.gw2.sab.tasks.wvw.matches;
 
 import com.bouye.gw2.sab.wrappers.MatchWrapper;
 import api.web.gw2.mapping.v2.worlds.World;
-import api.web.gw2.mapping.v2.wvw.matches.Match;
-import api.web.gw2.mapping.v2.wvw.matches.MatchTeam;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatchTeam;
 import com.bouye.gw2.sab.query.WebQuery;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.concurrent.Task;
+import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 
 /**
  * This task queries the v2/wvw/matches and v2/worlds endpoints to resolve WvW matches.
@@ -66,9 +66,9 @@ public final class MatchSolverTask extends Task<List<MatchWrapper>> {
             return Collections.EMPTY_LIST;
         }
         // Get requested match(es).
-        List<Match> matches = Collections.EMPTY_LIST;
+        List<WvwMatch> matches = Collections.EMPTY_LIST;
         if (queryWorldId) {
-            final Optional<Match> match = WebQuery.INSTANCE.queryWvwMatch(worldId);
+            final Optional<WvwMatch> match = WebQuery.INSTANCE.queryWvwMatch(worldId);
             if (match.isPresent()) {
                 matches = Arrays.asList(match.get());
             }
@@ -82,7 +82,7 @@ public final class MatchSolverTask extends Task<List<MatchWrapper>> {
         }
         // Find all unique world ids.
         IntStream allWorldIdsStream = IntStream.empty();
-        for (final Match match : matches) {
+        for (final WvwMatch match : matches) {
             final IntStream matchWorlIds = worldIdsForMatch(match);
             allWorldIdsStream = IntStream.concat(allWorldIdsStream, matchWorlIds);
         }
@@ -110,9 +110,9 @@ public final class MatchSolverTask extends Task<List<MatchWrapper>> {
      * @param match The source match.
      * @return An {@code InStream}, never {@code null}.
      */
-    private IntStream worldIdsForMatch(final Match match) {
-        final Map<MatchTeam, Integer> worldIds = match.getWorlds();
-        final Map<MatchTeam, Set<Integer>> allWorldIds = match.getAllWorlds();
+    private IntStream worldIdsForMatch(final WvwMatch match) {
+        final Map<WvwMatchTeam, Integer> worldIds = match.getWorlds();
+        final Map<WvwMatchTeam, Set<Integer>> allWorldIds = match.getAllWorlds();
         final boolean pairedMatch = !allWorldIds.isEmpty();
         IntStream result = IntStream.empty();
         // Support for non-paired match.
