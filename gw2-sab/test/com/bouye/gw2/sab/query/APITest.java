@@ -326,20 +326,20 @@ public class APITest {
     }
 
     @Test
-    public void testAbilities() {
-        System.out.println("testAbilities"); // NOI18N.
-        final int[] ids = Arrays.stream(SETTINGS.getProperty("abilities.ids")
+    public void testWvwAbilities() {
+        System.out.println("testWvwAbilities"); // NOI18N.
+        final int[] ids = Arrays.stream(SETTINGS.getProperty("wvw.abilities.ids")
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
         Arrays.stream(ids)
-                .forEach(this::testAbility);
+                .forEach(this::testWvwAbility);
     }
 
-    private void testAbility(final int idToTest) {
-        System.out.printf("testAbility(%d)%n", idToTest); // NOI18N.
-        final String prefix = String.format("ability.%d.", idToTest); // NOI18N.
+    private void testWvwAbility(final int idToTest) {
+        System.out.printf("testWvwAbility(%d)%n", idToTest); // NOI18N.
+        final String prefix = String.format("wvw.ability.%d.", idToTest); // NOI18N.
         final int expId = Integer.parseInt(SETTINGS.getProperty(prefix + "id")); // NOI18N.
         final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
         final String expDescription = SETTINGS.getProperty(prefix + "description"); // NOI18N.
@@ -359,19 +359,19 @@ public class APITest {
     }
 
     @Test
-    public void testObjectives() {
-        System.out.println("testObjectives"); // NOI18N.
-        final String[] ids = Arrays.stream(SETTINGS.getProperty("objectives.ids") // NOI18N.
+    public void testWvwObjectives() {
+        System.out.println("testWvwObjectives"); // NOI18N.
+        final String[] ids = Arrays.stream(SETTINGS.getProperty("wvw.objectives.ids") // NOI18N.
                 .split(",")) // NOI18N.
                 .map(String::trim)
                 .toArray(String[]::new);
         Arrays.stream(ids)
-                .forEach(this::testObjective);
+                .forEach(this::testWvwObjective);
     }
 
-    private void testObjective(final String idToTest) {
-        System.out.printf("testObjective(%s)%n", idToTest); // NOI18N.
-        final String prefix = String.format("objective.%s.", idToTest); // NOI18N.
+    private void testWvwObjective(final String idToTest) {
+        System.out.printf("testWvwObjective(%s)%n", idToTest); // NOI18N.
+        final String prefix = String.format("wvw.objective.%s.", idToTest); // NOI18N.
         final String expId = SETTINGS.getProperty(prefix + "id"); // NOI18N.
         final String expName = SETTINGS.getProperty(prefix + "name"); // NOI18N.
         final int expSectorId = Integer.parseInt(SETTINGS.getProperty(prefix + "sector_id")); // NOI18N.
