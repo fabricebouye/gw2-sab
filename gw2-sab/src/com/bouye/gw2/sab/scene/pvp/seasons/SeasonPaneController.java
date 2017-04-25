@@ -8,9 +8,7 @@
 package com.bouye.gw2.sab.scene.pvp.seasons;
 
 import api.web.gw2.mapping.core.URLReference;
-import api.web.gw2.mapping.v2.pvp.seasons.Season;
-import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivision;
-import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivisionFlag;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeasonDivisionFlag;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
@@ -34,6 +32,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeasonDivision;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeason;
 
 /**
  * FXML Controller class.
@@ -116,7 +116,7 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
     @Override
     protected void updateUI() {
         final Optional<SeasonPane> parent = parentNode();
-        final Season season = parent.isPresent() ? parent.get().getSeason() : null;
+        final PvpSeason season = parent.isPresent() ? parent.get().getSeason() : null;
         final int divisionIndex = division.get();
         if ((season == null) || (divisionIndex < 0) || (divisionIndex >= season.getDivisions().size())) {
             seasonIcon.setImage(null);
@@ -125,11 +125,11 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
             divisionRulesContainer.getChildren().clear();
             upcomingRewardsContainer.getChildren().clear();
         } else {
-            final List<SeasonDivision> divisions = season.getDivisions()
+            final List<PvpSeasonDivision> divisions = season.getDivisions()
                     .stream()
                     .collect(Collectors.toList());
-            final SeasonDivision currentDivision = divisions.get(divisionIndex);
-            // Season icon.
+            final PvpSeasonDivision currentDivision = divisions.get(divisionIndex);
+            // PvpSeason icon.
             final URLReference largeIcon = currentDivision.getLargeIcon();
             largeIcon.ifPresent(url -> {
                 final Image image = ImageCache.INSTANCE.getImage(url.toExternalForm());
@@ -141,7 +141,7 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
             final ToggleGroup overviewToggleGroup = new ToggleGroup();
             final List<ToggleButton> overviewButtons = IntStream.range(0, divisions.size())
                     .mapToObj(index -> {
-                        final SeasonDivision division = divisions.get(index);
+                        final PvpSeasonDivision division = divisions.get(index);
                         return createToggleForDivision(index, division, currentDivision, overviewToggleGroup);
                     })
                     .collect(Collectors.toList());
@@ -156,7 +156,7 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
         }
     }
 
-    private final ToggleButton createToggleForDivision(final int index, final SeasonDivision division, final SeasonDivision currentDivision, final ToggleGroup overviewToggleGroup) {
+    private final ToggleButton createToggleForDivision(final int index, final PvpSeasonDivision division, final PvpSeasonDivision currentDivision, final ToggleGroup overviewToggleGroup) {
         final ToggleButton button = new ToggleButton();
         final String text = SABConstants.I18N.getString(String.format("season-pane.division%d.label", index + 1)); // NOI18N.
         button.setText(text);
@@ -171,7 +171,7 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
         return button;
     }
 
-    private final Node createNodeForDivisionFlag(final SeasonDivisionFlag flag, final SeasonDivision currentDivision) {
+    private final Node createNodeForDivisionFlag(final PvpSeasonDivisionFlag flag, final PvpSeasonDivision currentDivision) {
         final Label result = new Label();
         String text = null;
         Node graphic = null;
@@ -206,7 +206,7 @@ public final class SeasonPaneController extends SABControllerBase<SeasonPane> {
 
     public final void selectDivision(final int index) throws IndexOutOfBoundsException {
         final Optional<SeasonPane> parent = parentNode();
-        final Season season = parent.isPresent() ? parent.get().getSeason() : null;
+        final PvpSeason season = parent.isPresent() ? parent.get().getSeason() : null;
         int newValue = -1;
         if (season != null) {
             if (index < 0 || index >= season.getDivisions().size()) {

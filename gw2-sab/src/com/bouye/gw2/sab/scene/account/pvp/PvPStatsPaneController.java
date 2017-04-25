@@ -8,8 +8,6 @@
 package com.bouye.gw2.sab.scene.account.pvp;
 
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
-import api.web.gw2.mapping.v2.pvp.stats.Stat;
-import api.web.gw2.mapping.v2.pvp.stats.StatResult;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.text.LabelUtils;
 import java.net.URL;
@@ -30,6 +28,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import api.web.gw2.mapping.v2.pvp.stats.PvpStat;
+import api.web.gw2.mapping.v2.pvp.stats.PvpStatResult;
 
 /**
  * FXML controller.
@@ -128,7 +128,7 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
     @Override
     protected void updateUI() {
         final Optional<PvPStatsPane> node = parentNode();
-        final Stat stat = (node.isPresent()) ? node.get().getStat() : null;
+        final PvpStat stat = (node.isPresent()) ? node.get().getStat() : null;
         if (stat == null) {
             rankLabel.setText(null);
             Arrays.stream(professions)
@@ -141,11 +141,11 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
                     });
         } else {
             rankLabel.setText(String.valueOf(stat.getPvpRank()));
-            final Map<CharacterProfession, StatResult> professionResult = stat.getProfessions();
+            final Map<CharacterProfession, PvpStatResult> professionResult = stat.getProfessions();
             final PvPStatsPane.ResultType resultType = node.get().getDisplay();
             int totalValue = Arrays.stream(professions)
                     .mapToInt(profession -> {
-                        final StatResult result = professionResult.get(profession);
+                        final PvpStatResult result = professionResult.get(profession);
                         int value = 0;
                         if (result != null) {
                             switch (resultType) {
@@ -162,7 +162,7 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
                     .sum();
             Arrays.stream(professions)
                     .forEach(profession -> {
-                        final StatResult result = professionResult.get(profession);
+                        final PvpStatResult result = professionResult.get(profession);
                         if (result != null) {
                             final PieChart.Data data = dataMap.get(profession);
                             int value = 0;
@@ -185,7 +185,7 @@ public final class PvPStatsPaneController extends SABControllerBase<PvPStatsPane
         }
     }
 
-    private final ChangeListener<Stat> statChangeListener = (observable, oldValue, newValue) -> updateUI();
+    private final ChangeListener<PvpStat> statChangeListener = (observable, oldValue, newValue) -> updateUI();
     private final ChangeListener<PvPStatsPane.ResultType> displayChangeListener = (observable, oldValue, newValue) -> updateUI();
 
     private boolean valueEditing = false;

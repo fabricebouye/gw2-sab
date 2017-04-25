@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.pvp.seasons;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivision;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -17,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeasonDivision;
 
 /**
  * Test.
@@ -26,7 +26,7 @@ public final class TestDivisionPane extends Application {
 
     @Override
     public void start(Stage primaryStage) throws NullPointerException, IOException {
-        final SeasonDivision division = JsonpContext.SAX.loadObject(SeasonDivision.class, getClass().getResource("division.json")); // NOI18N.
+        final PvpSeasonDivision division = JsonpContext.SAX.loadObject(PvpSeasonDivision.class, getClass().getResource("division.json")); // NOI18N.
         final DivisionPane divisionPane = new DivisionPane();
         divisionPane.setDivision(division);
         final StackPane root = new StackPane();

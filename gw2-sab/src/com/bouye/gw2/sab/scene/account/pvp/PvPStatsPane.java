@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.pvp;
 
-import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import java.net.URL;
@@ -17,6 +16,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.VBox;
+import api.web.gw2.mapping.v2.pvp.stats.PvpStat;
 
 /**
  * Display the account and character inventory.
@@ -57,17 +57,17 @@ public final class PvPStatsPane extends VBox {
         return (url == null) ? null : url.toExternalForm();
     }
 
-    private final ObjectProperty<Stat> stat = new SimpleObjectProperty<>(this, "stat", null);  // NOI18N.
+    private final ObjectProperty<PvpStat> stat = new SimpleObjectProperty<>(this, "stat", null);  // NOI18N.
 
-    public void setStat(final Stat value) {
+    public void setStat(final PvpStat value) {
         stat.set(value);
     }
 
-    public Stat getStat() {
+    public PvpStat getStat() {
         return stat.get();
     }
 
-    public ObjectProperty<Stat> statProperty() {
+    public ObjectProperty<PvpStat> statProperty() {
         return stat;
     }
 

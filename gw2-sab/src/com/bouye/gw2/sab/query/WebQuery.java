@@ -20,7 +20,6 @@ import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
 import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.professions.Profession;
-import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import api.web.gw2.mapping.v2.quaggans.Quaggan;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
@@ -36,6 +35,7 @@ import static com.bouye.gw2.sab.query.GW2APIClient.*;
 import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipment;
 import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipmentResponse;
 import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
+import api.web.gw2.mapping.v2.pvp.stats.PvpStat;
 
 /**
  * Centralized class for web-queries.
@@ -370,16 +370,16 @@ public enum WebQuery {
         return result;
     }
 
-    public Optional<Stat> queryPvPStats(final String appKey) {
+    public Optional<PvpStat> queryPvpStats(final String appKey) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        Optional<Stat> result = Optional.empty();
+        Optional<PvpStat> result = Optional.empty();
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
             result = GW2APIClient.create()
                     .apiLevel(APILevel.V2)
                     .endPoint("pvp/stats") // NOI18N.
                     .applicationKey(appKey)
-                    .queryObject(Stat.class);
+                    .queryObject(PvpStat.class);
         }
         return result;
     }

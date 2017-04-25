@@ -8,8 +8,6 @@
 package com.bouye.gw2.sab.scene.pvp.seasons;
 
 import api.web.gw2.mapping.core.URLReference;
-import api.web.gw2.mapping.v2.pvp.seasons.SeasonDivision;
-import api.web.gw2.mapping.v2.pvp.seasons.SeasonTier;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.query.ImageCache;
 import java.net.URL;
@@ -37,6 +35,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeasonTier;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeasonDivision;
 
 /**
  * Displays progress in a PvP league division.
@@ -100,7 +100,7 @@ public final class DivisionPane extends Region {
         gridPane.getChildren().clear();
         gridPane.getColumnConstraints().clear();
         // Create new display.
-        final Optional<SeasonDivision> division = Optional.ofNullable(getDivision());
+        final Optional<PvpSeasonDivision> division = Optional.ofNullable(getDivision());
         division.ifPresent(d -> {
             preparePipIcons(d);
             installDivisionContent(d);
@@ -109,7 +109,7 @@ public final class DivisionPane extends Region {
 
     private final List<Image> pipIcons = new LinkedList<>();
 
-    private void preparePipIcons(final SeasonDivision division) {
+    private void preparePipIcons(final PvpSeasonDivision division) {
         pipIcons.clear();
         final URLReference pipIconURL = division.getPipIcon();
         pipIconURL.ifPresent(url -> {
@@ -147,8 +147,8 @@ public final class DivisionPane extends Region {
      * Creates a new division display.
      * @param division The division, never {@code null}.
      */
-    private void installDivisionContent(final SeasonDivision division) {
-        final List<SeasonTier> tiers = division.getTiers()
+    private void installDivisionContent(final PvpSeasonDivision division) {
+        final List<PvpSeasonTier> tiers = division.getTiers()
                 .stream()
                 .collect(Collectors.toList());
         // Create new column contraints.
@@ -163,7 +163,7 @@ public final class DivisionPane extends Region {
         {
             int currentPoints = 0;
             int tierIndex = 0;
-            for (final SeasonTier tier : tiers) {
+            for (final PvpSeasonTier tier : tiers) {
                 final Node node = createPipsForTier(tierIndex, currentPoints, tier, division);
                 gridPane.getChildren().addAll(node);
                 currentPoints += tier.getPoints();
@@ -184,7 +184,7 @@ public final class DivisionPane extends Region {
      * @param division The division.
      * @return A {@code Node}, never {@code null}.
      */
-    private Node createPipsForTier(final int tierIndex, final int cumulatedPoints, final SeasonTier tier, final SeasonDivision division) {
+    private Node createPipsForTier(final int tierIndex, final int cumulatedPoints, final PvpSeasonTier tier, final PvpSeasonDivision division) {
         final HBox result = new HBox();
         result.setId(String.format("tier%dHBox", tierIndex + 1)); // NOI18N.
         result.getStyleClass().add("pip-hbox"); // NOI18N.
@@ -236,17 +236,17 @@ public final class DivisionPane extends Region {
     /**
      * The division to display.
      */
-    private final ObjectProperty<SeasonDivision> division = new SimpleObjectProperty<>(this, "division", null); // NOI18N.
+    private final ObjectProperty<PvpSeasonDivision> division = new SimpleObjectProperty<>(this, "division", null); // NOI18N.
 
-    public final SeasonDivision getDivision() {
+    public final PvpSeasonDivision getDivision() {
         return division.get();
     }
 
-    public final void setDivision(final SeasonDivision value) {
+    public final void setDivision(final PvpSeasonDivision value) {
         division.set(value);
     }
 
-    public final ObjectProperty<SeasonDivision> divisionProperty() {
+    public final ObjectProperty<PvpSeasonDivision> divisionProperty() {
         return division;
     }
 }

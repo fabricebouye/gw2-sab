@@ -7,10 +7,10 @@
  */
 package com.bouye.gw2.sab.scene.pvp.seasons;
 
-import api.web.gw2.mapping.v2.pvp.seasons.Season;
 import com.bouye.gw2.sab.scene.SABControlBase;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import api.web.gw2.mapping.v2.pvp.seasons.PvpSeason;
 
 /**
  * Displays a PvP season.
@@ -25,17 +25,17 @@ public final class SeasonPane extends SABControlBase<SeasonPaneController> {
         super("SeasonPane.fxml");  // NOI18N.
     }
 
-    private final ObjectProperty<Season> season = new SimpleObjectProperty<>(this, "season", null); // NOI18N.
+    private final ObjectProperty<PvpSeason> season = new SimpleObjectProperty<>(this, "season", null); // NOI18N.
 
-    public final Season getSeason() {
+    public final PvpSeason getSeason() {
         return season.get();
     }
 
-    public final void setSeason(final Season value) {
+    public final void setSeason(final PvpSeason value) {
         season.set(value);
     }
 
-    public final ObjectProperty<Season> seasonProperty() {
+    public final ObjectProperty<PvpSeason> seasonProperty() {
         return season;
     }
 

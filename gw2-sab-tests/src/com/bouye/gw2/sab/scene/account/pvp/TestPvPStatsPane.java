@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.account.pvp;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.pvp.stats.Stat;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.WebQuery;
@@ -26,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.pvp.stats.PvpStat;
 
 /**
  * Test.
@@ -53,19 +53,19 @@ public class TestPvPStatsPane extends Application {
      * @param statsPane The PvP stats pane.
      */
     private void loadTestAsync(final PvPStatsPane statsPane) {
-        final Service<Stat> service = new Service<Stat>() {
+        final Service<PvpStat> service = new Service<PvpStat>() {
             @Override
-            protected Task<Stat> createTask() {
-                return new Task<Stat>() {
+            protected Task<PvpStat> createTask() {
+                return new Task<PvpStat>() {
                     @Override
-                    protected Stat call() throws Exception {
+                    protected PvpStat call() throws Exception {
                         return (SABConstants.INSTANCE.isOffline()) ? loadLocalTest() : loadRemoteTest();
                     }
                 };
             }
         };
         service.setOnSucceeded(workerStateEvent -> {
-            final Stat stat = (Stat) workerStateEvent.getSource().getValue();
+            final PvpStat stat = (PvpStat) workerStateEvent.getSource().getValue();
             statsPane.setStat(stat);
         });
         service.setOnFailed(workerStateEvent -> {
@@ -77,21 +77,21 @@ public class TestPvPStatsPane extends Application {
     
     /**
      * Load remote test.
-     * @return A {@code Stat} object may be null.
+     * @return A {@code PvpStat} object may be null.
      */
-    private Stat loadRemoteTest() {
+    private PvpStat loadRemoteTest() {
         final Session session = SABTestUtils.INSTANCE.getTestSession();
-        final Optional<Stat> result = WebQuery.INSTANCE.queryPvPStats(session.getAppKey());
+        final Optional<PvpStat> result = WebQuery.INSTANCE.queryPvpStats(session.getAppKey());
         return result.orElse(null);
     }
 
     /**
      * Load local test.
-     * @return A {@code Stat} object may be null.
+     * @return A {@code PvpStat} object may be null.
      */
-    private Stat loadLocalTest() throws NullPointerException, IOException {
+    private PvpStat loadLocalTest() throws NullPointerException, IOException {
         final URL url = getClass().getResource("stats.json");
-        final Stat result = (url == null) ? null : JsonpContext.SAX.loadObject(Stat.class, url);
+        final PvpStat result = (url == null) ? null : JsonpContext.SAX.loadObject(PvpStat.class, url);
         return result;
     }
 
