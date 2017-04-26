@@ -8,9 +8,8 @@
 package com.bouye.gw2.sab.scene.guild.log;
 
 import api.web.gw2.mapping.core.CoinAmount;
-import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
-import api.web.gw2.mapping.v2.guild.id.log.LogEventInfluenceActivity;
-import api.web.gw2.mapping.v2.guild.id.log.LogEventStashOperation;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEventInfluenceActivity;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEventStashOperation;
 import com.bouye.gw2.sab.SABConstants;
 import java.net.URL;
 import java.time.ZonedDateTime;
@@ -23,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
 
 /**
  * FXML Controller class
@@ -50,7 +50,7 @@ public final class LogEventListCellController implements Initializable {
         textLabel.setText(null);
         dateLabel.setText(null);
         // Install new content.
-        final Optional<LogEvent> logEvent = Optional.ofNullable(getLogEvent());
+        final Optional<GuildLogEvent> logEvent = Optional.ofNullable(getLogEvent());
         logEvent.ifPresent(this::installContent);
     }
 
@@ -58,7 +58,7 @@ public final class LogEventListCellController implements Initializable {
      * Install new content.
      * @param logEvent The log event.
      */
-    private void installContent(final LogEvent logEvent) {
+    private void installContent(final GuildLogEvent logEvent) {
         // @todo In game time is presented as a diff from "now".
         final ZonedDateTime time = logEvent.getTime();
         dateLabel.setText(time.toString());
@@ -68,7 +68,7 @@ public final class LogEventListCellController implements Initializable {
         switch (logEvent.getType()) {
             case INFLUENCE:
                 // @todo influence events return by the Web API seem incomplete or buggy.
-                final Optional<LogEventInfluenceActivity> activity = logEvent.getActivity();
+                final Optional<GuildLogEventInfluenceActivity> activity = logEvent.getActivity();
                 switch (activity.get()) {
                     case DAILY_LOGIN:
                         text = SABConstants.I18N.getString("guild-log.influence.daily-login.label"); // NOI18N.
@@ -124,8 +124,8 @@ public final class LogEventListCellController implements Initializable {
             }
             break;
             case STASH: {
-                final Optional<LogEventStashOperation> operation = logEvent.getOperation();
-                final String op = operation.isPresent() ? ((operation.get() == LogEventStashOperation.DEPOSIT) ? "deposited" : "withdrewn") : "";
+                final Optional<GuildLogEventStashOperation> operation = logEvent.getOperation();
+                final String op = operation.isPresent() ? ((operation.get() == GuildLogEventStashOperation.DEPOSIT) ? "deposited" : "withdrewn") : "";
                 final OptionalInt itemId = logEvent.getItemId();
                 if (itemId.isPresent()) {
                     final String item = itemId.isPresent() ? String.valueOf(itemId.getAsInt()) : ""; // NOI18N.
@@ -165,17 +165,17 @@ public final class LogEventListCellController implements Initializable {
     /**
      * The log event to display.
      */
-    private final ObjectProperty<LogEvent> logEvent = new SimpleObjectProperty(this, "logEvent", null); // NOI18N.
+    private final ObjectProperty<GuildLogEvent> logEvent = new SimpleObjectProperty(this, "logEvent", null); // NOI18N.
 
-    public final LogEvent getLogEvent() {
+    public final GuildLogEvent getLogEvent() {
         return logEvent.getValue();
     }
 
-    public final void setLogEvent(final LogEvent value) {
+    public final void setLogEvent(final GuildLogEvent value) {
         logEvent.setValue(value);
     }
 
-    public final ObjectProperty<LogEvent> logEventProperty() {
+    public final ObjectProperty<GuildLogEvent> logEventProperty() {
         return logEvent;
     }
 }

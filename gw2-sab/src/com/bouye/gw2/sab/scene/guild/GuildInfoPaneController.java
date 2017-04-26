@@ -8,9 +8,7 @@
 package com.bouye.gw2.sab.scene.guild;
 
 import api.web.gw2.mapping.v2.guild.id.Guild;
-import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
-import api.web.gw2.mapping.v2.guild.id.log.LogEventType;
-import api.web.gw2.mapping.v2.guild.id.members.Member;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEventType;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.scene.guild.log.LogEventListCell;
 import com.bouye.gw2.sab.wrappers.GuildInfoWrapper;
@@ -35,6 +33,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
+import api.web.gw2.mapping.v2.guild.id.members.GuildMember;
 
 /**
  * FXML Controller class
@@ -51,17 +51,17 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
     @FXML
     private TextArea motdArea;
     @FXML
-    private TableView<Member> rosterTableView;
+    private TableView<GuildMember> rosterTableView;
     @FXML
-    private TableColumn<Member, Boolean> onlineTableColumn;
+    private TableColumn<GuildMember, Boolean> onlineTableColumn;
     @FXML
-    private TableColumn<Member, Object> rankTableColumn;
+    private TableColumn<GuildMember, Object> rankTableColumn;
     @FXML
-    private TableColumn<Member, String> nameTableColumn;
+    private TableColumn<GuildMember, String> nameTableColumn;
     @FXML
-    private TableColumn<Member, Object> locationTableColumn;
+    private TableColumn<GuildMember, Object> locationTableColumn;
     @FXML
-    private TableColumn<Member, Object> lastOnlineTableColumn;
+    private TableColumn<GuildMember, Object> lastOnlineTableColumn;
     @FXML
     private HBox currencyHBox;
     @FXML
@@ -73,11 +73,11 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
     @FXML
     private Label resonanceLabel;
     @FXML
-    private ComboBox<LogEventType> logsFilterCombo;
+    private ComboBox<GuildLogEventType> logsFilterCombo;
     @FXML
     private TextField logsSearchField;
     @FXML
-    private ListView<LogEvent> logsListView;
+    private ListView<GuildLogEvent> logsListView;
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
@@ -90,12 +90,12 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
         resonanceLabel.managedProperty().bind(resonanceLabel.visibleProperty());
         //
         nameTableColumn.setCellValueFactory(feature -> {
-            final Member member = feature.getValue();
+            final GuildMember member = feature.getValue();
             return new SimpleStringProperty(member.getName());
         });
         //
-        logsFilterCombo.getItems().setAll(LogEventType.values());
-        logsFilterCombo.getItems().remove(LogEventType.UNKNOWN);
+        logsFilterCombo.getItems().setAll(GuildLogEventType.values());
+        logsFilterCombo.getItems().remove(GuildLogEventType.UNKNOWN);
         logsFilterCombo.getItems().add(0, null);
         logsFilterCombo.valueProperty().addListener(observable -> applyLogsListFilter());
         //
@@ -258,11 +258,11 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
     /**
      * Raw logs list.
      */
-    private final ObservableList<LogEvent> logs = FXCollections.observableList(new LinkedList());
+    private final ObservableList<GuildLogEvent> logs = FXCollections.observableList(new LinkedList());
     /**
      * Filtered logs list.
      */
-    private final FilteredList<LogEvent> filteredLogs = new FilteredList(logs);
+    private final FilteredList<GuildLogEvent> filteredLogs = new FilteredList(logs);
 //
 //    /**
 //     * Upgrade the guild logs list in a background service.
@@ -293,14 +293,14 @@ public class GuildInfoPaneController extends SABControllerBase<GuildInfoPane> {
     /**
      * Show all log event types.
      */
-    private final Predicate<LogEvent> showAllLogTypesFilter = logEvent -> true;
+    private final Predicate<GuildLogEvent> showAllLogTypesFilter = logEvent -> true;
 
     /**
      * Apply filters to the list of logs.
      */
     private void applyLogsListFilter() {
 //        // Type of logs.
-//        final LogEventType type = logsFilterCombo.getValue();
+//        final GuildLogEventType type = logsFilterCombo.getValue();
 //        Predicate<LogEvent> typeFilter = (type == null) ? showAllLogTypesFilter : logEvent -> logEvent.getType() == type;
 //        // Search.
 //        final String searchStr = logsSearchField.getText();

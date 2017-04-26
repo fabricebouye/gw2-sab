@@ -7,13 +7,13 @@
  */
 package com.bouye.gw2.sab.wrappers;
 
-import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
-import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasury;
+import api.web.gw2.mapping.v2.guild.upgrades.GuildUpgrade;
 
 /**
  * Wraps a guild treasury.
@@ -24,7 +24,7 @@ public final class TreasuryWrapper {
     /**
      * The treasury descriptor.
      */
-    private final Treasury treasury;
+    private final GuildTreasury treasury;
     /**
      * The item descriptor, may be {@code null}.
      */
@@ -32,7 +32,7 @@ public final class TreasuryWrapper {
     /**
      * The upgrades descriptors.
      */
-    private final List<Upgrade> upgrades;
+    private final List<GuildUpgrade> upgrades;
 
     /**
      * Creates a new instance.
@@ -41,14 +41,14 @@ public final class TreasuryWrapper {
      * @param upgrades The upgrades descriptors, may be empty or contain {@code null} values.
      * @throws NullPointerException If {@code treasury} is {@code null}.
      */
-    public TreasuryWrapper(final Treasury treasury, final Item item, final Upgrade... upgrades) throws NullPointerException {
+    public TreasuryWrapper(final GuildTreasury treasury, final Item item, final GuildUpgrade... upgrades) throws NullPointerException {
         Objects.requireNonNull(treasury);
         this.treasury = treasury;
         this.item = item;
         this.upgrades = Collections.unmodifiableList(Arrays.asList(upgrades));
     }
 
-    public Treasury getTreasury() {
+    public GuildTreasury getTreasury() {
         return treasury;
     }
 
@@ -56,7 +56,7 @@ public final class TreasuryWrapper {
         return item;
     }
 
-    public List<Upgrade> getUpgrades() {
+    public List<GuildUpgrade> getUpgrades() {
         return upgrades;
     }
 }

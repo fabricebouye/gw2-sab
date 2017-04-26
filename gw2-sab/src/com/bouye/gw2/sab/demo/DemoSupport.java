@@ -10,8 +10,6 @@ package com.bouye.gw2.sab.demo;
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
-import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
-import api.web.gw2.mapping.v2.guild.id.members.Member;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfo;
 import api.web.gw2.mapping.v2.worlds.World;
 import java.io.IOException;
@@ -24,6 +22,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
+import api.web.gw2.mapping.v2.guild.id.members.GuildMember;
 
 /**
  * Provides support for demo mode.
@@ -131,10 +131,10 @@ public enum DemoSupport {
         return Collections.unmodifiableList(result);
     }
 
-    public List<Member> loadGuildRoster(final String id) {
+    public List<GuildMember> loadGuildRoster(final String id) {
         try {
             final URL url = getClass().getResource(String.format("v2/guild/id/members/guildroster_%s.json", id)); // NOI18N.
-            final Collection<Member> result = JsonpContext.SAX.loadObjectArray(Member.class, url);
+            final Collection<GuildMember> result = JsonpContext.SAX.loadObjectArray(GuildMember.class, url);
             return Collections.unmodifiableList(new ArrayList(result));
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -142,10 +142,10 @@ public enum DemoSupport {
         return null;
     }
 
-    public List<LogEvent> loadGuildLogs(final String id) {
+    public List<GuildLogEvent> loadGuildLogs(final String id) {
         try {
             final URL url = getClass().getResource(String.format("v2/guild/id/log/guildlog_%s.json", id)); // NOI18N.
-            final Collection<LogEvent> result = JsonpContext.SAX.loadObjectArray(LogEvent.class, url);
+            final Collection<GuildLogEvent> result = JsonpContext.SAX.loadObjectArray(GuildLogEvent.class, url);
             return Collections.unmodifiableList(new ArrayList(result));
         } catch (NullPointerException | IOException ex) {
             Logger.getLogger(DemoSupport.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);

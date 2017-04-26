@@ -9,9 +9,6 @@ package com.bouye.gw2.sab.scene.guild.treasury;
 
 import api.web.gw2.mapping.core.JsonpContext;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
-import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
-import api.web.gw2.mapping.v2.guild.id.treasury.TreasuryUpgrade;
-import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
 import com.bouye.gw2.sab.SAB;
@@ -46,6 +43,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasury;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasuryUpgrade;
+import api.web.gw2.mapping.v2.guild.upgrades.GuildUpgrade;
 
 /**
  * Test.
@@ -108,10 +108,10 @@ public final class TestTreasuryPane extends Application {
         final Optional<URL> guildUpgradesURL = Optional.ofNullable(getClass().getResource("guild_upgrades.json")); // NOI18N.
         final Optional<URL> itemsURL = Optional.ofNullable(getClass().getResource("items.json")); // NOI18N.
         if (guildTreasuryURL.isPresent() && guildUpgradesURL.isPresent() && itemsURL.isPresent()) {
-            final Collection<Treasury> guildTreasury = JsonpContext.SAX.loadObjectArray(Treasury.class, guildTreasuryURL.get());
-            final Map<Integer, Upgrade> guildUpgrades = JsonpContext.SAX.loadObjectArray(Upgrade.class, guildUpgradesURL.get())
+            final Collection<GuildTreasury> guildTreasury = JsonpContext.SAX.loadObjectArray(GuildTreasury.class, guildTreasuryURL.get());
+            final Map<Integer, GuildUpgrade> guildUpgrades = JsonpContext.SAX.loadObjectArray(GuildUpgrade.class, guildUpgradesURL.get())
                     .stream()
-                    .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
+                    .collect(Collectors.toMap(GuildUpgrade::getId, Function.identity()));
             final Map<Integer, Item> items = JsonpContext.SAX.loadObjectArray(Item.class, itemsURL.get())
                     .stream()
                     .collect(Collectors.toMap(Item::getId, Function.identity()));
@@ -119,10 +119,10 @@ public final class TestTreasuryPane extends Application {
             result = guildTreasury.stream()
                     .map(treasury -> {
                         final Item item = items.get(treasury.getItemId());
-                        final Upgrade[] upgrades = treasury.getNeededBy()
+                        final GuildUpgrade[] upgrades = treasury.getNeededBy()
                                 .stream()
                                 .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
-                                .toArray(Upgrade[]::new);
+                                .toArray(GuildUpgrade[]::new);
                         return new TreasuryWrapper(treasury, item, upgrades);
                     })
                     .collect(Collectors.toList());
@@ -140,19 +140,19 @@ public final class TestTreasuryPane extends Application {
                     .collect(Collectors.toMap(GuildDetails::getGuildId, Function.identity()));
             Platform.runLater(() -> requestGuild(guildIds, guildDetails));
             wait();
-            final List<Treasury> guildTreasury = WebQuery.INSTANCE.queryGuildTreasury(session.getAppKey(), selectedGuild.get());
+            final List<GuildTreasury> guildTreasury = WebQuery.INSTANCE.queryGuildTreasury(session.getAppKey(), selectedGuild.get());
             final int[] upgradeIds = guildTreasury.stream()
-                    .map(Treasury::getNeededBy)
+                    .map(GuildTreasury::getNeededBy)
                     .map(Set::stream)
                     .reduce(Stream.empty(), Stream::concat)
-                    .mapToInt(TreasuryUpgrade::getUpgradeId)
+                    .mapToInt(GuildTreasuryUpgrade::getUpgradeId)
                     .distinct()
                     .toArray();
-            final Map<Integer, Upgrade> guildUpgrades = WebQuery.INSTANCE.queryGuildUpgrades(upgradeIds)
+            final Map<Integer, GuildUpgrade> guildUpgrades = WebQuery.INSTANCE.queryGuildUpgrades(upgradeIds)
                     .stream()
-                    .collect(Collectors.toMap(Upgrade::getId, Function.identity()));
+                    .collect(Collectors.toMap(GuildUpgrade::getId, Function.identity()));
             final int[] itemIds = guildTreasury.stream()
-                    .mapToInt(Treasury::getItemId)
+                    .mapToInt(GuildTreasury::getItemId)
                     .toArray();
             final Map<Integer, Item> items = WebQuery.INSTANCE.queryItems(itemIds)
                     .stream()
@@ -161,10 +161,10 @@ public final class TestTreasuryPane extends Application {
             result = guildTreasury.stream()
                     .map(treasury -> {
                         final Item item = items.get(treasury.getItemId());
-                        final Upgrade[] upgrades = treasury.getNeededBy()
+                        final GuildUpgrade[] upgrades = treasury.getNeededBy()
                                 .stream()
                                 .map(treasuryUpgrade -> guildUpgrades.get(treasuryUpgrade.getUpgradeId()))
-                                .toArray(Upgrade[]::new);
+                                .toArray(GuildUpgrade[]::new);
                         return new TreasuryWrapper(treasury, item, upgrades);
                     })
                     .collect(Collectors.toList());

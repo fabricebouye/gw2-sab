@@ -7,9 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.guild.treasury;
 
-import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
-import api.web.gw2.mapping.v2.guild.id.treasury.TreasuryUpgrade;
-import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.ImageCache;
@@ -37,6 +34,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasury;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasuryUpgrade;
+import api.web.gw2.mapping.v2.guild.upgrades.GuildUpgrade;
 
 /**
  * FXML Controller class.
@@ -83,8 +83,8 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
     }
 
     private Node createTreasurySlot(final TreasuryWrapper value) {
-        final Treasury treasury = value.getTreasury();
-        final List<Upgrade> upgrades = value.getUpgrades();
+        final GuildTreasury treasury = value.getTreasury();
+        final List<GuildUpgrade> upgrades = value.getUpgrades();
         final VBox result = new VBox();
         result.getStyleClass().add("treasury"); // NOI18N.
         result.setUserData(value);
@@ -92,7 +92,7 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
         final int count = treasury.getCount();
         final int totalCount = treasury.getNeededBy()
                 .stream()
-                .mapToInt(TreasuryUpgrade::getCount)
+                .mapToInt(GuildTreasuryUpgrade::getCount)
                 .sum();
         final Text quantityText = new Text();
         quantityText.setId("quantityText"); // NOI18N.
@@ -166,9 +166,9 @@ public final class TreasuryPaneController extends SABControllerBase<TreasuryPane
             final String criteria = searchValue.trim().toLowerCase();
             predicate = node -> {
                 final TreasuryWrapper treasuryWrapper = (TreasuryWrapper) node.getUserData();
-                final Treasury treasury = treasuryWrapper.getTreasury();
+                final GuildTreasury treasury = treasuryWrapper.getTreasury();
                 final Item item = treasuryWrapper.getItem();
-                final List<Upgrade> upgrades = treasuryWrapper.getUpgrades();
+                final List<GuildUpgrade> upgrades = treasuryWrapper.getUpgrades();
                 boolean result = false;
                 result |= (item == null) ? false : item.getName().toLowerCase().contains(criteria);
                 result |= upgrades.stream()

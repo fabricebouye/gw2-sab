@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.guild.log;
 
-import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.SABConstants;
 import java.io.IOException;
@@ -18,12 +17,13 @@ import java.util.logging.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
 
 /**
  * List cell for guild log events.
  * @author Fabrice Bouyé
  */
-public final class LogEventListCell extends ListCell<LogEvent> {
+public final class LogEventListCell extends ListCell<GuildLogEvent> {
     
     private Optional<Node> node = Optional.empty();
     private Optional<LogEventListCellController> controller = Optional.empty();
@@ -44,7 +44,7 @@ public final class LogEventListCell extends ListCell<LogEvent> {
     }
     
     @Override
-    protected void updateItem(final LogEvent logEvent, final boolean empty) {
+    protected void updateItem(final GuildLogEvent logEvent, final boolean empty) {
         super.updateItem(logEvent, empty);
         setText(null);
         controller.ifPresent(c -> c.setLogEvent(logEvent));

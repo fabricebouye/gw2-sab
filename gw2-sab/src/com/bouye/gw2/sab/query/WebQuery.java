@@ -14,10 +14,6 @@ import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
-import api.web.gw2.mapping.v2.guild.id.log.LogEvent;
-import api.web.gw2.mapping.v2.guild.id.members.Member;
-import api.web.gw2.mapping.v2.guild.id.treasury.Treasury;
-import api.web.gw2.mapping.v2.guild.upgrades.Upgrade;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.professions.Profession;
 import api.web.gw2.mapping.v2.quaggans.Quaggan;
@@ -36,6 +32,10 @@ import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipment;
 import api.web.gw2.mapping.v2.characters.id.equipment.CharacterEquipmentResponse;
 import api.web.gw2.mapping.v2.wvw.matches.WvwMatch;
 import api.web.gw2.mapping.v2.pvp.stats.PvpStat;
+import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
+import api.web.gw2.mapping.v2.guild.id.members.GuildMember;
+import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasury;
+import api.web.gw2.mapping.v2.guild.upgrades.GuildUpgrade;
 
 /**
  * Centralized class for web-queries.
@@ -141,9 +141,9 @@ public enum WebQuery {
         return result;
     }
 
-    public List<Member> queryGuildMembers(final String appKey, final String id) {
+    public List<GuildMember> queryGuildMembers(final String appKey, final String id) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<Member> result = Collections.EMPTY_LIST;
+        List<GuildMember> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildRoster(id);
         } else {
@@ -152,14 +152,14 @@ public enum WebQuery {
                     .apiLevel(APILevel.V2)
                     .endPoint(endPoint)
                     .applicationKey(appKey)
-                    .queryArray(Member.class);
+                    .queryArray(GuildMember.class);
         }
         return result;
     }
 
-    public List<LogEvent> queryGuildLogs(final String appKey, final String id) {
+    public List<GuildLogEvent> queryGuildLogs(final String appKey, final String id) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<LogEvent> result = Collections.EMPTY_LIST;
+        List<GuildLogEvent> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
             result = DemoSupport.INSTANCE.loadGuildLogs(id);
         } else {
@@ -168,14 +168,14 @@ public enum WebQuery {
                     .apiLevel(APILevel.V2)
                     .endPoint(endPoint)
                     .applicationKey(appKey)
-                    .queryArray(LogEvent.class);
+                    .queryArray(GuildLogEvent.class);
         }
         return result;
     }
 
-    public List<Treasury> queryGuildTreasury(final String appKey, final String id) {
+    public List<GuildTreasury> queryGuildTreasury(final String appKey, final String id) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<Treasury> result = Collections.EMPTY_LIST;
+        List<GuildTreasury> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
             final String endPoint = String.format("guild/%s/treasury", id); // NOI18N.
@@ -183,14 +183,14 @@ public enum WebQuery {
                     .apiLevel(APILevel.V2)
                     .endPoint(endPoint)
                     .applicationKey(appKey)
-                    .queryArray(Treasury.class);
+                    .queryArray(GuildTreasury.class);
         }
         return result;
     }
 
-    public List<Upgrade> queryGuildUpgrades(int... ids) {
+    public List<GuildUpgrade> queryGuildUpgrades(int... ids) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<Upgrade> result = Collections.EMPTY_LIST;
+        List<GuildUpgrade> result = Collections.EMPTY_LIST;
         if (isOffline) {
         } else {
             result = GW2APIClient.create()
@@ -198,7 +198,7 @@ public enum WebQuery {
                     .endPoint("guild/upgrades") // NOI18N.
                     .language(getLanguageCode())
                     .ids(ids)
-                    .queryArray(Upgrade.class);
+                    .queryArray(GuildUpgrade.class);
         }
         return result;
     }
