@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.characters.inventory;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.account.inventory.SharedInventory;
 import api.web.gw2.mapping.v2.items.Item;
 import api.web.gw2.mapping.v2.skins.Skin;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
@@ -43,6 +42,7 @@ import javafx.stage.Stage;
 import org.scenicview.ScenicView;
 import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventory;
 import api.web.gw2.mapping.v2.characters.id.inventory.CharacterInventoryBag;
+import api.web.gw2.mapping.v2.account.inventory.AccountInventory;
 
 /**
  * Test.
@@ -114,7 +114,7 @@ public final class TestInventoryPane extends Application {
         // Load shared inventory.
         final Optional<URL> sharedInventoryURL = Optional.ofNullable(getClass().getResource("account_inventories.json")); // NOI18N.
         if (sharedInventoryURL.isPresent()) {
-            final Collection<SharedInventory> sharedInventories = JsonpContext.SAX.loadObjectArray(SharedInventory.class, sharedInventoryURL.get());
+            final Collection<AccountInventory> sharedInventories = JsonpContext.SAX.loadObjectArray(AccountInventory.class, sharedInventoryURL.get());
             final List<SharedInventoryWrapper> wrappers = sharedInventories.stream()
                     .map(inventory -> {
                         SharedInventoryWrapper wrapper = null;
@@ -167,15 +167,15 @@ public final class TestInventoryPane extends Application {
         final Session session = SABTestUtils.INSTANCE.getTestSession();
         if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.INVENTORIES)) {
             // Shared inventory.
-            final List<SharedInventory> sharedInventories = GW2APIClient.create()
+            final List<AccountInventory> sharedInventories = GW2APIClient.create()
                     .applicationKey(session.getAppKey())
                     .endPoint("account/inventory")
-                    .queryArray(SharedInventory.class);
+                    .queryArray(AccountInventory.class);
             if (!sharedInventories.isEmpty()) {
                 // Extract items.
                 final List<Integer> objectIds = sharedInventories.stream()
                         .filter(sharedInventory -> sharedInventory != null)
-                        .map(SharedInventory::getId)
+                        .map(AccountInventory::getId)
                         .collect(Collectors.toList());
                 final int[] itemIdsToResolve = objectIds.stream()
                         .mapToInt(id -> id)

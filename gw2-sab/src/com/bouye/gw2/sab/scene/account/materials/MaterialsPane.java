@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.materials;
 
-import api.web.gw2.mapping.v2.account.materials.Material;
 import api.web.gw2.mapping.v2.materials.MaterialStorage;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
@@ -18,6 +17,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
+import api.web.gw2.mapping.v2.account.materials.AccountMaterial;
 
 /**
  * Display the materials from the account vault.
@@ -60,13 +60,13 @@ public final class MaterialsPane extends VBox {
         return materialStorage;
     }
 
-    private final ObservableList<Material> materials = FXCollections.observableArrayList();
+    private final ObservableList<AccountMaterial> materials = FXCollections.observableArrayList();
 
     /**
      * Gets the account's materials.
-     * @return An {@code ObservableList<Material>} instance, never {@code null}.
+     * @return An {@code ObservableList<AccountMaterial>} instance, never {@code null}.
      */
-    public final ObservableList<Material> getMaterials() {
+    public final ObservableList<AccountMaterial> getMaterials() {
         return materials;
     }
 

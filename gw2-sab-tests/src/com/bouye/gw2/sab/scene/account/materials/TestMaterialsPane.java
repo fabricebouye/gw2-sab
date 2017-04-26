@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.account.materials;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.account.materials.Material;
 import api.web.gw2.mapping.v2.materials.MaterialStorage;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.characters.inventory.TestInventoryPane;
@@ -23,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.account.materials.AccountMaterial;
 
 /**
  * Test.
@@ -45,7 +45,7 @@ public final class TestMaterialsPane extends Application {
         final Optional<URL> accountMaterials = Optional.ofNullable(getClass().getResource("account_materials.json")); // NOI18N.
         accountMaterials.ifPresent(url -> {
             try {
-                final Collection<Material> values = JsonpContext.SAX.loadObjectArray(Material.class, url);
+                final Collection<AccountMaterial> values = JsonpContext.SAX.loadObjectArray(AccountMaterial.class, url);
                 materialsPane.getMaterials().setAll(values);
             } catch (IOException ex) {
                 Logger.getLogger(TestInventoryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);

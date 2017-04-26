@@ -13,8 +13,6 @@ import api.web.gw2.mapping.core.EnumValueFactory;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
-import api.web.gw2.mapping.v2.account.bank.BankSlot;
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.backstory.answers.BackstoryAnswer;
 import api.web.gw2.mapping.v2.backstory.questions.BackstoryQuestion;
 import api.web.gw2.mapping.v2.characters.CharacterProfession;
@@ -57,6 +55,8 @@ import org.junit.BeforeClass;
 import static org.hamcrest.CoreMatchers.is;
 import api.web.gw2.mapping.v2.wvw.objectives.WvwObjective;
 import api.web.gw2.mapping.v2.wvw.abilities.WvwAbility;
+import api.web.gw2.mapping.v2.account.bank.AccountBankSlot;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * API automated tests.
@@ -402,11 +402,11 @@ public class APITest {
         System.out.println("testBank"); // NOI18N.
         final int expSlotNumber = Integer.parseInt(SETTINGS.getProperty("bank.slot_number")); // NOI18N.
         //
-        final List<BankSlot> value = GW2APIClient.create()
+        final List<AccountBankSlot> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
                 .endPoint("account/bank") // NOI18N.
-                .queryArray(BankSlot.class);
+                .queryArray(AccountBankSlot.class);
         assertFalse(value.isEmpty());
         assertEquals(expSlotNumber, value.size());
     }
@@ -415,11 +415,11 @@ public class APITest {
     public void testWallet() {
         System.out.println("testWallet"); // NOI18N.
         //
-        final List<CurrencyAmount> value = GW2APIClient.create()
+        final List<AccountCurrencyAmount> value = GW2APIClient.create()
                 .apiLevel(APILevel.V2)
                 .applicationKey(SETTINGS.getProperty("app.key")) // NOI18N.
                 .endPoint("account/wallet") // NOI18N.
-                .queryArray(CurrencyAmount.class);
+                .queryArray(AccountCurrencyAmount.class);
         assertFalse(value.isEmpty());
     }
 

@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.bank;
 
-import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.SABFXMLUtils;
 import java.net.URL;
@@ -17,6 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
+import api.web.gw2.mapping.v2.account.bank.AccountBankSlot;
 
 /**
  * Display the bank from the account vault.
@@ -50,13 +50,13 @@ public final class BankPane extends VBox {
         return (url == null) ? null : url.toExternalForm();
     }
     
-    private final ObservableList<BankSlot> slots = FXCollections.observableArrayList();
+    private final ObservableList<AccountBankSlot> slots = FXCollections.observableArrayList();
 
     /**
      * Gets the bank content.
-     * @return An {@code ObservableList<BankSlot>} instance, never {@code null}.
+     * @return An {@code ObservableList<AccountBankSlot>} instance, never {@code null}.
      */
-    public final ObservableList<BankSlot> getSlots() {
+    public final ObservableList<AccountBankSlot> getSlots() {
         return slots;
     }
 

@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.materials;
 
-import api.web.gw2.mapping.v2.account.materials.Material;
 import api.web.gw2.mapping.v2.materials.MaterialStorage;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import java.net.URL;
@@ -29,6 +28,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import api.web.gw2.mapping.v2.account.materials.AccountMaterial;
 
 /**
  * FXML controller.
@@ -70,7 +70,7 @@ public final class MaterialsPaneController extends SABControllerBase<MaterialsPa
         final Optional<MaterialsPane> parent = parentNode();
         materialsContent.clear();
         final List<MaterialStorage> materialCategories = (parent.isPresent()) ? parent.get().getMaterialStorage() : Collections.EMPTY_LIST;
-        final List<Material> accountMaterials = (parent.isPresent()) ? parent.get().getMaterials() : Collections.EMPTY_LIST;
+        final List<AccountMaterial> accountMaterials = (parent.isPresent()) ? parent.get().getMaterials() : Collections.EMPTY_LIST;
         // Nothing to do.
         if (materialCategories.isEmpty()) {
             return;
@@ -79,7 +79,7 @@ public final class MaterialsPaneController extends SABControllerBase<MaterialsPa
                 .forEach(materialCategory -> {
                     final String key = materialCategory.getName();
                     final int categoryId = materialCategory.getId();
-                    final List<Material> categoryMaterials = accountMaterials.stream()
+                    final List<AccountMaterial> categoryMaterials = accountMaterials.stream()
                             .filter(material -> material.getCategory() == categoryId)
                             .collect(Collectors.toList());
                     final Stream<Node> materialsInventory = createTabSlots(materialCategory.getId(), materialCategory.getItems(), categoryMaterials);
@@ -93,17 +93,17 @@ public final class MaterialsPaneController extends SABControllerBase<MaterialsPa
         );
     }
     
-    private Stream<Node> createTabSlots(final int categoryId, final Set<Integer> materialIds, final List<Material> accountMaterials) {
+    private Stream<Node> createTabSlots(final int categoryId, final Set<Integer> materialIds, final List<AccountMaterial> accountMaterials) {
         return materialIds.stream()
                 .map(materialId -> {
-                    final Optional<Material> material = accountMaterials.stream()
+                    final Optional<AccountMaterial> material = accountMaterials.stream()
                             .filter(m -> m.getId() == materialId)
                             .findFirst();
                     return createInventorySlot(categoryId, material);
                 });
     }
     
-    private Node createInventorySlot(final int materialId, final Optional<Material> material) {
+    private Node createInventorySlot(final int materialId, final Optional<AccountMaterial> material) {
         final StackPane result = new StackPane();
         result.getStyleClass().add("slot"); // NOI18N.
         result.setUserData(materialId);
@@ -141,5 +141,5 @@ public final class MaterialsPaneController extends SABControllerBase<MaterialsPa
     /**
      * Called whenever the slot content changes in the parent node.
      */
-    private ListChangeListener<Material> materialsListChangeListener = change -> updateUI();
+    private ListChangeListener<AccountMaterial> materialsListChangeListener = change -> updateUI();
 }

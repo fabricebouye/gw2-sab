@@ -7,9 +7,9 @@
  */
 package com.bouye.gw2.sab.wrappers;
 
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import java.util.Objects;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * Wraps a currency.
@@ -24,7 +24,7 @@ public final class CurrencyWrapper {
     /**
      * The currency amount.
      */
-    private final CurrencyAmount currencyAmount;
+    private final AccountCurrencyAmount currencyAmount;
 
     /**
      * Creates a new instance.
@@ -32,7 +32,7 @@ public final class CurrencyWrapper {
      * @param currencyAmount The currency amount, may be {@code null}.
      * @throws NullPointerException If {@code currency} is {@code null}.
      */
-    public CurrencyWrapper(final Currency currency, final CurrencyAmount currencyAmount) throws NullPointerException {
+    public CurrencyWrapper(final Currency currency, final AccountCurrencyAmount currencyAmount) throws NullPointerException {
         Objects.requireNonNull(currency);
         this.currency = currency;
         this.currencyAmount = currencyAmount;
@@ -42,7 +42,7 @@ public final class CurrencyWrapper {
         return currency;
     }
 
-    public CurrencyAmount getCurrencyAmount() {
+    public AccountCurrencyAmount getCurrencyAmount() {
         return currencyAmount;
     }
 }

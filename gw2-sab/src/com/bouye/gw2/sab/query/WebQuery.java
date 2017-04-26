@@ -10,7 +10,6 @@ package com.bouye.gw2.sab.query;
 import api.web.gw2.mapping.core.APILevel;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.characters.Character;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.files.File;
@@ -36,6 +35,7 @@ import api.web.gw2.mapping.v2.guild.id.log.GuildLogEvent;
 import api.web.gw2.mapping.v2.guild.id.members.GuildMember;
 import api.web.gw2.mapping.v2.guild.id.treasury.GuildTreasury;
 import api.web.gw2.mapping.v2.guild.upgrades.GuildUpgrade;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * Centralized class for web-queries.
@@ -341,16 +341,16 @@ public enum WebQuery {
         return result;
     }
 
-    public List<CurrencyAmount> queryWallet(final String appKey) {
+    public List<AccountCurrencyAmount> queryWallet(final String appKey) {
         final boolean isOffline = SABConstants.INSTANCE.isOffline();
-        List<CurrencyAmount> result = Collections.EMPTY_LIST;
+        List<AccountCurrencyAmount> result = Collections.EMPTY_LIST;
         if (isOffline || DemoSupport.INSTANCE.isDemoApplicationKey(appKey)) {
         } else {
             result = GW2APIClient.create()
                     .apiLevel(APILevel.V2)
                     .endPoint("account/wallet") // NOI18N.
                     .applicationKey(appKey)
-                    .queryArray(CurrencyAmount.class);
+                    .queryArray(AccountCurrencyAmount.class);
         }
         return result;
     }

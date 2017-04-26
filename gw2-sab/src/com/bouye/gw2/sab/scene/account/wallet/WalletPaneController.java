@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.wrappers.CurrencyWrapper;
@@ -21,6 +20,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * FXML Controller class
@@ -87,7 +87,7 @@ public final class WalletPaneController extends SABControllerBase<WalletPane> {
             final String criteria = searchValue.trim().toLowerCase();
             predicate = wrapper -> {
                 final Currency currency = wrapper.getCurrency();
-                final CurrencyAmount currencyAmount = wrapper.getCurrencyAmount();
+                final AccountCurrencyAmount currencyAmount = wrapper.getCurrencyAmount();
                 boolean result = false;
                 result |= currency.getName().toLowerCase().contains(criteria);
                 final int amount = (currencyAmount == null) ? 0 : currencyAmount.getValue();

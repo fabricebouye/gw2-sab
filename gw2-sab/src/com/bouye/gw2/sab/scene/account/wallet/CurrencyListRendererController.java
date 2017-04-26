@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.wallet;
 
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import com.bouye.gw2.sab.query.ImageCache;
@@ -21,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * FXML Controller class
@@ -73,7 +73,7 @@ public final class CurrencyListRendererController extends SABControllerBase<Curr
             infoTip.setText(null);
         } else {
             final Currency currency = wrapper.getCurrency();
-            final CurrencyAmount currencyAmount = wrapper.getCurrencyAmount();
+            final AccountCurrencyAmount currencyAmount = wrapper.getCurrencyAmount();
             nameLabel.setText(currency.getName());
             final int amount = (currencyAmount == null) ? 0 : currencyAmount.getValue();
             amountLabel.setText(String.valueOf(amount));

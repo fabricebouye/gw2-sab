@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.account.bank;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import com.bouye.gw2.sab.SAB;
 import com.bouye.gw2.sab.scene.characters.inventory.TestInventoryPane;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.account.bank.AccountBankSlot;
 
 /**
  * Test.
@@ -35,7 +35,7 @@ public final class TestBankPane extends Application {
         final Optional<URL> bankURL = Optional.ofNullable(getClass().getResource("bank.json")); // NOI18N.
         bankURL.ifPresent(url -> {
             try {
-                final Collection<BankSlot> inventory = JsonpContext.SAX.loadObjectArray(BankSlot.class, url);
+                final Collection<AccountBankSlot> inventory = JsonpContext.SAX.loadObjectArray(AccountBankSlot.class, url);
                 bankPane.getSlots().setAll(inventory);
             } catch (IOException ex) {
                 Logger.getLogger(TestInventoryPane.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);

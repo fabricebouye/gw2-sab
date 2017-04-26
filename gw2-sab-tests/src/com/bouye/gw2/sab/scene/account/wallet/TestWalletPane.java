@@ -8,7 +8,6 @@
 package com.bouye.gw2.sab.scene.account.wallet;
 
 import api.web.gw2.mapping.core.JsonpContext;
-import api.web.gw2.mapping.v2.account.wallet.CurrencyAmount;
 import api.web.gw2.mapping.v2.currencies.Currency;
 import api.web.gw2.mapping.v2.tokeninfo.TokenInfoPermission;
 import com.bouye.gw2.sab.SAB;
@@ -37,6 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.scenicview.ScenicView;
+import api.web.gw2.mapping.v2.account.wallet.AccountCurrencyAmount;
 
 /**
  * Test.
@@ -95,13 +95,13 @@ public final class TestWalletPane extends Application {
      */
     private List<CurrencyWrapper> doRemoteTest() {
         List<Currency> currencies = Collections.EMPTY_LIST;
-        Map<Integer, CurrencyAmount> wallet = Collections.EMPTY_MAP;
+        Map<Integer, AccountCurrencyAmount> wallet = Collections.EMPTY_MAP;
         final Session session = SABTestUtils.INSTANCE.getTestSession();
         if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.WALLET)) {
             currencies = WebQuery.INSTANCE.queryCurrencies();
             wallet = WebQuery.INSTANCE.queryWallet(session.getAppKey())
                     .stream()
-                    .collect(Collectors.toMap(CurrencyAmount::getId, Function.identity()));
+                    .collect(Collectors.toMap(AccountCurrencyAmount::getId, Function.identity()));
         }
         return wrapCurrencies(currencies, wallet);
     }
@@ -117,9 +117,9 @@ public final class TestWalletPane extends Application {
                 .stream()
                 .collect(Collectors.toList());
         final Optional<URL> walletURL = Optional.ofNullable(getClass().getResource("wallet.json"));  // NOI18N.
-        final Map<Integer, CurrencyAmount> wallet = (!walletURL.isPresent()) ? Collections.EMPTY_MAP : JsonpContext.SAX.loadObjectArray(CurrencyAmount.class, walletURL.get())
+        final Map<Integer, AccountCurrencyAmount> wallet = (!walletURL.isPresent()) ? Collections.EMPTY_MAP : JsonpContext.SAX.loadObjectArray(AccountCurrencyAmount.class, walletURL.get())
                 .stream()
-                .collect(Collectors.toMap(CurrencyAmount::getId, Function.identity()));
+                .collect(Collectors.toMap(AccountCurrencyAmount::getId, Function.identity()));
         return wrapCurrencies(currencies, wallet);
     }
 
@@ -129,10 +129,10 @@ public final class TestWalletPane extends Application {
      * @param wallet The wallet.
      * @return A {@code List<CurrencyWrapper>}, never {@code null}, might be empty.
      */
-    private List<CurrencyWrapper> wrapCurrencies(final List<Currency> currencies, final Map<Integer, CurrencyAmount> wallet) {
+    private List<CurrencyWrapper> wrapCurrencies(final List<Currency> currencies, final Map<Integer, AccountCurrencyAmount> wallet) {
         final List<CurrencyWrapper> result = currencies.stream()
                 .map(currency -> {
-                    final CurrencyAmount amount = wallet.get(currency.getId());
+                    final AccountCurrencyAmount amount = wallet.get(currency.getId());
                     return new CurrencyWrapper(currency, amount);
                 })
                 .collect(Collectors.toList());

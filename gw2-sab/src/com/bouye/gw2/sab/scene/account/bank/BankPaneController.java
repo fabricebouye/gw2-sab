@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account.bank;
 
-import api.web.gw2.mapping.v2.account.bank.BankSlot;
 import com.bouye.gw2.sab.scene.SABControllerBase;
 import java.net.URL;
 import java.util.Collections;
@@ -28,6 +27,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import api.web.gw2.mapping.v2.account.bank.AccountBankSlot;
 
 /**
  * FXML controller.
@@ -68,12 +68,12 @@ public final class BankPaneController extends SABControllerBase<BankPane> {
     protected void updateUI() {
         final Optional<BankPane> parent = parentNode();
         bankContent.clear();
-        final List<BankSlot> slots = (parent.isPresent()) ? parent.get().getSlots() : Collections.EMPTY_LIST;
+        final List<AccountBankSlot> slots = (parent.isPresent()) ? parent.get().getSlots() : Collections.EMPTY_LIST;
         final int tabNumber = slots.size() / TAB_SIZE;
         IntStream.range(0, tabNumber)
                 .forEach(tabIndex -> {
                     final int startIndex = tabIndex * TAB_SIZE;
-                    final List<BankSlot> tabSlots = slots.subList(startIndex, startIndex + TAB_SIZE);
+                    final List<AccountBankSlot> tabSlots = slots.subList(startIndex, startIndex + TAB_SIZE);
                     final Stream<Node> bankInventory = createTabSlots(tabSlots);
                     final String key = String.format("tab %d", tabIndex + 1);
                     bankContent.put(key, bankInventory);
@@ -86,13 +86,13 @@ public final class BankPaneController extends SABControllerBase<BankPane> {
         );
     }
 
-    private Stream<Node> createTabSlots(final List<BankSlot> slots) {
+    private Stream<Node> createTabSlots(final List<AccountBankSlot> slots) {
         return slots.stream()
                 .map(Optional::ofNullable)
                 .map(this::createInventorySlot);
     }
 
-    private Node createInventorySlot(final Optional<BankSlot> value) {
+    private Node createInventorySlot(final Optional<AccountBankSlot> value) {
         final StackPane result = new StackPane();
         result.getStyleClass().add("slot"); // NOI18N.
         value.ifPresent(val -> {
@@ -126,5 +126,5 @@ public final class BankPaneController extends SABControllerBase<BankPane> {
     /**
      * Called whenever the slot content changes in the parent node.
      */
-    private ListChangeListener<BankSlot> slotListChangeListener = change -> updateUI();
+    private ListChangeListener<AccountBankSlot> slotListChangeListener = change -> updateUI();
 }
