@@ -1,0 +1,50 @@
+{
+    "name": "Pendentif de Triforge",
+    "description": "\"La véritable grandeur, c'est avoir la sagesse d'agir, le courage de se lancer dans l'aventure et la volonté de voir ses rêves se réaliser.\" -Logan Thackeray",
+    "type": "Trinket",
+    "level": 80,
+    "rarity": "Ascended",
+    "vendor_value": 660,
+    "game_types": ["Activity", "Wvw", "Dungeon", "Pve"],
+    "flags": ["HideSuffix", "AccountBound", "NotUpgradeable", "AccountBindOnUse"],
+    "restrictions": [],
+    "id": 39341,
+    "chat_link": "[&AgGtmQAA]",
+    "icon": "https://render.guildwars2.com/file/64020C4ACFF155B7EFEE6B1EA9747FF567AEE3FD/66773.png",
+    "details": {
+        "type": "Amulet",
+        "infusion_slots": [{
+                "flags": ["Utility"]
+            }],
+        "infix_upgrade": {
+            "id": 588,
+            "buff": {
+                "skill_id": 15750,
+                "description": "Dégâts par altération +13\nPrécision +13\nRobustesse +13\nPuissance +13\nVitalité +13\nGuérison +13<br>\nFérocité +13"
+            },
+            "attributes": [{
+                    "attribute": "Power",
+                    "modifier": 59
+                }, {
+                    "attribute": "Precision",
+                    "modifier": 59
+                }, {
+                    "attribute": "Toughness",
+                    "modifier": 59
+                }, {
+                    "attribute": "Vitality",
+                    "modifier": 59
+                }, {
+                    "attribute": "Healing",
+                    "modifier": 59
+                }, {
+                    "attribute": "ConditionDamage",
+                    "modifier": 59
+                }, {
+                    "attribute": "CritDamage",
+                    "modifier": 59
+                }]
+        },
+        "secondary_suffix_item_id": ""
+    }
+}

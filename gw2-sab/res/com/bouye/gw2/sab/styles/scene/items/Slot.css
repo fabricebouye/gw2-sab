@@ -1,0 +1,69 @@
+.slot {   
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+    -slot-border-color: black;
+    -fx-background-color: gray;
+}
+.slot:Junk {
+    -slot-border-color: gray;        
+}
+.slot:Fine {
+    -slot-border-color: cornflowerblue;    
+}
+.slot:Masterwork {
+    -slot-border-color: green;    
+}
+.slot:Rare {
+    -slot-border-color: gold;    
+}
+.slot:Exotic {
+    -slot-border-color: orange;    
+}
+.slot:Ascended {
+    -slot-border-color: magenta;    
+}
+.slot:Legendary {
+    -slot-border-color: mediumpurple;   
+}
+.slot .border {
+    -fx-background-color: null;
+    -fx-border-color: -slot-border-color;    
+    -fx-border-width: 2px;
+    -fx-border-style: inside;
+}
+.slot:small {    
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-width: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-width: 24px;
+    -fx-max-height: 24px;
+}
+.slot:large {    
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
+}
+.slot:x-large {    
+    -fx-min-width: 64px;
+    -fx-min-height: 64px;
+    -fx-pref-width: 64px;
+    -fx-pref-height: 64px;
+    -fx-max-width: 64px;
+    -fx-max-height: 64px;
+}
+.slot:xx-large {    
+    -fx-min-width: 128px;
+    -fx-min-height: 128px;
+    -fx-pref-width: 128px;
+    -fx-pref-height: 128px;
+    -fx-max-width: 128px;
+    -fx-max-height: 128px;
+}
