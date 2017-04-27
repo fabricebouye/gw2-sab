@@ -31,7 +31,6 @@ public enum SABUIUtils {
     public void updateRarityStyle(final Node node, final ItemRarity itemRarity) throws NullPointerException {
         Objects.requireNonNull(node);
         Stream.of(ItemRarity.values())
-                .filter(rarity -> rarity != ItemRarity.UNKNOWN)
                 .forEach(rarity -> {
                     final PseudoClass rarityPseudoClass = LabelUtils.INSTANCE.toPseudoClass(rarity);
                     node.pseudoClassStateChanged(rarityPseudoClass, rarity == itemRarity);
@@ -47,7 +46,6 @@ public enum SABUIUtils {
     public void updateRarityStyle(final Node node, final SkinRarity skinRarity) {
         Objects.requireNonNull(node);
         Stream.of(SkinRarity.values())
-                .filter(rarity -> rarity != SkinRarity.UNKNOWN)
                 .forEach(rarity -> {
                     final PseudoClass rarityPseudoClass = LabelUtils.INSTANCE.toPseudoClass(rarity);
                     node.pseudoClassStateChanged(rarityPseudoClass, rarity == skinRarity);
