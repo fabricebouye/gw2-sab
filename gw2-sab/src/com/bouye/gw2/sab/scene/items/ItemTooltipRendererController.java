@@ -27,6 +27,7 @@ import api.web.gw2.mapping.v2.items.ItemWeaponType;
 import com.bouye.gw2.sab.SABConstants;
 import com.bouye.gw2.sab.query.ImageCache;
 import com.bouye.gw2.sab.scene.SABControllerBase;
+import com.bouye.gw2.sab.scene.SABUIUtils;
 import com.bouye.gw2.sab.text.LabelUtils;
 import com.bouye.gw2.sab.wrappers.ItemWrapper;
 import java.net.URL;
@@ -85,21 +86,13 @@ public final class ItemTooltipRendererController extends SABControllerBase<ItemT
         final Optional<ItemTooltipRenderer> node = parentNode();
         final ItemWrapper wrapper = (!node.isPresent()) ? null : node.get().getItem();
         if (wrapper == null) {
-            node.ifPresent(n -> Stream.of(ItemRarity.values())
-                    .forEach(rarity -> {
-                        final PseudoClass rarityPseudoClass = LabelUtils.INSTANCE.toPseudoClass(rarity);
-                        n.pseudoClassStateChanged(rarityPseudoClass, false);
-                    }));
+            node.ifPresent(n -> SABUIUtils.INSTANCE.updateRarityStyle(n, (ItemRarity) null));
             nameLabel.setText(null);
             descriptionFlow.getChildren().clear();
             iconContainer.getChildren().clear();
         } else {
             final Item item = wrapper.getItem();
-            node.ifPresent(n -> {
-                final ItemRarity rarity = item.getRarity();
-                final PseudoClass rarityPseudoClass = LabelUtils.INSTANCE.toPseudoClass(rarity);
-                n.pseudoClassStateChanged(rarityPseudoClass, true);
-            });
+            node.ifPresent(n -> SABUIUtils.INSTANCE.updateRarityStyle(n, item.getRarity()));
             nameLabel.setText(item.getName());
             final ItemType type = item.getType();
             String description = "";
