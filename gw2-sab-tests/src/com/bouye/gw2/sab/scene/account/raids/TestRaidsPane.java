@@ -18,6 +18,7 @@ import com.bouye.gw2.sab.scene.SABTestUtils;
 import com.bouye.gw2.sab.session.Session;
 import com.bouye.gw2.sab.wrappers.RaidsWrapper;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -61,9 +62,9 @@ public final class TestRaidsPane extends Application {
     private ScheduledService<RaidsWrapper> loadService;
 
     /**
-    * Loads the test in a background service.
-    * @param raidsPane The target pane.
-    */
+     * Loads the test in a background service.
+     * @param raidsPane The target pane.
+     */
     private void loadTestAsync(final RaidsPane raidsPane) {
         if (loadService != null) {
             loadService.cancel();
@@ -103,19 +104,19 @@ public final class TestRaidsPane extends Application {
      */
     private RaidsWrapper doRemoteTest(final Task<RaidsWrapper> task) throws Exception {
         final Session session = SABTestUtils.INSTANCE.getTestSession();
-        RaidsWrapper result = null;
+        // Load raid defintions.
+        final Set<Raid> raids = new LinkedHashSet<>(GW2APIClient.create()
+                .apiLevel(APILevel.V2)
+                .endPoint("raids") // NOI18N.
+                .ids("all")
+                .queryArray(Raid.class));
+        if (task.isCancelled()) {
+            return null;
+        }
+        // Load encounters.
+        Set<String> encounterIds = Collections.EMPTY_SET;
         if (session.getTokenInfo().getPermissions().contains(TokenInfoPermission.PROGRESSION)) {
-            // Load raid defintions.
-            final Set<Raid> raids = new LinkedHashSet<>(GW2APIClient.create()
-                    .apiLevel(APILevel.V2)
-                    .endPoint("raids") // NOI18N.
-                    .ids("all")
-                    .queryArray(Raid.class));
-            if (task.isCancelled()) {
-                return null;
-            }
-            // Load encounters.
-            final Set<String> encounterIds = new LinkedHashSet<>(GW2APIClient.create()
+            encounterIds = new LinkedHashSet<>(GW2APIClient.create()
                     .apiLevel(APILevel.V2)
                     .endPoint("account/raids") // NOI18N.
                     .applicationKey(session.getAppKey())
@@ -123,9 +124,9 @@ public final class TestRaidsPane extends Application {
             if (task.isCancelled()) {
                 return null;
             }
-            //
-            result = new RaidsWrapper(raids, encounterIds);
         }
+        //
+        final RaidsWrapper result = new RaidsWrapper(raids, encounterIds);
         return result;
     }
 
