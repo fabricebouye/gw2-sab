@@ -1,0 +1,6 @@
+.raids-pane {    
+}
+.raids-pane .event:done {
+    -fx-background-color: red;
+    -fx-font-weight: bold;
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2016-2017 Fabrice Bouyé
+ All rights reserved.
+
+ This software may be modified and distributed under the terms
+ of the BSD license.  See the LICENSE file for details.
+-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root fx:id="rootPane" styleClass="raids-pane" type="VBox" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.raids.RaidsPaneController">
+    
+</fx:root>
