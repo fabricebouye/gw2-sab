@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016-2017 Fabrice Bouyé
  * All rights reserved.
  *
@@ -33,16 +33,16 @@ import javafx.scene.layout.StackPane;
  * @author Fabrice Bouyé
  */
 public final class AchievementsPaneController extends SABControllerBase<AchievementsPane> {
-    
+
     private enum Option {
         SUMMARY, WATCH_LIST;
     }
-    
+
     @FXML
-    private TreeView categoryTreeView;
+    private TreeView<Object> categoryTreeView;
     @FXML
     private StackPane content;
-    
+
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
         categoryTreeView.setCellFactory(o -> new TreeCell<Object>() {
@@ -70,22 +70,22 @@ public final class AchievementsPaneController extends SABControllerBase<Achievem
         });
         categoryTreeView.getSelectionModel().selectedItemProperty().addListener(treeSelectionChangeListener);
     }
-    
+
     @Override
     protected void uninstallNode(final AchievementsPane node) {
         node.achievementsProperty().removeListener(achievementsChangeListener);
     }
-    
+
     @Override
     protected void installNode(final AchievementsPane node) {
         node.achievementsProperty().addListener(achievementsChangeListener);
     }
-    
+
     @Override
     protected void updateUI() {
         updateCategoryTree();
     }
-    
+
     protected void updateCategoryTree() {
         final Optional<AchievementsPane> node = parentNode();
         final AccountAchievementsWrapper wrapper = (node.isPresent()) ? node.get().getAchievements() : null;
@@ -96,7 +96,7 @@ public final class AchievementsPaneController extends SABControllerBase<Achievem
             categoryTreeView.setRoot(root);
         }
     }
-    
+
     private TreeItem createTree(final AccountAchievementsWrapper wrapper) {
         final Map<Integer, Category> categories = wrapper.getAchievementCategories()
                 .stream()
@@ -107,35 +107,35 @@ public final class AchievementsPaneController extends SABControllerBase<Achievem
                 .collect(Collectors.toList()));
         result.getChildren().addAll(
                 wrapper.getAchievementGroups()
-                .stream()
-                .sorted((g1, g2) -> g1.getOrder() - g2.getOrder())
-                .map(group -> {
-                    final TreeItem groupItem = treeItemForGroup(group);
-                    groupItem.getChildren().addAll(
-                            group.getCategories()
-                            .stream()
-                            .map(categories::get)
-                            .sorted((c1, c2) -> c1.getOrder() - c2.getOrder())
-                            .map(this::treeItemForCategory)
-                            .collect(Collectors.toList()));
-                    return groupItem;
-                })
-                .collect(Collectors.toList()));
+                        .stream()
+                        .sorted((g1, g2) -> g1.getOrder() - g2.getOrder())
+                        .map(group -> {
+                            final TreeItem groupItem = treeItemForGroup(group);
+                            groupItem.getChildren().addAll(
+                                    group.getCategories()
+                                            .stream()
+                                            .map(categories::get)
+                                            .sorted((c1, c2) -> c1.getOrder() - c2.getOrder())
+                                            .map(this::treeItemForCategory)
+                                            .collect(Collectors.toList()));
+                            return groupItem;
+                        })
+                        .collect(Collectors.toList()));
         return result;
     }
-    
+
     private TreeItem treeItemForOption(final Option option) {
         final TreeItem result = new TreeItem();
         result.setValue(option);
         return result;
     }
-    
+
     private TreeItem treeItemForGroup(final Group group) {
         final TreeItem result = new TreeItem();
         result.setValue(group);
         return result;
     }
-    
+
     private TreeItem treeItemForCategory(final Category category) {
         final TreeItem result = new TreeItem();
         result.setValue(category);
@@ -150,28 +150,26 @@ public final class AchievementsPaneController extends SABControllerBase<Achievem
     /**
      * Called whenever the selection changes in the tree.
      */
-    private final ChangeListener<Object> treeSelectionChangeListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<TreeItem> treeSelectionChangeListener = (observable, oldValue, newValue) -> {
         content.getChildren().clear();
         final Optional<AchievementsPane> node = parentNode();
         final AccountAchievementsWrapper wrapper = (node.isPresent()) ? node.get().getAchievements() : null;
         if (wrapper == null) {
             return;
         }
-        if (newValue instanceof TreeItem) {
-            final Object item = ((TreeItem) newValue).getValue();
-            if (item instanceof Option) {
-                
-            } else if (item instanceof Group) {
-                final Group group = (Group) item;
-            } else if (item instanceof Category) {
-                final Category category = (Category) item;
-                final Function<Category, List<Achievement>> producer = wrapper.getAchievementProducer();
-                final List<Achievement> achievements = producer.apply(category);
-                final AccountAchievementCategoryWrapper categoryWrapper = new AccountAchievementCategoryWrapper(category, achievements);
-                final CategoryPane categoryPane = new CategoryPane();
-                categoryPane.setCategory(categoryWrapper);
-                content.getChildren().setAll(categoryPane);
-            }
+        final Object item = newValue.getValue();
+        if (item instanceof Option) {
+
+        } else if (item instanceof Group) {
+            final Group group = (Group) item;
+        } else if (item instanceof Category) {
+            final Category category = (Category) item;
+            final Function<Category, List<Achievement>> producer = wrapper.getAchievementProducer();
+            final List<Achievement> achievements = producer.apply(category);
+            final AccountAchievementCategoryWrapper categoryWrapper = new AccountAchievementCategoryWrapper(category, achievements);
+            final CategoryPane categoryPane = new CategoryPane();
+            categoryPane.setCategory(categoryWrapper);
+            content.getChildren().setAll(categoryPane);
         }
     };
 }

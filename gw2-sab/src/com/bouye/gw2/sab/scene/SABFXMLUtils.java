@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016-2017 Fabrice Bouyé
  * All rights reserved.
  *
@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.util.Pair;
 
 /**
  * Utility class for handling FXML content in SAB.
@@ -23,6 +24,26 @@ import javafx.scene.Node;
  */
 public enum SABFXMLUtils {
     INSTANCE;
+
+    public <T> Optional<Pair<Node, T>> load(final String fxml) throws NullPointerException {
+        Objects.requireNonNull(fxml);
+        Optional<Pair<Node, T>> result = Optional.empty();
+        final Optional<URL> url = Optional.ofNullable(SAB.class.getResource(fxml));
+        if (url.isPresent()) {
+            try {
+                final FXMLLoader fxmlLoader = new FXMLLoader(url.get(), SABConstants.I18N);
+                final Node node = fxmlLoader.load();
+                final T controller = fxmlLoader.getController();
+                final Pair<Node, T> pair = new Pair<>(node, controller);
+                result = Optional.of(pair);
+            } catch (Exception ex) {
+                Logger.getLogger(SABFXMLUtils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            }
+        } else {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, fxml + " missing.");
+        }
+        return result;
+    }
 
     /**
      * Loads an FXML that uses the {@code fx:root} construct and inject it in given {@code parent} node.

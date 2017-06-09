@@ -1,0 +1,51 @@
+.mastery-level-renderer {
+    -fx-alignment: center;
+    -fx-pref-height: 50px;
+    -fx-min-height: -fx-pref-height;
+    -fx-max-height: -fx-pref-height;
+}
+.mastery-level-renderer .label {
+    -fx-pref-width: -1;
+    -fx-font-size: 1.5em;
+}
+.mastery-level-renderer .points-flow {
+    -fx-alignment: center;
+    -fx-pref-width: 100px;
+    -fx-min-widtht: -fx-pref-width;
+    -fx-max-widtht: -fx-pref-width;
+    -fx-hgap: 3px;
+    -fx-vgap: 3px;
+}
+.mastery-level-renderer .points-flow .mastery-point {
+    -fx-background-color: black;
+    -fx-background-radius: 7px;
+    -fx-padding: 7px;
+}
+/**/
+.masteries-pane {    
+}
+.masteries-pane .mastery-rank,
+.masteries-pane .mastery-points {
+    -fx-alignment: center;
+}
+.masteries-pane .mastery-points {
+    -fx-font-size: 2.0em;
+}
+.masteries-pane .region {
+    -fx-font-size: 1.2em;
+}
+.masteries-pane .mastery {
+    -fx-font-size: 1.8em;
+}
+.masteries-pane .tree-view,
+.masteries-pane .tree-view .tree-cell,
+.masteries-pane .list-view,
+.masteries-pane .list-view .list-cell {
+    -fx-background-color: null;
+}
+.masteries-pane .list-view:TYRIA .list-cell > * > .points-flow .mastery-point {
+    -fx-background-color: red;
+}
+.masteries-pane .list-view:MAGUUMA .list-cell > * > .points-flow .mastery-point {
+    -fx-background-color: darkgreen;
+}

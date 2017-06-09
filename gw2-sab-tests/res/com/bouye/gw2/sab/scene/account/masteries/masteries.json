@@ -1,0 +1,452 @@
+[
+    {
+        "id": 1,
+        "name": "Ethnologie des Exaltés",
+        "requirement": "Rendez-vous dans le Bassin aurique pour déverrouiller le parcours de maîtrise Ethnologie des Exaltés.",
+        "order": 2,
+        "background": "https://render.guildwars2.com/file/4E09B60E16E6A7404B0638A00D0C6A02F7294308/1228720.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Marques exaltées",
+                "description": "Apprendre à lire les marques exaltées. Vous pouvez à présent déchiffrer leurs mots et avoir accès aux secrets de leur civilisation.",
+                "instruction": "Vous pouvez désormais interagir avec les artefacts exaltés trouvés dans le Bassin aurique et la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/7372DCB5085D75F672B50CB8F3577373B8F90468/1228654.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Acceptation exaltée",
+                "description": "Gagner la confiance des Exaltés étranges et mystérieux vous donne accès à leurs services dans la Cité des Oubliés.",
+                "instruction": "Vous pouvez désormais réaliser des échanges avec les Exaltés. Les marchands de maîtrises sont indiqués par une icône particulière sur la carte de la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/39DBD70271A074DCD6B1EAE1D639BD4D36765EC4/1228651.png",
+                "point_cost": 2,
+                "exp_cost": 1016000
+            },
+            {
+                "name": "Assistance exaltée",
+                "description": "Apprenez à utiliser les appareils de rappel des Exaltés dispersés dans la Jungle de Maguuma qui invoquent temporairement un guerrier exalté.",
+                "instruction": "Vous pouvez désormais interagir avec les appareils de rappel des Exaltés pour invoquer temporairement un Exalté allié ou augmenter la puissance d'un allié déjà invoqué.",
+                "icon": "https://render.guildwars2.com/file/B9B7E50E29F554570E63945249002FC6B64C7FFB/1228652.png",
+                "point_cost": 3,
+                "exp_cost": 1778000
+            },
+            {
+                "name": "Purification exaltée",
+                "description": "Soyez honoré par les Exaltés en défiant leur champion quotidiennement, et déverrouillez les trésors les plus précieux de la Cité des Oubliés.",
+                "instruction": "Vous pouvez désormais battre le traître terni sous la Cité des Oubliés pour recevoir un coffre de récompense une fois par jour.",
+                "icon": "https://render.guildwars2.com/file/EE132C76A52AC66D0211CED63E74F64B7F4AFB34/1228655.png",
+                "point_cost": 5,
+                "exp_cost": 2540000
+            },
+            {
+                "name": "Récolte exaltée",
+                "description": "Apprenez à récupérer les matériaux rares de la Jungle de Maguuma grâce aux Exaltés. Découvrez comment extraire les esquilles auriques des zones de minerai du Bassin aurique.",
+                "instruction": "En récoltant du minerai dans le Bassin aurique, vous obtiendrez des esquilles auriques en plus des matériaux ordinaires. Vous avez également plus de chances de récolter des objets spéciaux sur les zones de minerai du Cœur de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/324312530AA1A427AB0951D0BFBC92C4B69774D6/1228653.png",
+                "point_cost": 8,
+                "exp_cost": 3302000
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Ethnologie des Itzels",
+        "requirement": "Entraînez la maîtrise Principes du deltaplane dans le parcours de maîtrise Vol en deltaplane pour déverrouiller le parcours de maîtrise Ethnologie des Itzels.",
+        "order": 1,
+        "background": "https://render.guildwars2.com/file/F2ED9E6B330AA015B8AD06FF222715284E1BC622/1228723.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Champignons rebondissants",
+                "description": "Apprenez à atterrir au bon endroit et à utiliser les champignons rebondissants du Cœur de Maguuma pour atteindre des endroits inaccessibles autrement.",
+                "instruction": "Les champignons rebondissants sont dispersés dans tout le Cœur de Maguuma. Montez dessus puis sautez pour être projeté dans les airs.",
+                "icon": "https://render.guildwars2.com/file/C1D5574EF6B9B4CC7AB7EC3600993698D39BF975/1228645.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Langue itzel",
+                "description": "Apprenez le dialecte abscons des Itzel, vous pourrez alors discuter avec les locaux et commercer avec leurs vendeurs de marchandises exclusives.",
+                "instruction": "Vous pouvez désormais réaliser des échanges avec les Itzels. Les marchands de maîtrises sont indiqués par une icône particulière sur la carte de la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/68B5A54FEC5F3C7763C5BDD12C0296942ABB0BB2/1228660.png",
+                "point_cost": 2,
+                "exp_cost": 1016000
+            },
+            {
+                "name": "Champignons survitaminés",
+                "description": "Entraînez votre estomac et apprenez à ingérer les champignons survitaminés du Cœur de Maguuma qui vous permettront de courir à une allure folle.",
+                "instruction": "Les champignons survitaminés sont dispersés dans le Cœur de Maguuma. Passez près de l'un d'eux pour bénéficier d'une augmentation de vitesse.",
+                "icon": "https://render.guildwars2.com/file/C2609360DCF254E70C023517E27375AB0FA32236/1228644.png",
+                "point_cost": 3,
+                "exp_cost": 1778000
+            },
+            {
+                "name": "Connaissance des poisons itzels",
+                "description": "Apprenez les secrets des poisons itzel et devenez capable de traverser les lianes mordrems empoisonnées et de résister aux nuages empoisonnés de Maguuma.",
+                "instruction": "Vous pouvez désormais pénétrer dans des zones de brouillard empoisonné et franchir les lianes mordrems sans subir de dégâts.",
+                "icon": "https://render.guildwars2.com/file/4D2F77BE539B0F065B97C8B007E8D7324DA40D3C/1228662.png",
+                "point_cost": 5,
+                "exp_cost": 2540000
+            },
+            {
+                "name": "Direction itzel",
+                "description": "Étudiez attentivement le style de combat des Itzels et défiez le champion de leur ennemi pour obtenir une récompense quotidienne précieuse.",
+                "instruction": "Vous pouvez désormais affronter Mayatl le Féroce en parlant au dancelame itzel près de Jaka Itzel. Battre le champion vous donne accès à un coffre de récompense une fois par jour.",
+                "icon": "https://render.guildwars2.com/file/0735EF06110A01EF69C2710EA1390A45EBE57232/1228661.png",
+                "point_cost": 8,
+                "exp_cost": 3302000
+            },
+            {
+                "name": "Champignons surrénaux",
+                "description": "Apprendre à manger ces champignons agit sur votre sécrétion d'adrénaline, vous procurant une poussée d'adrénaline et rafraîchissant instantanément vos compétences.",
+                "instruction": "Les champignons surrénaux sont plutôt difficiles à trouver dans le Cœur de Maguuma. Passez près de l'un d'eux pour rafraîchir toutes vos compétences.",
+                "icon": "https://render.guildwars2.com/file/EB50DAD5409C937CD17A0A216A7B3E04E0C25307/1228643.png",
+                "point_cost": 12,
+                "exp_cost": 4318000
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Ethnologie des Nuhochs",
+        "requirement": "Rendez-vous dans les Profondeurs verdoyantes pour déverrouiller le parcours de maîtrise Ethnologie des Nuhochs.",
+        "order": 3,
+        "background": "https://render.guildwars2.com/file/05AABD5EF4CF91375CE2420575C4B8CE5A084F05/1228724.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Chasse nuhoch",
+                "description": "Apprenez à récupérer des trophées spéciaux d'ennemis dans Maguuma et à ramasser des morilles, vous déverrouillerez alors des collections et des objets rares.",
+                "instruction": "Vous avez désormais une chance de trouver des objets spéciaux en tuant des créatures du Cœur de Maguuma. Vous pouvez également récolter les morilles qui poussent dans la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/F9EB68F169FB63A5D552471F2692AA73771D06F0/1228664.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Bauges nuhochs",
+                "description": "Maîtrisez l'utilisation des bauges nuhochs et apprenez à traverser ces passages secrets pour accéder à des lieux reculés.",
+                "instruction": "Vous pouvez désormais interagir avec les bauges nuhochs et vous téléporter de l'une à l'autre pour parcourir la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/9B51B95FD0BD6FB80F900101977FFD66224605B1/1228668.png",
+                "point_cost": 2,
+                "exp_cost": 1016000
+            },
+            {
+                "name": "Langue nuhoch",
+                "description": "Apprenez la langue des Nuhochs et obtenez la possibilité de converser et commercer avec les membres les plus méfiants de la tribu.",
+                "instruction": "Vous pouvez désormais réaliser des échanges avec les Nuhochs. Les marchands de maîtrises sont indiqués par une icône particulière sur la carte de la Jungle de Maguuma.",
+                "icon": "https://render.guildwars2.com/file/7C9EB6B44A1F9D690D4D9A9856A01805395BD9A1/1228665.png",
+                "point_cost": 3,
+                "exp_cost": 1778000
+            },
+            {
+                "name": "Détection du camouflage nuhoch",
+                "description": "Apprenez à repérer vos ennemis qui maîtrisent la furtivité en les rendant visibles à vos yeux aguerris.",
+                "instruction": "Vous pouvez désormais voir les créatures invisibles qui peuplent la Jungle de Maguuma. Elles seront mises en valeur et vous pourrez facilement les trouver ou les éviter.",
+                "icon": "https://render.guildwars2.com/file/1606273520E5106D475C90447904E256E8FE6B98/1228667.png",
+                "point_cost": 5,
+                "exp_cost": 2540000
+            },
+            {
+                "name": "Démonstration nuhoch",
+                "description": "Défiez en combat le champion nuhoch pour gagner le respect de la tribu et déverrouiller une cache de précieuses récompenses.",
+                "instruction": "Vous pouvez désormais battre Potoni le Colosse à Teku Nuhoch pour recevoir un coffre de récompense une fois par jour.",
+                "icon": "https://render.guildwars2.com/file/EA0D13224CC35B3F591DBD9812E9EA620C0FFE2F/1228666.png",
+                "point_cost": 8,
+                "exp_cost": 3302000
+            },
+            {
+                "name": "Alchimie nuhoch",
+                "description": "Les Nuhochs vous apprennent à vous débarrasser du puissant acide des chaks. Sans cette capacité, vous ne résisteriez pas longtemps.",
+                "instruction": "Esquiver dissipe désormais toutes les charges de gelée de chak dont vous êtes victime. Vous êtes également immunisé contre les effets ralentissants de la gelée.",
+                "icon": "https://render.guildwars2.com/file/BED24BC7330F366E367FE0C9EA6975739B590A44/1228663.png",
+                "point_cost": 12,
+                "exp_cost": 4318000
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Commandant du Pacte",
+        "requirement": "",
+        "order": 0,
+        "background": "https://render.guildwars2.com/file/65DE3662C705233AC1073EF297B15AADD7A8A644/1228718.png",
+        "region": "Tyria",
+        "levels": [
+            {
+                "name": "Mentor du Pacte",
+                "description": "Apprenez à devenir le mentor des héros de la Tyrie, et obtenez un insigne de mentor avec mention de ce rôle dans la fenêtre de discussion et un bonus de rapidité en ville pour votre groupe.",
+                "instruction": "Vous pouvez utiliser l'insigne de mentor, accessible depuis le menu du groupe, et afficher ce titre lors des discussions grâce à la commande \"/mentor\". Votre groupe bénéficie désormais d'un bonus de rapidité de 5% en ville.",
+                "icon": "https://render.guildwars2.com/file/D32A52F4E1EB3EC57D035531A31BE217E63DC0F8/1228648.png",
+                "point_cost": 1,
+                "exp_cost": 635000
+            },
+            {
+                "name": "Passe-temps productif",
+                "description": "Soyez plus efficace et gagnez de l'expérience bonus d'artisanat.",
+                "instruction": "Vous bénéficiez désormais d'un bonus d'expérience de 10% lors des activités d'artisanat qui confèrent de l'expérience. Vous avez également 10% de chances en plus de réaliser un critique en artisanat.",
+                "icon": "https://render.guildwars2.com/file/0BCD77C3BF1BFD54162C992EDBF04209B653B865/1228649.png",
+                "point_cost": 2,
+                "exp_cost": 1270000
+            },
+            {
+                "name": "Gestion de ligne de ravitaillement",
+                "description": "Profitez dans toute la Tyrie d'un réseau de marchands locaux vendant des objets rares, et augmentez le bonus de rapidité de votre groupe de 15% en ville.",
+                "instruction": "Vous pouvez à présent commercer avec le réseau d'agents du Pacte qui sillonne la Tyrie centrale. Vous pouvez acheter un objet à chaque agent tous les jours pour obtenir du karma. Votre groupe bénéficie désormais d'un bonus de rapidité de 15% en ville.",
+                "icon": "https://render.guildwars2.com/file/4E43E92F349620FA060ABF9A3BC052657F7EC35A/1228650.png",
+                "point_cost": 3,
+                "exp_cost": 2222500
+            },
+            {
+                "name": "Noblesse oblige",
+                "description": "Apprenez à ranimer vos alliés plus vite et avec moins de malus.",
+                "instruction": "Vous pouvez à présent ranimer plus rapidement les joueurs alliés et dissiper les malus de durabilité et de mise à terre lors d'une ranimation réussie. La ranimation est plus rapide lorsque votre allié est d'un niveau inférieur au vôtre.",
+                "icon": "https://render.guildwars2.com/file/EC25C613ED2A35DB4256F0DF4A5F19389765D8E6/1228647.png",
+                "point_cost": 5,
+                "exp_cost": 3175000
+            },
+            {
+                "name": "Logistique avancée",
+                "description": "Apprenez à ramasser automatiquement le butin sur les ennemis à terre et obtenez un meilleur bonus de rapidité pour votre groupe en ville.",
+                "instruction": "Vous pouvez à présent recevoir automatiquement dans votre inventaire le butin des créatures terrassées. Cette capacité peut être désactivée dans le menu Options. Votre groupe bénéficie désormais d'un bonus de rapidité de 33% en ville.",
+                "icon": "https://render.guildwars2.com/file/A41824167F010C0667B3F697DE03E132BD01ED01/1228646.png",
+                "point_cost": 8,
+                "exp_cost": 4127500
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Affinité fractale",
+        "requirement": "",
+        "order": 2,
+        "background": "https://render.guildwars2.com/file/5A19BB62274C6297773A1A21A94BAB9AB2A0711D/1228721.png",
+        "region": "Tyria",
+        "levels": [
+            {
+                "name": "Étude attentive",
+                "description": "Avec l'autorisation de Dessa, vous pouvez accéder à des succès quotidiens supplémentaires et aux vendeurs spéciaux proposant des objets uniques dans l'Observatoire de Gardebrume.",
+                "instruction": "Vous avez déverrouillé des succès quotidiens supplémentaires pour les niveaux de fractale 21 à 49. Vous pouvez également accéder aux vendeurs spéciaux dans l'Observatoire de Gardebrume.",
+                "icon": "https://render.guildwars2.com/file/D763657543F51E1FB608D0CBBBF350C1F1CD14C9/1228657.png",
+                "point_cost": 1,
+                "exp_cost": 635000
+            },
+            {
+                "name": "Canalisateur d'agonie",
+                "description": "Une exposition prolongée à l'agonie octroie de meilleures récompenses dans les donjons de fractale. Vous gagnez également l'accès aux recettes de la forge mystique pour ajouter des emplacements d'infusion de résistance à l'agonie sur les anneaux élevés. Les potions des Brumes vous confèrent des caractéristiques bonus.",
+                "instruction": "Vous recevez désormais des récompenses bonus dans les coffres de boss des donjons de fractale. Les vendeurs vendent maintenant des ingrédients pour faire entrer en affinité les anneaux à la forge mystique et ajouter des emplacements de résistance à l'agonie sur vos anneaux infusés et élevés. Les potions des Brumes convertissent un pourcentage de votre résistance à l'agonie en caractéristiques spécifiques, en fonction de la potion utilisée.",
+                "icon": "https://render.guildwars2.com/file/11B70969E876E8DD00484B42553C3CEF947CE863/1228656.png",
+                "point_cost": 2,
+                "exp_cost": 1270000
+            },
+            {
+                "name": "Ressources récursives",
+                "description": "L'affinité supérieure avec les fractales confère des récompenses bonus dans les coffres des Brumes ainsi que des encodages fractals décodés. La conversion des potions de fractale est également augmentée.",
+                "instruction": "Vous recevez désormais des récompenses bonus dans les coffres des Brumes et des encodages fractals. La conversion des potions des Brumes est augmentée.",
+                "icon": "https://render.guildwars2.com/file/9D7273DC6F6211A636A74ED9F6CE3F932A23514C/1228659.png",
+                "point_cost": 3,
+                "exp_cost": 2222500
+            },
+            {
+                "name": "Singularités de Gardebrume",
+                "description": "Cherchez comment activer les Singularités de Gardebrumes salvatrices dans les Fractales des Brumes. La conversion des potions de fractale est augmentée.",
+                "instruction": "Vous pouvez désormais activer les Singularités de Gardebrumes dans les Fractales des Brumes afin d'augmenter votre Résistance à l'agonie et d'obtenir un bouclier qui vous empêche de mourir dans les donjons de fractale. La conversion des potions de fractale a augmenté.",
+                "icon": "https://render.guildwars2.com/file/65ACE09437747DD1B84A5B9559DD75269A0EEB24/1228658.png",
+                "point_cost": 5,
+                "exp_cost": 3175000
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Artisanat légendaire",
+        "requirement": "",
+        "order": 1,
+        "background": "https://render.guildwars2.com/file/2E91B0BD09CF08991E079CFB1727412AB12427F4/1228719.png",
+        "region": "Tyria",
+        "levels": [
+            {
+                "name": "Antiquaire révéré",
+                "description": "Apprenez le processus de création des armes légendaires en débloquant l'accès au premier niveau des collections de précurseurs d'armes.",
+                "instruction": "Vous pouvez maintenant parler au grand maître artisan Hobbs à L'Arche du Lion pour commencer la première étape de la collection de précurseurs d'armes pour n'importe quelle arme légendaire.",
+                "icon": "https://render.guildwars2.com/file/EB666596D8CA19CBAD0B034FB3DB3F7E0B9D1C0F/1228671.png",
+                "point_cost": 1,
+                "exp_cost": 1270000
+            },
+            {
+                "name": "Magistrat des légendes",
+                "description": "Découvrez les éléments nécessaires à la deuxième étape de la création de précurseurs d'armes.",
+                "instruction": "Vous pouvez désormais acheter les éléments nécessaires à la deuxième étape de la création de précurseurs d'armes auprès du grand maître artisan Hobbs à L'Arche du Lion.",
+                "icon": "https://render.guildwars2.com/file/0C5A24F4086C4FFFD105A0C9EAC480F8B95AC7B5/1228670.png",
+                "point_cost": 3,
+                "exp_cost": 2540000
+            },
+            {
+                "name": "Historien des armements",
+                "description": "Découvrez les éléments nécessaires à la troisième et dernière étape de la création de précurseurs d'armes.",
+                "instruction": "Vous pouvez désormais acheter les éléments nécessaires à la troisième étape de la création de précurseurs d'armes auprès du grand maître artisan Hobbs à L'Arche du Lion.",
+                "icon": "https://render.guildwars2.com/file/4521EF3192316745EC58C4A8FEBA2FB2CE4AE577/1228669.png",
+                "point_cost": 6,
+                "exp_cost": 3810000
+            },
+            {
+                "name": "Érudit des secrets",
+                "description": "En savoir plus au sujet des collections nécessaires pour fabriquer les armes légendaires de Heart of Thorns.",
+                "instruction": "Vous pouvez désormais acheter les éléments nécessaires à la création d'armes légendaires de Heart of Thorns auprès du grand maître artisan Hobbs à l'Arche du Lion.",
+                "icon": "https://render.guildwars2.com/file/E4A5BBD50AF41EC2EF94C1483740AFEFB609199F/1228672.png",
+                "point_cost": 9,
+                "exp_cost": 5080000
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Vol en deltaplane",
+        "requirement": "Rendez-vous dans le Cœur de Maguuma et terminez l'histoire personnelle \"Arrachés au ciel\" pour avoir accès au parcours de maîtrise Vol en deltaplane.",
+        "order": 0,
+        "background": "https://render.guildwars2.com/file/68A54A21C030C5BA742603D3BF0305F344746F95/1228722.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Principes du deltaplane",
+                "description": "Vous donne accès à un deltaplane qui vous permettra de survoler les hauteurs du Cœur de Maguuma, ainsi que les cartes du monde ouvert de Tyrie centrale.",
+                "instruction": "Pour voler en deltaplane, sautez d'un point surélevé puis appuyez sur la touche de saut.",
+                "icon": "https://render.guildwars2.com/file/A13A40AC0D4F0507780039C24B19D6E9C0D2FE1F/962098.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Utilisation des courants ascendants",
+                "description": "Vous avez amélioré les poignées de votre deltaplane et les fentes des ailes pour planer sur les courants ascendants, gagner de l'altitude et atteindre des lieux autrement inaccessibles.",
+                "instruction": "Les courants ascendants sont des piliers de vent tourbillonnant dispersés dans la Jungle de Maguuma. Pour les utiliser à votre avantage, volez jusqu'à l'un d'entre eux et laissez-vous propulser vers le haut.",
+                "icon": "https://render.guildwars2.com/file/27C9EDD3F2516E486299ABF50929E759F5BCC4E8/962097.png",
+                "point_cost": 2,
+                "exp_cost": 1016000
+            },
+            {
+                "name": "Capacités d'inclinaison",
+                "description": "Apprenez à vous pencher en avant pour accélérer et en arrière pour ralentir. Ces capacités coûtent de l'endurance, mais leur obtention augmente votre réserve totale.",
+                "instruction": "Pour vous pencher en avant et accélérer, appuyez sur la touche de déplacement avant. Pour vous pencher en arrière et freiner, appuyez sur la touche de déplacement arrière.",
+                "icon": "https://render.guildwars2.com/file/4D1CAE2F963C7C205BB06C0572040AD33B5BEBD8/962096.png",
+                "point_cost": 3,
+                "exp_cost": 1778000
+            },
+            {
+                "name": "Vol en deltaplane furtif",
+                "description": "Apprenez à voler sans faire de bruit pendant de courtes périodes en esquivant en vol.",
+                "instruction": "Pour bénéficier de Furtivité, réalisez une esquive en vol en appuyant deux fois sur une touche de déplacement.",
+                "icon": "https://render.guildwars2.com/file/610A10527F20E26DBF5402FD4131F1EDAAE6D960/962095.png",
+                "point_cost": 5,
+                "exp_cost": 2540000
+            },
+            {
+                "name": "Vol en deltaplane avancé",
+                "description": "Apprenez à voler avec tant d'efficacité que seules les capacités d'inclinaison consomment votre endurance.",
+                "instruction": "Vous pouvez désormais voler en deltaplane de façon continue sans utiliser d'endurance. Se pencher en avant ou en arrière coûte toujours de l'endurance.",
+                "icon": "https://render.guildwars2.com/file/FFD8BC49B85A794B729ABBE8DB1102F7D328D86A/962093.png",
+                "point_cost": 8,
+                "exp_cost": 3302000
+            },
+            {
+                "name": "Vol dans les lignes de force",
+                "description": "Apprenez à exploiter les courants d'énergie des lignes de force pour vous déplacer et atteindre des endroits qui seraient autrement inaccessibles.",
+                "instruction": "Les lignes de force sont des flux d'énergie magique qui sont visibles dans la Jungle de Maguuma. Pour les utiliser à votre avantage, volez jusqu'à l'une d'entre elles et laissez-vous porter par le flux d'énergie.",
+                "icon": "https://render.guildwars2.com/file/A003F17064F5300F0C0705E8DB76D4B3EF51CFD3/962094.png",
+                "point_cost": 12,
+                "exp_cost": 4318000
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Raids",
+        "requirement": "Pénétrez dans le Taillis abandonné de l'Orée d'émeraude et terrassez un boss pour le déverrouiller.",
+        "order": 4,
+        "background": "https://render.guildwars2.com/file/64A43D09C00EBC0EF307A7C004EF05A8459F0907/1451827.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Voyageur de la brèche",
+                "description": "Parfois, quand une entité puissante meurt, sa magie est libérée et cela peut altérer la trame entre notre monde et l'au-delà. Ceux qui possèdent cette maîtrise peuvent apprendre à utiliser les brèches des lignes de force du Taillis abandonné pour rejoindre les lieux où ont péri ces entités.",
+                "instruction": "Voyager à travers une brèche des lignes de force vers les lieux où vous avez vaincu un puissant ennemi.",
+                "icon": "https://render.guildwars2.com/file/FB2D7C981E2E09725139220DCC90E308170AB7FE/1302710.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Projection explosive",
+                "description": "Les Nains ont inventé la poudre noire, mais vous pouvez parfaire son utilisation. Apprenez à vous projeter en toute sécurité à des hauteurs vertigineuses avec une explosion, et sans vous roussir les chaussettes.",
+                "instruction": "Vous ne subissez aucun dégât quand un allié ou vous-même vous propulse loin d'une plate-forme de projection explosive.",
+                "icon": "https://render.guildwars2.com/file/2D4C0BF20D2A1C0B041DC3D5357C0D67225E7479/1302709.png",
+                "point_cost": 1,
+                "exp_cost": 1016000
+            },
+            {
+                "name": "Eaux du Taillis abandonné",
+                "description": "Les eaux du Taillis abandonné sont connues pour purifier de nombreuses afflictions. Ceux qui possèdent cette maîtrise peuvent se débarrasser des maladies et malédictions qui les touchent le cas échéant.",
+                "instruction": "Vous pouvez désormais vous baigner dans les eaux curatives du Taillis abandonné et vous débarrasser de vos afflictions.",
+                "icon": "https://render.guildwars2.com/file/6120204BB9070AD428112705E3C9145EB33203BD/1377784.png",
+                "point_cost": 3,
+                "exp_cost": 1524000
+            },
+            {
+                "name": "Magie oubliée",
+                "description": "Apprenez à canaliser la puissante énergie qui émane du Taillis abandonné pour l'utiliser au combat.",
+                "instruction": "Vous comprenez maintenant la magie du Taillis abandonné.",
+                "icon": "https://render.guildwars2.com/file/61D637CA3D6F5D355CDC3FAD3CB1DB0DDE34DE67/1451810.png",
+                "point_cost": 3,
+                "exp_cost": 3048000
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "name": "Magie ancestrale",
+        "requirement": "Voyager vers le Marais de la pierre de sang ou dans la Baie des braises pour déverrouiller.\n",
+        "order": 5,
+        "background": "https://render.guildwars2.com/file/929FEABC05B4C9CAA978E0680908E4735CC2C5BC/1477050.png",
+        "region": "Maguuma",
+        "levels": [
+            {
+                "name": "Contrer la magie",
+                "description": "En étudiant d'anciennes recherches asuras effectuées par le super-génie Zinn, Taimi a trouvé le moyen de contrer certaines capacités magiques puissantes. Apprenez cette maîtrise pour obtenir l'accès à la compétence d'action spéciale Contrer la magie qui permet de retourner les attaques des ennemis contre eux-mêmes.",
+                "instruction": "Utilisez la compétence d'action spéciale Contrer la magie pour annuler certaines capacités magiques puissantes utilisées par vos adversaires.",
+                "icon": "https://render.guildwars2.com/file/097B5405639D54EFFD29C600B312ACBDBFDD250D/1477049.png",
+                "point_cost": 1,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Propulsion thermique",
+                "description": "Lorsque les Nains ont affronté Primordius, ils ont beaucoup appris sur le voyage à travers le noyau chauffé de la Tyrie. Apprenez cette maîtrise et vous pourrez, vous aussi, parcourir de longues distances.",
+                "instruction": "Utiliser la propulsion thermique pour parcourir de longues distances.",
+                "icon": "https://render.guildwars2.com/file/14AB963FFAA679D6ADC625E6E538DA47CBF1EF34/1494369.png",
+                "point_cost": 3,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Flamme de Koda",
+                "description": "Confère la capacité de porter de la magie de feu kodan provenant d'un esprit de flamme apprivoisé depuis les temps anciens. Apprendre cette maîtrise déverrouille la première compétence en portant la flamme de Koda. Rendez visite à des porteurs de flamme de Kodan pour apprendre d'autres compétences.",
+                "instruction": "Ramasser une torche de la Flamme de Koda dans l'un des braseros éparpillés dans les Confins de Givramer et dans toute la Tyrie.",
+                "icon": "https://render.guildwars2.com/file/B809083AAF97000B38A309EB57DB9EED2A9BBB5A/1601946.png",
+                "point_cost": 3,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Aide spectrale",
+                "description": "Le monde de la Tyrie regorge de magie ancienne, et ceux qui savent entrer en résonance avec peuvent l'utiliser en dernier recours. Apprenez cette maîtrise pour déverrouiller une compétence supplémentaire à utiliser quand vous êtes à terre.",
+                "instruction": "Lorsque vous êtes à terre, pensez à utiliser votre nouvelle compétence pour éliminer les ennemis restants.",
+                "icon": "https://render.guildwars2.com/file/FCFA76723249B00D35FDED21DFD2CC409F4F26D3/1635191.png",
+                "point_cost": 5,
+                "exp_cost": 508000
+            },
+            {
+                "name": "Portée de cœur-de-chêne",
+                "description": "Les druides anciens avaient le pouvoir de manipuler la nature. Apprenez cette maîtrise pour recueillir l'essence de cœur-de-chêne, qui vous permettra d'atteindre de nouveaux sommets grâce aux lianes magiques.",
+                "instruction": "Trouvez une des essences de cœur-de-chêne pour acquérir la capacité de vous projeter vers l'endroit ciblé. Cette compétence est également utilisable en deltaplane.",
+                "icon": "https://render.guildwars2.com/file/0BD302C32B7A66659536C9F4F5C4087A1B13E878/1677329.png",
+                "point_cost": 5,
+                "exp_cost": 508000
+            }
+        ]
+    }
+]

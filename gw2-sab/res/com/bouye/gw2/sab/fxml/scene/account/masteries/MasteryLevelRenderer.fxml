@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox fx:id="rootPane" styleClass="mastery-level-renderer" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bouye.gw2.sab.scene.account.masteries.MasteryLevelRendererController">
+   <children>
+       <ImageView fx:id="icon" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER" />
+      <Label fx:id="nameLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" />
+      <FlowPane fx:id="pointsFlow" styleClass="points-flow" HBox.hgrow="NEVER" />
+   </children>
+</HBox>
