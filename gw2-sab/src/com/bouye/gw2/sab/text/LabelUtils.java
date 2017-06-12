@@ -144,7 +144,7 @@ public enum LabelUtils {
                                 case LINK_TAG: {
                                     styleAttributes.put(LINK_TAG, Boolean.TRUE);
                                     final String href = attributes.getValue(HREF_ATTR);
-                                    final Hyperlink hyperlink = new Hyperlink(string);
+                                    final Hyperlink hyperlink = new Hyperlink();
                                     hyperlink.setId("Hyperlink"); // NOI18N.
                                     hyperlink.setUserData(href);
                                     hyperlink.setOnAction(actionEvent -> {
