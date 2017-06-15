@@ -49,6 +49,7 @@ public final class IntegerOnlyFilter implements UnaryOperator<TextFormatter.Chan
      * Creates a new instance.
      * @param min The min legal value.
      * @param max The max legal value.
+     * @param allowEmpty If {@code true}, empty values are allowed.
      */
     public IntegerOnlyFilter(final int min, final int max, final boolean allowEmpty) {
         this.min = Math.min(min, max);

@@ -109,7 +109,7 @@ public enum WvwUtils {
 
     /**
      * Get rich display nodes for given WvW team.
-     * @param worlds Map of world ids -> world.
+     * @param worlds Map of world ids &rarr; world.
      * @param mainWorldId The current world id.
      * @param secondaryWorldIds The secondary world ids.
      * @return A non-modifiable {@code List<Node>}, never {@code null}.
@@ -145,7 +145,7 @@ public enum WvwUtils {
 
     /**
      * Get display name for given WvW team.
-     * @param worlds Map of world ids -> world.
+     * @param worlds Map of world ids &rarr; world.
      * @param mainWorldId The current world id.
      * @param secondaryWorldIds The secondary world ids.
      * @return A {@code String}, never {@code null}.
@@ -165,7 +165,7 @@ public enum WvwUtils {
 
     /**
      * Get display name for given world id.
-     * @param worlds Map of world ids -> world.
+     * @param worlds Map of world ids &rarr; world.
      * @param worldId The current world id.
      * @return A {@code String}, never {@code null}.
      * @throws NullPointerException If {@code worlds} is {@code null}.

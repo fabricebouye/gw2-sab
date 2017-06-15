@@ -337,8 +337,8 @@ public final class GW2APIClient {
      * @param <T> The type to use.
      * @param targetClass The target class.
      * @return A {@code List<T>} instance, never {@code null}.
-     * @todo Support page query per page index.
      */
+    // @todo Support page query per page index.
     public <T> PageResult<T> queryPage(final Class<T> targetClass) {
         Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryPage", targetClass); // NOI18N.
         final String query = buildQuery();
