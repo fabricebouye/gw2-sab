@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -394,5 +395,49 @@ public final class GW2APIClient {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * Do a simply asynchronous query that returns a simple object.
+     * <br>This method returns immediately.
+     * @param <T> The type to use.
+     * @param targetClass The target class.`
+     * @return An {@code CompletableFuture<T>} instance, never {@code null}.
+     */
+    public <T> CompletableFuture<T> queryObjectAsync(final Class<T> targetClass) {
+        return CompletableFuture.supplyAsync(() -> this.impl_queryObject(targetClass));
+    }
+
+    /**
+     * Do a simply asynchronous query that returns a list of objects.
+     * <br>This method returns immediately.
+     * @param <T> The type to use.
+     * @param targetClass The target class.`
+     * @return An {@code CompletableFuture<List<T>>} instance, never {@code null}.
+     */
+    public <T> CompletableFuture<List<T>> queryArrayAsync(final Class<T> targetClass) {
+        return CompletableFuture.supplyAsync(() -> this.impl_queryArray(targetClass));
+    }
+
+    /**
+     * Do a simply asynchronous query that returns a list of enum values.
+     * <br>This method returns immediately.
+     * @param <T> The type to use.
+     * @param targetClass The target class.`
+     * @return An {@code CompletableFuture<List<T>>} instance, never {@code null}.
+     */
+    public <T extends Enum> CompletableFuture<List<T>> queryEnumValuesAsync(final Class<T> targetClass) {
+        return CompletableFuture.supplyAsync(() -> this.impl_queryEnumValues(targetClass));
+    }
+
+    /**
+     * Do a simply asynchronous query that returns a page of of objects.
+     * <br>This method returns immediately.
+     * @param <T> The type to use.
+     * @param targetClass The target class.`
+     * @return An {@code CompletableFuture<PageResult<T>>} instance, never {@code null}.
+     */
+    public <T> CompletableFuture<PageResult<T>> queryPageAsync(final Class<T> targetClass) {
+        return CompletableFuture.supplyAsync(() -> this.impl_queryPage(targetClass));
     }
 }
