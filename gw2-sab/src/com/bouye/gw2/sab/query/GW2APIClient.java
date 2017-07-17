@@ -263,20 +263,18 @@ public final class GW2APIClient {
 
     /**
      * Do a simply query that returns a simple object.
+     * <br>This method blocks until the query returns or fails.
      * @param <T> The type to use.
      * @param targetClass The target class.`
      * @return An {@code Optional<T>} instance, never {@code null}.
      */
     public <T> Optional<T> queryObject(final Class<T> targetClass) {
         Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryObject", targetClass); // NOI18N.
-        final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryObject " + query); // NOI18N.
         Optional<T> result = Optional.empty();
         try {
-            final URL url = new URL(query);
-            final T value = context.loadObject(targetClass, url);
+            final T value = impl_queryObject(targetClass);
             result = Optional.ofNullable(value);
-        } catch (NullPointerException | IOException ex) {
+        } catch (RuntimeException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryObject"); // NOI18N.
@@ -286,21 +284,17 @@ public final class GW2APIClient {
 
     /**
      * Do a simple query that returns a list of object.
+     * <br>This method blocks until the query returns or fails.
      * @param <T> The type to use.
      * @param targetClass The target class.
      * @return A {@code List<T>} instance, never {@code null}.
      */
     public <T> List<T> queryArray(final Class<T> targetClass) {
         Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryArray", targetClass); // NOI18N.
-        final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryArray " + query); // NOI18N.
         List<T> result = Collections.EMPTY_LIST;
         try {
-            final URL url = new URL(query);
-            final Collection<T> value = context.loadObjectArray(targetClass, url);
-            result = new ArrayList<>(value);
-            result = Collections.unmodifiableList(result);
-        } catch (NullPointerException | IOException ex) {
+            result = impl_queryArray(targetClass);
+        } catch (RuntimeException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryArray"); // NOI18N.
@@ -310,30 +304,27 @@ public final class GW2APIClient {
 
     /**
      * Do a simple query that returns a list of enum values.
+     * <br>This method blocks until the query returns or fails.
      * @param <T> The type to use.
      * @param targetClass The target class.
      * @return A {@code List<T>} instance, never {@code null}.
      */
     public <T extends Enum> List<T> queryEnumValues(final Class<T> targetClass) {
-        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryArray", targetClass); // NOI18N.
-        final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryArray " + query); // NOI18N.
+        Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryEnumValues", targetClass); // NOI18N.
         List<T> result = Collections.EMPTY_LIST;
         try {
-            final URL url = new URL(query);
-            final Collection<T> value = context.loadEnumArray(targetClass, url);
-            result = new ArrayList<>(value);
-            result = Collections.unmodifiableList(result);
-        } catch (NullPointerException | IOException ex) {
+            result = impl_queryEnumValues(targetClass);
+        } catch (RuntimeException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
-            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryArray"); // NOI18N.
+            Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryEnumValues"); // NOI18N.
         }
         return result;
     }
 
     /**
      * Do a simple query that returns a page.
+     * <br>This method blocks until the query returns or fails.
      * @param <T> The type to use.
      * @param targetClass The target class.
      * @return A {@code List<T>} instance, never {@code null}.
@@ -341,17 +332,67 @@ public final class GW2APIClient {
     // @todo Support page query per page index.
     public <T> PageResult<T> queryPage(final Class<T> targetClass) {
         Logger.getLogger(WebQuery.class.getName()).entering(getClass().getName(), "queryPage", targetClass); // NOI18N.
-        final String query = buildQuery();
-        Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, "queryPage " + query); // NOI18N.
         PageResult<T> result = PageResult.EMPTY;
         try {
-            final URL url = new URL(query);
-            result = context.loadPage(targetClass, url);
-        } catch (NullPointerException | IOException ex) {
+            result = impl_queryPage(targetClass);
+        } catch (RuntimeException ex) {
             Logger.getLogger(WebQuery.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             Logger.getLogger(WebQuery.class.getName()).exiting(getClass().getName(), "queryPage"); // NOI18N.
         }
         return result;
+    }
+
+    private <T> T impl_queryObject(final Class<T> targetClass) throws RuntimeException {
+        try {
+            final String query = buildQuery();
+            Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, String.format("impl_queryObject %s", query)); // NOI18N.
+            final URL url = new URL(query);
+            final T result = context.loadObject(targetClass, url);
+            return result;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private <T> List<T> impl_queryArray(final Class<T> targetClass) throws RuntimeException {
+        try {
+            final String query = buildQuery();
+            Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, String.format("impl_queryArray %s", query)); // NOI18N.
+            final URL url = new URL(query);
+            final Collection<T> value = context.loadObjectArray(targetClass, url);
+            List<T> result = new ArrayList<>(value);
+            result = Collections.unmodifiableList(result);
+            return result;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private <T extends Enum> List<T> impl_queryEnumValues(final Class<T> targetClass) throws RuntimeException {
+        try {
+            final String query = buildQuery();
+            Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, String.format("immpl_queryEnumValues %s", query)); // NOI18N.
+            final URL url = new URL(query);
+            final Collection<T> value = context.loadEnumArray(targetClass, url);
+            List<T> result = new ArrayList<>(value);
+            result = Collections.unmodifiableList(result);
+            return result;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    // @todo Support page query per page index.
+    private <T> PageResult<T> impl_queryPage(final Class<T> targetClass) throws RuntimeException {
+        try {
+            final String query = buildQuery();
+            Logger.getLogger(WebQuery.class.getName()).log(Level.INFO, String.format("impl_queryPage %s", query)); // NOI18N.
+            final URL url = new URL(query);
+            PageResult<T> result = context.loadPage(targetClass, url);
+            return result;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
