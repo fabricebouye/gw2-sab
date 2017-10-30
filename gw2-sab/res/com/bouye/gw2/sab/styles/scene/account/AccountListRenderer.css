@@ -15,6 +15,10 @@
     -avatar-outer-color: -game-hot-color;
     -account-name-color: -game-hot-color;
 }
+.account-list-renderer:PathOfFire {    
+    -avatar-outer-color: -game-pof-color;
+    -account-name-color: -game-pof-color;
+}
 .account-list-renderer:PlayForFree {    
     -avatar-outer-color: -game-free-color;
     -avatar-inner-color: -game-free-color;
@@ -45,6 +49,9 @@
 }
 .account-list-renderer:HeartOfThorns .avatar {
     -fx-background-image: url("../../../images/logos/hot-small.jpg");
+}
+.account-list-renderer:PathOfFire .avatar {
+    -fx-background-image: url("../../../images/logos/pof-small.jpg");
 }
 .account-list-renderer .account-name-label {
     -fx-text-fill: -account-name-color;
