@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v1.guilddetails.GuildDetails;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -140,7 +140,10 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
             final TokenInfo tokenInfo = session.getTokenInfo();
             // Name.
             accountNameLabel.setText(account.getName());
-            final String accessText = String.format("[ %s ]", LabelUtils.INSTANCE.toLabel(account.getAccess()));
+            final String accessText = account.getAccess()
+                    .stream()
+                    .map(LabelUtils.INSTANCE::toLabel)
+                    .collect(Collectors.joining(", ", "[", "]")); // NOI18N.
             accessLabel.setText(accessText);
             //
             final int worldId = account.getWorld();
@@ -202,8 +205,10 @@ public final class AccountInfoPaneController extends SABControllerBase<AccountIn
         final Session session = parent.getSession();
         if (session != null && session.isValid()) {
             final Account account = session.getAccount();
-            final AccountAccessType accessType = account.getAccess();
-            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(accessType);
+            final Set<AccountAccessType> access = account.getAccess();
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(access.stream()
+                    .findFirst()
+                    .orElse(AccountAccessType.NONE));
             parent.pseudoClassStateChanged(pseudoClass, true);
         }
     }

@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -144,8 +145,8 @@ public final class TestAccountListRenderer extends Application {
             }
 
             @Override
-            public AccountAccessType getAccess() {
-                return accessType;
+            public Set<AccountAccessType> getAccess() {
+                return Collections.unmodifiableSet(new HashSet(Arrays.asList(accessType)));
             }
 
             @Override

@@ -7,7 +7,6 @@
  */
 package com.bouye.gw2.sab.scene.account;
 
-import api.web.gw2.mapping.core.JsonpUtils;
 import api.web.gw2.mapping.v2.account.Account;
 import api.web.gw2.mapping.v2.account.AccountAccessType;
 import com.bouye.gw2.sab.scene.SABControllerBase;
@@ -17,6 +16,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Consumer;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -136,8 +136,10 @@ public final class AccountListRendererController extends SABControllerBase<Accou
         final Session session = parent.getSession();
         if (session != null && session.isValid()) {
             final Account account = session.getAccount();
-            final AccountAccessType accessType = account.getAccess();
-            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(accessType);
+            final Set<AccountAccessType> access = account.getAccess();
+            final PseudoClass pseudoClass = LabelUtils.INSTANCE.toPseudoClass(access.stream()
+                    .findFirst()
+                    .orElse(AccountAccessType.NONE));
             parent.pseudoClassStateChanged(pseudoClass, true);
         }
     }
